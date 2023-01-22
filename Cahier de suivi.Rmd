@@ -1,5 +1,5 @@
 ---
-title: "Cahier de suivi"
+title: "Cahier de suivi Projet Statistique Sujet 23"
 author: "NEBANGA KANGA-NZANGA Odilon cyrille, GORSE Nathan, THOMASSIN Mathieu"
 date: "`r Sys.Date()`"
 output: html_document
@@ -11,16 +11,6 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>.
-
-# Cahier de suivi Projet Statistique
-
-# Sujet 23
 
 ## 1 To do list
 
@@ -34,8 +24,9 @@ using R Markdown see <http://rmarkdown.rstudio.com>.
     -   Utiliser modèle de survie après avoir simulé des délais
 -   $\mathrm{R}$
 -   dfcrm Code joint
--   Fonctions article anais andrillon \### 1 Revoir modèle de survie et
-    vraisemblance
+-   Fonctions article anais andrillon
+
+### 1 Revoir modèle de survie et vraisemblance
 
 La fonction de survie du modèle de guérison vaut : $$
 P(T>=t)=\pi(z)*S_{U}(T>=t)+1-\pi(z) (1)
@@ -61,7 +52,9 @@ $$
 =\prod_{i=1}^{n} \pi(x_{i}) f_{U}(t_{i})^{Y_{i} }* \left(S_{U} \left(t_{i} \right)*\pi \left( x_{i} \right)+\left( 1-\pi \left( x_{i} \right) \right) \right)^{1-Y_{i}}
 $$
 
-Utilisation de CRM Installation du package
+
+## 3 Utiliser modèle puissance pour analyse données
+### Utilisation de CRM Installation du package
 
 ```{r}
 require(dfcrm)
@@ -69,7 +62,7 @@ require(dfcrm)
 ```
 
 Nous entrons les données des doses administrées à chaque patient telles
-qu'indiqués dans le tableau suivant.
+qu'indiqués dans la colonne de gauche du tableau suivant.
 
 $$
 \begin{array}{cc}
@@ -94,15 +87,48 @@ $$
 vecteur_dose<-c(rep(0.5,3),rep(3,3),rep(5,4*3))
 ```
 
-    vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
-    valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
-    prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
-    p<-0.33
-    infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
-    #puissance avec empiric? 
-    plot.mtd(infos)
-    donnees<-read.table("//filer-eleves2/id2021/deuxième/second_semestre/projet_statistique/essai_n18.txt",header=TRUE)
+Puis les données de l'effet du traitement sur chaque patient ("Clinical
+response").
 
-### 3 Utiliser modèle puissance pour analyse données
+```{r}
+vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
+```
+
+Nous faisons un dataframe reliant ces deux vecteurs.
+
+```{r}
+valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
+```
+
+Nous entrons les valeurs de probabilités de toxicité des doses a priori
+fournies par le tableau suivant:
+
+$$
+\begin{array}{ccccccccc}
+\hline \text{HHT-loading dose } \left(\mathbf{m g ~ m}^{-2}\right. day \left.^{-1}\right) & 0.5 & 1 & 3 & 5 & 6\\
+\hline \text {Initial guesses of toxicity probability } & 0.05 & 0.1 & 0.15 & 0.33 & 0.50\\
+\hline
+\end{array}
+$$
+
+```{r}
+prior_probabilities <- c(0.05,0.1,0.15,0.33,0.5) 
+```
+
+Nous assignons la valeur de toxicité limitante (Dose Limiting Toxicity)
+
+```{r}
+p <- 0.33
+```
+Nous appliquons la fonction crm aux données, avec le modèle puissance et 
+affichons les données
+```{r}
+infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18) # puissance avec empiric 
+```
+```{r include=FALSE}
+plot.mtd(infos)
+```
+
+
 
 ### 4 Utiliser modèle de survie après avoir simulé des délais

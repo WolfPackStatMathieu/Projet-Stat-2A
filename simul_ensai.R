@@ -87,6 +87,6 @@ base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
 base_tox$time_arrival <- round(base_tox$time_arrival, 2)
 essai_n30 <- base_tox
 
-write.table(essai_n18, file="Z:/STAGES/Stages_ENSAI/essai_n18.txt", sep="\t", row.names=F)
-write.table(essai_n30, file="Z:/STAGES/Stages_ENSAI/essai_n24.txt", sep="\t", row.names=F)
-write.table(essai_n30, file="Z:/STAGES/Stages_ENSAI/essai_n30.txt", sep="\t", row.names=F)
+write.table(essai_n18, file="C:/Users/mathi/Documents/Ensai/2A/S2/Projet statistique/Sorties_R/essai_n18.txt", sep="\t", row.names=F)
+write.table(essai_n30, file="C:/Users/mathi/Documents/Ensai/2A/S2/Projet statistique/Sorties_R/essai_n24.txt", sep="\t", row.names=F)
+write.table(essai_n30, file="C:/Users/mathi/Documents/Ensai/2A/S2/Projet statistique/Sorties_R/essai_n30.txt", sep="\t", row.names=F)
