@@ -93,6 +93,10 @@ response").
 ```{r}
 vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
 ```
+Nous indiquons les doses administrées.
+```{r}
+nom_dose<-c("0.5","1","3","5","6")
+```
 
 Nous faisons un dataframe reliant ces deux vecteurs.
 
@@ -125,11 +129,82 @@ Nous appliquons la fonction crm aux données, avec le modèle puissance et
 affichons les données
 
 ```{r}
-infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18) # puissance avec empiric 
+infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18) # puissance avec empiric
+infos
 ```
 
 ```{r echo=FALSE}
 plot.mtd(infos)
 ```
 
-### 4 Utiliser modèle de survie après avoir simulé des délais
+## 4 Utiliser modèle de survie après avoir simulé des délais
+
+```{r}
+#######Modèle de survie logistique.######
+###################################
+####################
+
+#####I) Simulation des donnees et import des donnees simulees.######
+#####On utilise le code fourni pour générer les données. 
+N=18
+res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
+               prior=getprior(0.05, 0.25, 2, 5), 
+               0.25, N, 1,
+               obswin=6,restrict=1,
+               rate=3,
+               accrual = "poisson", seed=1234)
+
+
+base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
+head(base_tox)
+base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
+base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
+base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
+base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
+base_tox$time_arrival <- round(base_tox$time_arrival, 2)
+essai_n18 <- base_tox
+essai_n18
+plot(essai_n18)
+#####On écrit une base de données. 
+write.table(essai_n18, file="essai_n18.txt", sep="\t", row.names=F)
+donnees<-read.table("essai_n18.txt",header=TRUE)
+
+#######II) Creation des arguments de la fonction titecrm. ######
+
+#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicite est connu. 
+#Le vecteur reponse vaut 0 sinon. 
+#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicite est NA.
+vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+
+#Les doses administrees à chaque patient sont donnees par la colonne dose. 
+level_dose<-donnees$dose
+
+#Le nombre de patient correspond au nombre de lignes. 
+nombre_int=nrow(donnees)
+
+#L'argument weights de la fonction titecrm peut renvoyer au poids donne à chaque individu. 
+#Comme nous ne sommes pas certains de sa signification à l'heure actuelle, nous donnons un poids uniforme. 
+
+#L'autre option serait aussi de prendre en compte la censure
+#pour un patient particulier. 
+poids<-rep(1/nombre_int,nombre_int)
+
+#La date d'arrivee du patient dans l'étude est donnee par la colonne time_arrival.
+entree<-donnees$time_arrival
+
+#la date de sortie est donnee par la colonne toxicity.study.time. 
+sortie<-donnees$toxicity.study.time
+
+
+######III) Utilisation de la fonction et resume des informations. ##### 
+vue<-titecrm(prior_probabilities,p,model="logistic",tox=vecteur_reponse,dosename=nom_dose,n=nrow(donnees),entry=entree,exit=sortie,level=level_dose,pid=donnees$id,weights =poids)
+vue
+
+#####IV) Graphiques. ######
+plot.mtd(vue)
+
+#######################################
+```
+
+
+
