@@ -52,8 +52,8 @@ $$
 =\prod_{i=1}^{n} \pi(x_{i}) f_{U}(t_{i})^{Y_{i} }* \left(S_{U} \left(t_{i} \right)*\pi \left( x_{i} \right)+\left( 1-\pi \left( x_{i} \right) \right) \right)^{1-Y_{i}}
 $$
 
-
 ## 3 Utiliser modèle puissance pour analyse données
+
 ### Utilisation de CRM Installation du package
 
 ```{r}
@@ -120,15 +120,16 @@ Nous assignons la valeur de toxicité limitante (Dose Limiting Toxicity)
 ```{r}
 p <- 0.33
 ```
-Nous appliquons la fonction crm aux données, avec le modèle puissance et 
+
+Nous appliquons la fonction crm aux données, avec le modèle puissance et
 affichons les données
+
 ```{r}
 infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18) # puissance avec empiric 
 ```
-```{r include=FALSE}
+
+```{r echo=FALSE}
 plot.mtd(infos)
 ```
-
-
 
 ### 4 Utiliser modèle de survie après avoir simulé des délais
