@@ -92,24 +92,53 @@ fonction_survie<-function(beta,temps,dose){
 
 #2) calcul de la vraisemblance:
 valeur_dose<-c(0.5,1,3,5,6)
-id_dose<-c(1,2,3,4,5)
-fonction_vraisemblance<-function(beta,observations_time,sortie,id_dose,valeur_dose,vecteur_reponse){
+id_dose<-donnees$dose
+vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+fonction_vraisemblance<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
   res<-1
-  for (j in (1:length(observations_time))){
+  for (i in (1:length(observations_time))){
     #on sélectionne la valeur de la dose. On a seulement l'identifiant de la dose
     #dans la base de données.
     dose<-valeur_dose[id_dose[i]]
     non_censure<-vecteur_reponse[i]
     temps<-observations_time[i]
-    res<-res*(fonction_proba(beta,temps=temps,level_dose[i])^(I(non_censure==1))*fonction_survie(beta,temps=temps,dose)^(I(non_censure==0)))
+    nouvel_element<-fonction_proba(beta,temps=temps,dose)^(I(non_censure==1)*1)*fonction_survie(beta,temps=temps,dose)^(I(non_censure==0)*1)
+    res<-res*nouvel_element
+    print(cbind.data.frame(nouvel_element,temps,dose))
   }
   return(res)
 }
 
+denom_tox<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
+  result1<-fonction_vraisemblance(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*dnorm(beta,mean=0,sd=1.34)
+  result2<-likelihood_tox_exp(beta,vecteur_reponse,id_dose,valeur_dose,observations_time)
+  return(all(round(result2,digits=2)==round(result1,digits=2)))}
+num_tox<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){denom_tox(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*beta}
 
-modele_survie<-function(p,observations_time,sortie,level_dose,identifiant,vecteur_reponse){
+modele_survie<-function(target,tstar,observations_time,id_dose,valeur_dose,vecteur_reponse){
   #1) calcul de la vraisemblance.
-  vraisemblance<-fonction_vraisemblance(beta,observations_time,sortie,id_dose,valeur_dose,vecteur_reponse)
+  #On génère (beta) fois une loi normale. 
+  #2) calcul de l'estimateur. Methode de l'article : 
+  #On a des variables déterministes que sont X et Y. Le beta dépend de ces variables. 
+  #La loi de beta sera donc donnée en sachant x et Y.
+  #Pour avoir une approximation de cette loi, on utilise la vraisemblance (sachant Beta) * la loi de beta. [On suppose que beta suit une loi normale.]
+  #Ce calcul renvoie aux équations 7 et 8. 
+  #On calcule l'espérance de la loi de beta sachant X et Y. On doit cependant bien diviser par la constante pour 
+  #avoir la loi de beta sachant x et Y. Cette constante renvoie dans notre cas à f(X,Y).
+  constante<-integrate(denom_tox,-Inf,Inf,observations_time=observations_time,id_dose=id_dose,vecteur_reponse=vecteur_reponse,valeur_dose=valeur_dose)$value
+  beta_hat<-integrate(num_tox,-Inf,Inf,observations_time=observations_time,id_dose=id_dose,vecteur_reponse=vecteur_reponse,valeur_dose=valeur_dose)$value/constante
   
+  #3) calcul du nouveau lambda. 
+  lambda<-exp(exp(beta_hat)*valeur_dose)
+  Proba_inf_t<-1-exp(-lambda*tstar)
+  #4) choix de la dose. 
+  distance_cible<-abs(Proba_inf_t,target)
+  Doses_min<-valeur_dose[which(distance_cible==min(distance_cible))]
+  #Soit il n'y a qu'une seule dose disponible soit on en prend une au hasard. 
+  dose_choisi<-ifelse(length(Doses_min)==1,Doses_min,sample(Doses_min,1))
+  return(beta_hat,dose_choisi)
 }
+tstar<-6
+test_denom<-denom_tox(0.010,observations_time,id_dose,valeur_dose,vecteur_reponse)
+#test<-modele_survie(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
 
