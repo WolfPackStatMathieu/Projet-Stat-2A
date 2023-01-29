@@ -2,9 +2,11 @@
 title: "Cahier de suivi Projet Statistique Sujet 23"
 author: "NEBANGA KANGA-NZANGA Odilon cyrille, GORSE Nathan, THOMASSIN Mathieu"
 date: "`r Sys.Date()`"
-output: html_document
-editor_options: 
-  markdown: 
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -61,6 +63,7 @@ $$
 ```{r}
 require(dfcrm)
 # help(dfcrm)
+source("fonctions.R")
 ```
 
 Nous entrons les donn√©es des doses administr√©es √† chaque patient telles
@@ -152,11 +155,11 @@ plot.mtd(infos)
 ## 4 Utiliser mod√®le de survie apr√®s avoir simul√© des d√©lais
 
 ```{r}
-#######Mod√®le de survie logistique.######
+#######Modele de survie logistique.######
 ###################################
 ####################
 
-#####I) Simulation des donnees et import des donnees simulees.######
+#####I) Simulation des donn√©es et import des donnees simulees.######
 #####On utilise le code fourni pour g√©n√©rer les donn√©es. 
 N=18
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
@@ -177,49 +180,70 @@ base_tox$time_arrival <- round(base_tox$time_arrival, 2)
 essai_n18 <- base_tox
 essai_n18
 plot(essai_n18)
-#####On √©crit une base de donn√©es. 
+#####On cree une base de donn√©es. 
 write.table(essai_n18, file="essai_n18.txt", sep="\t", row.names=F)
 donnees<-read.table("essai_n18.txt",header=TRUE)
 
-#######II) Creation des arguments de la fonction titecrm. ######
-
-#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicite est connu. 
-#Le vecteur reponse vaut 0 sinon. 
-#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicite est NA.
-vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
-
-#Les doses administrees √† chaque patient sont donnees par la colonne dose. 
-level_dose<-donnees$dose
-
-#Le nombre de patient correspond au nombre de lignes. 
-nombre_int=nrow(donnees)
-
-#L'argument weights de la fonction titecrm peut renvoyer au poids donne √† chaque individu. 
-#Comme nous ne sommes pas certains de sa signification √† l'heure actuelle, nous donnons un poids uniforme. 
-
-#L'autre option serait aussi de prendre en compte la censure
-#pour un patient particulier. 
-poids<-rep(1/nombre_int,nombre_int)
-
-#La date d'arrivee du patient dans l'√©tude est donnee par la colonne time_arrival.
-entree<-donnees$time_arrival
-
-#la date de sortie est donnee par la colonne toxicity.study.time. 
-sortie<-donnees$toxicity.study.time
-
-
-######III) Utilisation de la fonction et resume des informations. ##### 
-vue<-titecrm(prior_probabilities,p,model="logistic",tox=vecteur_reponse,dosename=nom_dose,n=nrow(donnees),entry=entree,exit=sortie,level=level_dose,pid=donnees$id,weights =poids)
-vue
-
-#####IV) Graphiques. ######
-plot.mtd(vue)
-
-#######################################
 ```
 
-Comme nous ne voulions pas utiliser directement l'infÈrence bayÈsienn. Nous avons utilisÈ 2 mÈthodes pour estimer le Beta. La premiËre basÈe sur l'article d'Andrillon. Et la seconde mÈthode consiste ‡ utiliser plusieurs points initiaux.
+```{r}
+#######II) Creation des arguments. ######
 
+#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicit√© est connu. 
+#Le vecteur reponse vaut 0 sinon. 
+#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicit√© est NA.
+vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+t<-6
+#Les doses administr√©es a chaque patient sont donn√©es par la colonne dose. 
+level_dose<-donnees$dose
+
+#la date de sortie est donnee par la colonne toxicity.study.time. 
+observations_time<-ifelse(!is.na(donnees$toxicity.time),donnees$toxicity.time,t)
+valeur_dose<-c(0.5,1,3,5,6)
+id_dose<-donnees$dose
+vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+tstar<-6
+```
+Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisÈ 2 mÈthodes pour estimer le Beta. La premiËre se base sur l'article fourni. La seconde methode consiste ‡ utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne. 
+```{r}
+#Rappel: 
+#Nous sommes dans le cadre ou la fonction de survie 
+#suit une loi exponentielle de parametre exp(-xi*exp(beta)). Notons epsi cette valeur. 
+# donc la fonction de densite est :
+#epsi*exp(-epsi*t) [fonction densit√© d'une loi exponentielle.]
+test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
+```
+Un message d'erreur s'affiche en raison de l'intÈgration. Nous avons donc essayÈ de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux mÈthodes ont ÈtÈ envisagÈes avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
+```{r}
+windows<-runif(10,-0.1,0)
+beta_init<-(-3)
+test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
+test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+
+```
+Nous avons essayÈ de maniËre expÈrimentale de trouver $\hat{\beta}$ en combinant ces deux maniËres de faire. 
+```{r}
+######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a ete choisie 
+##### car la vraisemblance ne permettait pas d'avoir des iterations. En effet, la valeur du gradient etait trop faible
+#### au point initial. 
+fenetre<-runif(10,-20,-1)
+##### Autre methode, utiliser plusieurs points initiaux. ####
+test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
+                                                         valeur_dose = valeur_dose,
+                                                         vecteur_reponse = vecteur_reponse,
+                                                         fenetre)
+```
+Nous avons obtenu des rÈsultats trËs diffÈrents avec des probabilitÈs proches de 1, en raison de la valeur de beta. Ces mÈthodes ne sont donc pas convenables. 
+```{r}
+y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba,type="l",main="Essai avec la mÈthode d'un ensemble de beta")
+```
+
+```{r}
+beta_Newton<-test_beta_Newton
+y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba2,main="Essai avec l'algorithme de Newton.")
+```
 
 
 
