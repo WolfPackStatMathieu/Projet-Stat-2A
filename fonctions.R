@@ -39,16 +39,16 @@ modele_survie_bayes<-function(target,tstar,observations_time,id_dose,valeur_dose
   #avoir la loi de beta sachant x et Y. Cette constante renvoie dans notre cas à f(X,Y).
   constante<-integrate(denom_tox_bayes,-Inf,Inf,observations_time=observations_time,id_dose=id_dose,vecteur_reponse=vecteur_reponse,valeur_dose=valeur_dose)$value
   beta_hat<-integrate(num_tox_bayes,-Inf,Inf,observations_time=observations_time,id_dose=id_dose,vecteur_reponse=vecteur_reponse,valeur_dose=valeur_dose)$value/constante
-  
+  return(beta_hat)
   #3) calcul du nouveau lambda. 
-  lambda<-exp(exp(beta_hat)*valeur_dose)
-  Proba_inf_t<-1-exp(-lambda*tstar)
+  #lambda<-exp(exp(beta_hat)*valeur_dose)
+  #Proba_inf_t<-1-exp(-lambda*tstar)
   #4) choix de la dose. 
-  distance_cible<-abs(Proba_inf_t,target)
-  Doses_min<-valeur_dose[which(distance_cible==min(distance_cible))]
+  #distance_cible<-abs(Proba_inf_t,target)
+  #Doses_min<-valeur_dose[which(distance_cible==min(distance_cible))]
   #Soit il n'y a qu'une seule dose disponible soit on en prend une au hasard. 
-  dose_choisi<-ifelse(length(Doses_min)==1,Doses_min,sample(Doses_min,1))
-  return(beta_hat,dose_choisi)
+  #dose_choisi<-ifelse(length(Doses_min)==1,Doses_min,sample(Doses_min,1))
+  #return(beta_hat,dose_choisi)
 }
 denom_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
   result1<-fonction_vraisemblance(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*dnorm(beta,mean=0,sd=1.34)
@@ -66,6 +66,7 @@ modele_survie_sans_hypotheses<-function(observations_time,id_dose,valeur_dose,ve
   vecteur_valeur_likelihood<-log(sapply(windows,fonction_vraisemblance,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
   indice<-which(vecteur_valeur_likelihood==max(vecteur_valeur_likelihood))
   maximum<-windows[indice]
+  if (length(maximum)>1){return(maximum[1])}
   return(maximum)
 }
 fonction_inverse_log<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
@@ -78,6 +79,8 @@ modele_survie_Newton<-function(observations_time,id_dose,valeur_dose,vecteur_rep
 modele_survie_Newton_multiple<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   matrice<-cbind.data.frame(sapply(windows,modele_survie_Newton,observations_time=observations_time,
                   id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
-  print(matrice)
   return(matrice)
+}
+lambda<-function(beta,x){
+  return(exp(exp(beta)*x))
 }

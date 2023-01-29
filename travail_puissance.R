@@ -14,8 +14,8 @@ crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
 infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
- 
 plot.mtd(infos)
+
 #######Modele de survie logistique.######
 ###################################
 ####################
@@ -55,16 +55,6 @@ t<-6
 #Les doses administrÃ©es à chaque patient sont donnÃ©es par la colonne dose. 
 level_dose<-donnees$dose
 
-#Le nombre de patient correspond au nombre de lignes. 
-nombre_int=nrow(donnees)
-
-#L'argument weights de la fonction titecrm peut renvoyer au poids donnÃ© Ã  chaque individu. 
-#N'Ã©tant pas certains de sa signification à l'heure actuelle, nous donnons un poids uniforme. 
-identifiant<-donnees$id
-
-#La date d'arrivee du patient dans l'Ã©tude est donnÃ©e par la colonne time_arrival.
-entree<-donnees$time_arrival
-
 #la date de sortie est donnee par la colonne toxicity.study.time. 
 observations_time<-ifelse(!is.na(donnees$toxicity.time),donnees$toxicity.time,t)
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
@@ -73,18 +63,24 @@ id_dose<-donnees$dose
 tstar<-6
 ############## Si on utilise l'inférence bayésienne de l'article. ######
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
-windows<-sample(c(-10:-1))
-beta_init<--3
+windows<-runif(10,-0.1,0)
+beta_init<-(-3)
 test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
 test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
 
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a été choisie 
 ##### car la vraisemblance ne permettait pas d'avoir des itérations. En effet, la valeur du gradient était trop faible
 #### au point initial. 
-
+fenetre<-runif(10,-2,-1)
 ##### Autre méthode, utiliser plusieurs points initiaux. . ####
 test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
                                                          valeur_dose = valeur_dose,
                                                          vecteur_reponse = vecteur_reponse,
                                                          windows)
-
+### Si on utilise cette méthode, on obtient des résultats très différents du modèle puissance. 
+### Ces méthodes ne sont donc pas convenables. 
+y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba,type="l")
+beta_Newton<-test_beta_newton_multiple[[5]]$estimate
+y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba2,type="l")
