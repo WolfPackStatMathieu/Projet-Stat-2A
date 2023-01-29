@@ -217,3 +217,9 @@ plot.mtd(vue)
 
 #######################################
 ```
+
+Comme nous ne voulions pas utiliser directement l'inférence bayésienn. Nous avons utilisé 2 méthodes pour estimer le Beta. La première basée sur l'article d'Andrillon. Et la seconde méthode consiste à 
+
+
+
+
