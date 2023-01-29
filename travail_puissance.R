@@ -9,12 +9,16 @@ valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
 prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
 p<-0.33
 crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
+infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
- 
 plot.mtd(infos)
+<<<<<<< HEAD
 #######ModÃ¨le de survie logistique.######
+=======
+
+#######Modele de survie logistique.######
+>>>>>>> 4f270caa45ae9dcd06863301703bbe22fe4ec11d
 ###################################
 ####################
 
@@ -53,6 +57,7 @@ t<-6
 #Les doses administrÃ©es Ã  chaque patient sont donnÃ©es par la colonne dose. 
 level_dose<-donnees$dose
 
+<<<<<<< HEAD
 #Le nombre de patient correspond au nombre de lignes. 
 nombre_int=nrow(donnees)
 
@@ -73,6 +78,9 @@ likelihood_tox_exp <- function(beta, event, dose_level, xref,time){
 }
 
 #la date de sortie est donnÃ©e par la colonne toxicity.study.time. 
+=======
+#la date de sortie est donnee par la colonne toxicity.study.time. 
+>>>>>>> 4f270caa45ae9dcd06863301703bbe22fe4ec11d
 observations_time<-ifelse(!is.na(donnees$toxicity.time),donnees$toxicity.time,t)
 
 #Rappel: 
@@ -140,6 +148,32 @@ modele_survie<-function(target,tstar,observations_time,id_dose,valeur_dose,vecte
   return(beta_hat,dose_choisi)
 }
 tstar<-6
+<<<<<<< HEAD
 test_denom<-denom_tox(0.010,observations_time,id_dose,valeur_dose,vecteur_reponse)
 #test<-modele_survie(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
+=======
+############## Si on utilise l'inférence bayésienne de l'article. ######
+test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
+windows<-runif(10,-0.1,0)
+beta_init<-(-3)
+test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
+test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+
+######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a été choisie 
+##### car la vraisemblance ne permettait pas d'avoir des itérations. En effet, la valeur du gradient était trop faible
+#### au point initial. 
+fenetre<-runif(10,-20,-1)
+##### Autre méthode, utiliser plusieurs points initiaux. . ####
+test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
+                                                         valeur_dose = valeur_dose,
+                                                         vecteur_reponse = vecteur_reponse,
+                                                         fenetre)
+### Si on utilise cette méthode, on obtient des résultats très différents du modèle puissance. 
+### Ces méthodes ne sont donc pas convenables. 
+y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba,type="l")
+beta_Newton<-test_beta_Newton
+y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
+plot(x=valeur_dose,y=y_proba2)
+>>>>>>> 4f270caa45ae9dcd06863301703bbe22fe4ec11d
 
