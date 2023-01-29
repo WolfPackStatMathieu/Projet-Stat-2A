@@ -73,7 +73,13 @@ id_dose<-donnees$dose
 tstar<-6
 ############## Si on utilise l'inférence bayésienne de l'article. ######
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
-windows<-sample(c(1:10),5)
-test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
-test_beta_optim<-modele_survie_optim(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =1)
 
+############## Si on n'utilise pas l'inférence bayésienne, nous pouvons utiliser Newton ou une fenêtre. #####
+windows<-sample(-10:0,5)
+test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
+print(test_beta)
+beta_init<--3
+test_beta_newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+
+## Nous avons utilisé non pas la vraisemblance mais la log-vraisemblance car cela produit de meilleurs résultats. 
+## Notamment, sans l'utilisation de la log, la méthode Newton stoppait directement [le gradient était déjà trop proche de 0].
