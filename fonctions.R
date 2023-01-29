@@ -63,19 +63,12 @@ num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_repon
 modele_survie_sans_hypotheses<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   vecteur_valeur_likelihood<-list()
   length(vecteur_valeur_likelihood)<-length(windows)
-  vecteur_valeur_likelihood<-log(sapply(windows,fonction_vraisemblance,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
-  print(vecteur_valeur_likelihood)
-  if (is.na(max(vecteur_valeur_likelihood))==TRUE){
-    return("Valeurs infinies")
-  }else{
+  vecteur_valeur_likelihood<-sapply(windows,fonction_vraisemblance,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse)
   indice<-which(vecteur_valeur_likelihood==max(vecteur_valeur_likelihood))
   maximum<-windows[indice]
-  return(maximum)}
+  return(maximum)
 }
-fonction_log_vraisemblance<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
-  return((-1)*log(fonction_vraisemblance(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)))
-}
+
 modele_survie_Newton<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,beta_init){
-  newton<-nlm(gradtol=1e-6,fonction_log_vraisemblance,p=beta_init,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse,hessian=FALSE)
-  return(newton)
+  return(nlm(fonction_vraisemblance,p=beta_init,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse,hessian=FALSE))
 }
