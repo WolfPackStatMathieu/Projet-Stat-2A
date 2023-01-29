@@ -63,12 +63,21 @@ num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_repon
 modele_survie_sans_hypotheses<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   vecteur_valeur_likelihood<-list()
   length(vecteur_valeur_likelihood)<-length(windows)
-  vecteur_valeur_likelihood<-sapply(windows,fonction_vraisemblance,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse)
+  vecteur_valeur_likelihood<-log(sapply(windows,fonction_vraisemblance,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
   indice<-which(vecteur_valeur_likelihood==max(vecteur_valeur_likelihood))
   maximum<-windows[indice]
   return(maximum)
 }
-
+fonction_inverse_log<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){
+  return((-1)*log(fonction_vraisemblance(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)))
+}
 modele_survie_Newton<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,beta_init){
-  return(nlm(fonction_vraisemblance,p=beta_init,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse,hessian=FALSE))
+  return(nlm(fonction_inverse_log,p=beta_init,observations_time=observations_time,id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse,hessian=FALSE))
+}
+
+modele_survie_Newton_multiple<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
+  matrice<-cbind.data.frame(sapply(windows,modele_survie_Newton,observations_time=observations_time,
+                  id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
+  print(matrice)
+  return(matrice)
 }

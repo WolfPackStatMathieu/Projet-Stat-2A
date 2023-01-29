@@ -11,7 +11,7 @@ valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
 prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
 p<-0.33
 crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
+infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
  
@@ -73,6 +73,18 @@ id_dose<-donnees$dose
 tstar<-6
 ############## Si on utilise l'inférence bayésienne de l'article. ######
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
-windows<-sample(c(1:10))
+windows<-sample(c(-10:-1))
+beta_init<--3
 test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
-test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init = 0.033)
+test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+
+######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a été choisie 
+##### car la vraisemblance ne permettait pas d'avoir des itérations. En effet, la valeur du gradient était trop faible
+#### au point initial. 
+
+##### Autre méthode, utiliser plusieurs points initiaux. . ####
+test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
+                                                         valeur_dose = valeur_dose,
+                                                         vecteur_reponse = vecteur_reponse,
+                                                         windows)
+
