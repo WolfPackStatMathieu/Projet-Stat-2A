@@ -71,16 +71,17 @@ test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a été choisie 
 ##### car la vraisemblance ne permettait pas d'avoir des itérations. En effet, la valeur du gradient était trop faible
 #### au point initial. 
-fenetre<-runif(10,-2,-1)
+fenetre<-runif(10,-20,-1)
 ##### Autre méthode, utiliser plusieurs points initiaux. . ####
 test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
                                                          valeur_dose = valeur_dose,
                                                          vecteur_reponse = vecteur_reponse,
-                                                         windows)
+                                                         fenetre)
 ### Si on utilise cette méthode, on obtient des résultats très différents du modèle puissance. 
 ### Ces méthodes ne sont donc pas convenables. 
 y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
 plot(x=valeur_dose,y=y_proba,type="l")
-beta_Newton<-test_beta_newton_multiple[[5]]$estimate
+beta_Newton<-test_beta_Newton
 y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
-plot(x=valeur_dose,y=y_proba2,type="l")
+plot(x=valeur_dose,y=y_proba2)
+
