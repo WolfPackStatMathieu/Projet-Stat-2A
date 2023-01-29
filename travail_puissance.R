@@ -73,6 +73,7 @@ id_dose<-donnees$dose
 tstar<-6
 ############## Si on utilise l'inférence bayésienne de l'article. ######
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
-windows<-sample(c(1:10))
+windows<-sample(c(1:10),5)
 test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
-test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init = 0.033)
+test_beta_optim<-modele_survie_optim(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =1)
+
