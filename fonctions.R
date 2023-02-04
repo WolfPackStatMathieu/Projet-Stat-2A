@@ -54,7 +54,7 @@ denom_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_rep
   result1<-fonction_vraisemblance(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*dnorm(beta,mean=0,sd=1.34)
   return(result1)
 }
-num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){denom_tox2(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*beta}
+num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){denom_tox_bayes(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*beta}
 
 
 ############# Modele de survie sans l'inférence bayésienne. #######
@@ -78,9 +78,15 @@ modele_survie_Newton<-function(observations_time,id_dose,valeur_dose,vecteur_rep
 
 modele_survie_Newton_multiple<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   matrice<-cbind.data.frame(sapply(windows,modele_survie_Newton,observations_time=observations_time,
-                  id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
+                                   id_dose=id_dose,valeur_dose=valeur_dose,vecteur_reponse=vecteur_reponse))
   return(matrice)
 }
 lambda<-function(beta,x){
   return(exp(exp(beta)*x))
+}
+afficher_resultat<-function(beta,x_ref,probabilites_priori){
+  vecteur_indice<-1:length(xref)
+  y_proba<-1-exp(-lambda(beta=test_bayes,x=xref[vecteur_indice])*tstar)
+  plot(x=vecteur_indice,y=probabilites_priori,main="Comparaison entre priori et post",xlab="Indice de la dose",ylab="Probabilites de LDT")
+  lines(y_proba,col="blue")
 }
