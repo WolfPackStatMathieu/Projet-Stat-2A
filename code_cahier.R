@@ -2,26 +2,15 @@ library(dfcrm)
 help(dfcrm)
 source("MainFunctions_Andrillon_JBS_2020.R")
 source("fonctions.R")
-vecteur_dose<-c(rep(1,3),rep(3,3),rep(4,4*3))
-vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
-nom_dose<-c(1,2,3,4,5)
-valeur_dose<-c(0.5,1,3,5,6)
-valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
-prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
-p<-0.33
-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
-infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
-teta<-infos$estimate
-plot(x=valeur_dose,y=valeur_dose^(teta))
-plot.mtd(infos)
 
-#######Modele de survie logistique.######
+#######Modele de survie.######
 ###################################
 ####################
 
 #####I) Simulation des données et import des donnees simulees.######
 #####On utilise le code fourni pour générer les données. 
 N=18
+p<-0.33
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
                prior=getprior(0.05, 0.25, 2, 5), 
                0.25, N, 1,
