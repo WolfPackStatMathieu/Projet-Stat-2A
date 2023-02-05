@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 To do list
 
--   Revoir modèle de survie et vraisemblance
+-   Revoir modele de survie et vraisemblance
 -   Tenter écrire vraisemblance du modèle de guérison (produit des
     contributions des sujets dans les deux sous-populations)
 -   Données
@@ -169,7 +169,7 @@ res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50),
                rate=3,
                accrual = "poisson", seed=1234)
 
-
+prior<-c(0.05, 0.25, 2, 5)
 base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
 head(base_tox)
 base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
@@ -204,21 +204,28 @@ id_dose<-donnees$dose
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
 tstar<-6
 ```
-Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisé 2 méthodes pour estimer le Beta. La première se base sur l'article fourni. La seconde methode consiste à utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne. 
+Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisé 2 méthodes pour estimer le Beta. La première se base sur l'article fourni. La seconde methode consiste à utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne.Nous sommes dans le cas o� la fonction de densit� f suit une loi exponentielle :
+$$
+\lambda(t)=exp(exp(\beta)*dose)
+$$
+La fonction de survie correspond �:
+$$
+S(t)=exp(-\lambda*t)=exp(-exp(exp(\beta)*dose)*t)
+$$
 ```{r}
 #Rappel: 
 #Nous sommes dans le cadre ou la fonction de survie 
 #suit une loi exponentielle de parametre exp(-xi*exp(beta)). Notons epsi cette valeur. 
 # donc la fonction de densite est :
 #epsi*exp(-epsi*t) [fonction densité d'une loi exponentielle.]
+skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
+xref <-  log(-log(1-skeleton)/6)
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse )
 ```
 Un message d'erreur s'affiche en raison de l'intégration. Nous avons donc essayé de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux méthodes ont été envisagées avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
 ```{r}
 windows<-runif(10,-0.1,0)
 beta_init<-1
-skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
-xref <-  log(-log(1-skeleton)/6)
 test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose =xref,windows=windows)
 test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse =vecteur_reponse,valeur_dose=xref,beta_init =beta_init)$estimate
 
@@ -239,7 +246,7 @@ Nous avons obtenu des résultats très différents avec des probabilités proche
 ```{r}
 y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
 plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="Probabilit� de DLT",main="Essai avec la methode d'un ensemble de beta")
-abline(h=p,col="blue")
+abline(h=p,col="red")
 ```
 
 ```{r}
@@ -261,6 +268,3 @@ test_bayes<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose =x
 ```{r}
 afficher_resultat(beta=test_bayes,x_ref,skeleton)
 ```
-
-
-
