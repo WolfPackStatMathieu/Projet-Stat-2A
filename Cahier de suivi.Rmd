@@ -238,13 +238,28 @@ Nous avons essay√© de mani√®re exp√©rimentale de trouver $\hat{\beta}$ en combin
 Nous avons obtenu des r√©sultats tr√®s diff√©rents avec des probabilit√©s proches de 1, en raison de la valeur de beta. Ces methodes ne sont donc pas convenables. 
 ```{r}
 y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
-plot(x=xref,y=y_proba,type="l",main="Essai avec la methode d'un ensemble de beta")
+plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="ProbabilitÈ de DLT",main="Essai avec la methode d'un ensemble de beta")
+abline(h=p,col="blue")
 ```
 
 ```{r}
 beta_Newton<-test_beta_Newton
 y_proba2<-1-exp(-lambda(beta=beta_Newton,x=xref)*tstar)
-plot(x=valeur_dose,y=y_proba2,main="Essai avec l'algorithme de Newton.")
+plot(x=c(1:5),y=y_proba2,main="Essai avec l'algorithme de Newton.",xlab="Index de la dose",ylab="ProbabilitÈ de la dose")
+```
+Nous pouvons utiliser d'autres mÈthodes ne mobilisant pas la logique bayÈsienne. Les mÈthodes glm permettent notamment d'expliquer la probabilitÈ que Y vaut 1 c'est-‡-dire que l'individu manifeste la toxicitÈ. 
+```{r}
+donnees2<-cbind.data.frame(donnees,dlt,xref[donnees$dose])
+logit_proba_dlt<-glm(dlt~xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
+#beta0<-logit_proba_dlt$coefficients[["(Intercept)"]]
+beta1<-logit_proba_dlt$coefficients[["xref[donnees$dose]"]]
+y_predicted<-sapply(xref[c(1:5)],fonction_logit,beta0=beta0,beta1=beta1)
+plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabilitÈ",main="MÈthode logit",col="red")
+test_bayes<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
+
+```
+```{r}
+afficher_resultat(beta=test_bayes,x_ref,skeleton)
 ```
 
 

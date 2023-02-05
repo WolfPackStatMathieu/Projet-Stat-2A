@@ -7,12 +7,12 @@ xref <-  log(-log(1-skeleton)/6)
 View(xref)
 donnees2<-cbind.data.frame(donnees,dlt,xref[donnees$dose])
 View(donnees2)
-logit_proba_dlt<-glm(dlt~0+xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
-fonction_logit<-function(beta0,beta1,x){
+logit_proba_dlt<-glm(dlt~xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
+fonction_logit<-function(beta0=0,beta1,x){
   (1+exp(beta1*x+beta0))
   return(exp(beta1*x+beta0)/(1+exp(beta1*x+beta0)))
 }
-beta0<-logit_proba_dlt$coefficients[["(Intercept)"]]
+#beta0<-logit_proba_dlt$coefficients[["(Intercept)"]]
 beta1<-logit_proba_dlt$coefficients[["xref[donnees$dose]"]]
 y_predicted<-sapply(xref[c(1:5)],fonction_logit,beta0=beta0,beta1=beta1)
 plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabilité")

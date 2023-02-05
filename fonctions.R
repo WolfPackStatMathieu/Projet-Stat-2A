@@ -90,3 +90,8 @@ afficher_resultat<-function(beta,x_ref,probabilites_priori){
   plot(x=vecteur_indice,y=probabilites_priori,main="Comparaison entre priori et post",xlab="Indice de la dose",ylab="Probabilites de LDT")
   lines(y_proba,col="blue")
 }
+
+fonction_logit<-function(beta0=0,beta1,x){
+  (1+exp(beta1*x+beta0))
+  return(exp(beta1*x+beta0)/(1+exp(beta1*x+beta0)))
+}
