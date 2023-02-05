@@ -80,4 +80,4 @@ fenetre<-runif(10,-20,-1)
 ### Si on utilise cette methode, on obtient des resultats tres differents du modele puissance. 
 ### Ces methodes ne sont donc pas convenables. 
 afficher_resultat(beta=test_bayes,x_ref=x_ref,probabilites_priori = skeleton)
-
+test_newton<-modele_survie_Newton(observations_time = observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse,1)
