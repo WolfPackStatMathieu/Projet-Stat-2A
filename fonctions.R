@@ -57,8 +57,8 @@ denom_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_rep
 num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){denom_tox_bayes(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*beta}
 
 
-############# Modele de survie sans l'inférence bayésienne. #######
-######### Trouver la valeur minimale au sein d'une fenêtre. #######
+############# Modele de survie sans l'infÃ©rence bayÃ©sienne. #######
+######### Trouver la valeur minimale au sein d'une fenÃƒÂªtre. #######
 
 modele_survie_sans_hypotheses<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   vecteur_valeur_likelihood<-list()
