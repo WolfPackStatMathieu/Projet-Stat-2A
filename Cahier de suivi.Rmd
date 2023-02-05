@@ -30,7 +30,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### 1 Revoir modèle de survie et vraisemblance
 
-La fonction de survie du modèle de guérison vaut : $$
+La fonction de survie du modele de guerison vaut : $$
 P(T>=t)=\pi(z) \times S_{U}(T>=t)+1-\pi(z) \qquad (1)
 $$
 oÃ¹ $T$ est le temps d'apparition de la toxicité chez le sujet, $\pi(\cdot)$ est la proportion de sujets ayant manifesté une toxicité durant la fenêtre d'observation (la proportion de sujets non guéris), $S_U(\cdot)$ est la fonction de survie des sujets non guéris.
@@ -211,14 +211,16 @@ Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avo
 #suit une loi exponentielle de parametre exp(-xi*exp(beta)). Notons epsi cette valeur. 
 # donc la fonction de densite est :
 #epsi*exp(-epsi*t) [fonction densité d'une loi exponentielle.]
-test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
+test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse )
 ```
 Un message d'erreur s'affiche en raison de l'intégration. Nous avons donc essayé de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux méthodes ont été envisagées avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
 ```{r}
 windows<-runif(10,-0.1,0)
-beta_init<-(-3)
-test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
-test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+beta_init<-1
+skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
+xref <-  log(-log(1-skeleton)/6)
+test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose =xref,windows=windows)
+test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse =vecteur_reponse,valeur_dose=xref,beta_init =beta_init)$estimate
 
 ```
 Nous avons essayé de manière expérimentale de trouver $\hat{\beta}$ en combinant ces deux manières de faire. 
@@ -226,22 +228,22 @@ Nous avons essayé de manière expérimentale de trouver $\hat{\beta}$ en combin
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a ete choisie 
 ##### car la vraisemblance ne permettait pas d'avoir des iterations. En effet, la valeur du gradient etait trop faible
 #### au point initial. 
-fenetre<-runif(10,-20,-1)
+#fenetre<-runif(10,-10,-1)
 ##### Autre methode, utiliser plusieurs points initiaux. ####
-test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
-                                                         valeur_dose = valeur_dose,
-                                                         vecteur_reponse = vecteur_reponse,
-                                                         fenetre)
+#test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
+                                                         #valeur_dose =xref,
+                                                         #vecteur_reponse = vecteur_reponse,
+                                                         #fenetre)
 ```
-Nous avons obtenu des résultats très différents avec des probabilités proches de 1, en raison de la valeur de beta. Ces méthodes ne sont donc pas convenables. 
+Nous avons obtenu des résultats très différents avec des probabilités proches de 1, en raison de la valeur de beta. Ces methodes ne sont donc pas convenables. 
 ```{r}
-y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
-plot(x=valeur_dose,y=y_proba,type="l",main="Essai avec la méthode d'un ensemble de beta")
+y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
+plot(x=xref,y=y_proba,type="l",main="Essai avec la methode d'un ensemble de beta")
 ```
 
 ```{r}
 beta_Newton<-test_beta_Newton
-y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
+y_proba2<-1-exp(-lambda(beta=beta_Newton,x=xref)*tstar)
 plot(x=valeur_dose,y=y_proba2,main="Essai avec l'algorithme de Newton.")
 ```
 
