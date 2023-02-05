@@ -73,6 +73,6 @@ ggforest(fit.coxph, data = donnees)
 coefficient <- fit.coxph$coefficients[["dose"]]
 coefficient
 
-y = 1 - exp(-exp(c(1:5) * exp(coefficient))*6 )
+y = 1 - exp(-c(1:5) * coefficient * 6 )
 y
      
