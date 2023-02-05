@@ -1,5 +1,7 @@
 ####################### GLM ###################
+
 #######################
+######
 donnees<-read.table("essai_n18.txt",header=TRUE)
 dlt<-ifelse(is.na(donnees$toxicity.study.time)==TRUE,0,1)
 skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
