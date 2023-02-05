@@ -37,5 +37,3 @@ temps_beta_hasard<-simul_temps_alt(n)
 temps_beta_hasard<-ifelse(vecteur_reponse==0,6,temps_beta_hasard)
 test_bayes2<-modele_survie_bayes(p,tstar,observations_time=temps_beta_hasard,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
 afficher_resultat(beta=test_bayes2,x_ref=x_ref,probabilites_priori = skeleton)
-
-
