@@ -9,8 +9,9 @@ source("fonctions.R")
 
 #####I) Simulation des données et import des donnees simulees.######
 #####On utilise le code fourni pour générer les données. 
-N=18
-p<-0.33
+N=18 #Nombre de patients simulés
+p<-0.33 # Valeur limite de toxicité
+#Simulation des données par la fonction titesim
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
                prior=getprior(0.05, 0.25, 2, 5), 
                0.25, N, 1,
@@ -18,11 +19,14 @@ res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50),
                rate=3,
                accrual = "poisson", seed=1234)
 
-
+#Création d'un dataframe avec ces valeurs
 base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
 head(base_tox)
+#Transformation des valeurs de la variable toxicity.study.time en NA si Inf
 base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
+#idem pour toxicity.time
 base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
+#On arrondit les valeurs à 2 chiffres après la virgule
 base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
 base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
 base_tox$time_arrival <- round(base_tox$time_arrival, 2)
