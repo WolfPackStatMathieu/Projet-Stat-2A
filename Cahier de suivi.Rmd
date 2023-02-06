@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## 1 To do list
 
--   Revoir mod√®le de survie et vraisemblance
+-   Revoir modele de survie et vraisemblance
 -   Tenter √©crire vraisemblance du mod√®le de gu√©rison (produit des
     contributions des sujets dans les deux sous-populations)
 -   Donn√©es
@@ -30,10 +30,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### 1 Revoir mod√®le de survie et vraisemblance
 
-La fonction de survie du mod√®le de gu√©rison vaut : $$
-P(T>=t)=\pi(z) \times S_{U}(T>=t)+1-\pi(z) \qquad (1)
-$$
-o√π $T$ est le temps d'apparition de la toxicit√© chez le sujet, $\pi(\cdot)$ est la proportion de sujets ayant manifest√© une toxicit√© durant la fen√™tre d'observation (la proportion de sujets non gu√©ris), $S_U(\cdot)$ est la fonction de survie des sujets non gu√©ris.
+La fonction de survie du modele de guerison vaut : $$
+P(T>=t)=\pi(z) \times S_{U}(T>=t)+1-\pi(z) \qquad (1)$$
+O˘ $T$ est le temps d'apparition de la toxicit√© chez le sujet, $\pi(\cdot)$ est la proportion de sujets ayant manifest√© une toxicit√© durant la fen√™tre d'observation (la proportion de sujets non gu√©ris), $S_U(\cdot)$ est la fonction de survie des sujets non gu√©ris.
 
 ### 2 Tenter √©crire vraisemblance du mod√®le de gu√©rison (produit des contributions des sujets dans les deux sous-populations)
 
@@ -45,13 +44,14 @@ correspond alors √† la fonction de densit√© sachant $U(Y=1)$ soit :
 $$
 f(t_i|x_i)=\pi(x_{i})*f_{U}(t)
 $$
-o√π $f_U(\cdot)$ est la densit√© de $T$ chez les sujets non gu√©ris.
+O˘ $f_U(\cdot)$ est la densitÈ de $T$ chez les sujets non gu√©ris.
 
 A l'inverse, pour les individus n'ayant pas manifest√© de toxicit√© durant cette fen√™tre, on ne conna√Æt pas T. Autrement dit, Y=0. Par cons√©quent, on sait juste que T est sup√©rieure √† une certaine valeur. On mobilise par cons√©quent la fonction de survie donn√©e dans l'√©quation
 (1). La vraisemblance vaut donc :
 
 $$
-L(X,Y)= \prod_{i=1}^{n} \pi(x_{i}) \times f_{U}(t_{i})^{Y_{i}} \times S(t_{i}|x_{i})^{1-Y_{i}}$$
+L(X,Y)= \prod_{i=1}^{n} \pi(x_{i}) \times f_{U}(t_{i})^{Y_{i}} \times S(t_{i}|x_{i})^{1-Y_{i}}
+$$
 $$
 =\displaystyle \prod_{i=1}^{n} \pi(x_{i}) \times f_{U}(t_{i})^{Y_{i} } \times \Biggl( S_{U} \left(t_{i} \right)\times\pi \left( x_{i} \right)+\Bigl( 1-\pi \left( x_{i} \right) \Bigr) \Biggr)^{1-Y_{i}}
 $$
@@ -73,7 +73,7 @@ $$
 \begin{array}{cc}
 \begin{array}{c}
 \text { Administrated dose } \\
-\left.\mathbf{( m g g ~ m}^{-2} \mathbf{d a y}^{-\mathbf{1}}\right)
+\left.\mathbf{( m g}.\mathbf{m}^{-2}.\mathbf{d a y}^{-1}\right)
 \end{array} & \begin{array}{c}
 \text { Clinical } \\
 \text { response }
@@ -155,7 +155,7 @@ plot.mtd(infos)
 ## 4 Utiliser mod√®le de survie apr√®s avoir simul√© des d√©lais
 
 ```{r}
-#######Modele de survie logistique.######
+#######Modele de survie logistique.###### #titre √† effacer
 ###################################
 ####################
 
@@ -169,7 +169,7 @@ res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50),
                rate=3,
                accrual = "poisson", seed=1234)
 
-
+prior<-c(0.05, 0.25, 2, 5)
 base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
 head(base_tox)
 base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
@@ -204,46 +204,68 @@ id_dose<-donnees$dose
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
 tstar<-6
 ```
-Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisÈ 2 mÈthodes pour estimer le Beta. La premiËre se base sur l'article fourni. La seconde methode consiste ‡ utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne. 
+Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilis√© 2 m√©thodes pour estimer le Beta. La premi√®re se base sur l'article fourni. La seconde methode consiste √† utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne.Nous sommes dans le cas o˘ la fonction de densitÈ f suit une loi exponentielle :
+$$
+\lambda(t)=exp(exp(\beta)*dose)
+$$
+La fonction de survie correspond ‡:
+$$
+S(t)=exp(-\lambda*t)=exp(-exp(exp(\beta)*dose)*t)
+$$
 ```{r}
 #Rappel: 
 #Nous sommes dans le cadre ou la fonction de survie 
 #suit une loi exponentielle de parametre exp(-xi*exp(beta)). Notons epsi cette valeur. 
 # donc la fonction de densite est :
 #epsi*exp(-epsi*t) [fonction densit√© d'une loi exponentielle.]
-test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = valeur_dose,vecteur_reponse = vecteur_reponse )
+skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
+xref <-  log(-log(1-skeleton)/6)
+test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse )
 ```
-Un message d'erreur s'affiche en raison de l'intÈgration. Nous avons donc essayÈ de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux mÈthodes ont ÈtÈ envisagÈes avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
+Un message d'erreur s'affiche en raison de l'int√©gration. Nous avons donc essay√© de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux m√©thodes ont √©t√© envisag√©es avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
 ```{r}
 windows<-runif(10,-0.1,0)
-beta_init<-(-3)
-test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose = valeur_dose,windows=windows)
-test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose,beta_init =beta_init)$estimate
+beta_init<-1
+test_beta<-modele_survie_sans_hypotheses(observations_time = observations_time,id_dose=id_dose,vecteur_reponse = vecteur_reponse,valeur_dose =xref,windows=windows)
+test_beta_Newton<-modele_survie_Newton(observations_time = observations_time,id_dose=id_dose,vecteur_reponse =vecteur_reponse,valeur_dose=xref,beta_init =beta_init)$estimate
 
 ```
-Nous avons essayÈ de maniËre expÈrimentale de trouver $\hat{\beta}$ en combinant ces deux maniËres de faire. 
+Nous avons essay√© de mani√®re exp√©rimentale de trouver $\hat{\beta}$ en combinant ces deux mani√®res de faire. 
 ```{r}
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a ete choisie 
 ##### car la vraisemblance ne permettait pas d'avoir des iterations. En effet, la valeur du gradient etait trop faible
 #### au point initial. 
-fenetre<-runif(10,-20,-1)
+#fenetre<-runif(10,-10,-1)
 ##### Autre methode, utiliser plusieurs points initiaux. ####
-test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
-                                                         valeur_dose = valeur_dose,
-                                                         vecteur_reponse = vecteur_reponse,
-                                                         fenetre)
+#test_beta_newton_multiple<-modele_survie_Newton_multiple(observations_time = observations_time,id_dose=id_dose,
+                                                         #valeur_dose =xref,
+                                                         #vecteur_reponse = vecteur_reponse,
+                                                         #fenetre)
 ```
-Nous avons obtenu des rÈsultats trËs diffÈrents avec des probabilitÈs proches de 1, en raison de la valeur de beta. Ces mÈthodes ne sont donc pas convenables. 
+Nous avons obtenu des r√©sultats tr√®s diff√©rents avec des probabilit√©s proches de 1, en raison de la valeur de beta. Ces methodes ne sont donc pas convenables. 
 ```{r}
-y_proba<-1-exp(-lambda(beta=test_beta,x=valeur_dose)*tstar)
-plot(x=valeur_dose,y=y_proba,type="l",main="Essai avec la mÈthode d'un ensemble de beta")
+y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
+plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="ProbabilitÈ de DLT",main="Essai avec la methode d'un ensemble de beta")
+abline(h=p,col="red")
 ```
 
 ```{r}
 beta_Newton<-test_beta_Newton
-y_proba2<-1-exp(-lambda(beta=beta_Newton,x=valeur_dose)*tstar)
-plot(x=valeur_dose,y=y_proba2,main="Essai avec l'algorithme de Newton.")
+y_proba2<-1-exp(-lambda(beta=beta_Newton,x=xref)*tstar)
+plot(x=c(1:5),y=y_proba2,main="Essai avec l'algorithme de Newton.",xlab="Index de la dose",ylab="ProbabilitÈ de la dose")
+```
+Nous pouvons utiliser d'autres mÈthodes ne mobilisant pas la logique bayÈsienne. Les mÈthodes glm permettent notamment d'expliquer la probabilitÈ que Y vaut 1 c'est-‡-dire que l'individu manifeste la toxicitÈ. 
+```{r}
+donnees2<-cbind.data.frame(donnees,dlt,xref[donnees$dose])
+logit_proba_dlt<-glm(dlt~xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
+#beta0<-logit_proba_dlt$coefficients[["(Intercept)"]]
+beta1<-logit_proba_dlt$coefficients[["xref[donnees$dose]"]]
+y_predicted<-sapply(xref[c(1:5)],fonction_logit,beta0=beta0,beta1=beta1)
+plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabilitÈ",main="MÈthode logit",col="red")
+test_bayes<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
+
 ```
 
-
-
+```{r}
+afficher_resultat(beta=test_bayes,x_ref,skeleton)
+```

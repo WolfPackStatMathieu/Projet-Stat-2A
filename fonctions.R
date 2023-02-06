@@ -57,8 +57,8 @@ denom_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_rep
 num_tox_bayes<-function(beta,observations_time,id_dose,valeur_dose,vecteur_reponse){denom_tox_bayes(beta,observations_time,id_dose,valeur_dose,vecteur_reponse)*beta}
 
 
-############# Modele de survie sans l'inférence bayésienne. #######
-######### Trouver la valeur minimale au sein d'une fenêtre. #######
+############# Modele de survie sans l'infÃ©rence bayÃ©sienne. #######
+######### Trouver la valeur minimale au sein d'une fenÃƒÂªtre. #######
 
 modele_survie_sans_hypotheses<-function(observations_time,id_dose,valeur_dose,vecteur_reponse,windows){
   vecteur_valeur_likelihood<-list()
@@ -89,4 +89,9 @@ afficher_resultat<-function(beta,x_ref,probabilites_priori){
   y_proba<-1-exp(-lambda(beta=test_bayes,x=xref[vecteur_indice])*tstar)
   plot(x=vecteur_indice,y=probabilites_priori,main="Comparaison entre priori et post",xlab="Indice de la dose",ylab="Probabilites de LDT")
   lines(y_proba,col="blue")
+}
+
+fonction_logit<-function(beta0=0,beta1,x){
+  (1+exp(beta1*x+beta0))
+  return(exp(beta1*x+beta0)/(1+exp(beta1*x+beta0)))
 }

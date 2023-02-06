@@ -3,6 +3,7 @@
 require(dfcrm)
 source("simulation_temps_fonc.R")
 source("fonctions.R")
+source("MainFunctions_Andrillon_JBS_2020.R")
 vecteur_dose<-c(rep(1,3),rep(3,3),rep(4,4*3))
 vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
 nom_dose<-c(1,2,3,4,5)
@@ -26,16 +27,14 @@ temps_weibull<-simul_temp_weibull(n,beta,k)
 ks.test(temps_weibull,"pweibull",shape=k)
 temps<-temps_simul_exp
 temps<-ifelse(vecteur_reponse==0,6,temps)
+
 #####
 skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
 xref <-  log(-log(1-skeleton)/6)              #Set of numerical labels for the doses investigated in the trial
 test_bayes<-modele_survie_bayes(p,tstar,observations_time=temps,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
 afficher_resultat(beta=test_bayes,x_ref=x_ref,probabilites_priori = skeleton)
-
 #####
 temps_beta_hasard<-simul_temps_alt(n)
 temps_beta_hasard<-ifelse(vecteur_reponse==0,6,temps_beta_hasard)
 test_bayes2<-modele_survie_bayes(p,tstar,observations_time=temps_beta_hasard,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
 afficher_resultat(beta=test_bayes2,x_ref=x_ref,probabilites_priori = skeleton)
-
-

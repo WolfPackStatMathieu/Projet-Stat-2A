@@ -18,8 +18,8 @@ plot.mtd(infos)
 ###################################
 ####################
 
-#####I) Simulation des donnÃ©es et import des donnees simulees.######
-#####On utilise le code fourni pour gÃ©nÃ©rer les donnÃ©es. 
+#####I) Simulation des données et import des donnees simulees.######
+#####On utilise le code fourni pour générer les données. 
 N=18
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
                prior=getprior(0.05, 0.25, 2, 5), 
@@ -39,28 +39,28 @@ base_tox$time_arrival <- round(base_tox$time_arrival, 2)
 essai_n18 <- base_tox
 essai_n18
 plot(essai_n18)
-#####On Ã©crit une base de donnÃ©es. 
+#####On écrit une base de données. 
 write.table(essai_n18, file="essai_n18.txt", sep="\t", row.names=F)
 donnees<-read.table("essai_n18.txt",header=TRUE)
 
 #######II) Creation des arguments. ######
 
-#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicitÃ© est connu. 
+#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicité est connu. 
 #Le vecteur reponse vaut 0 sinon. 
-#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicitÃ© est NA.
+#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicité est NA.
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
 t<-6
-#Les doses administrÃ©es Ã  chaque patient sont donnÃ©es par la colonne dose. 
+#Les doses administrées à chaque patient sont données par la colonne dose. 
 level_dose<-donnees$dose
 
 #la date de sortie est donnee par la colonne toxicity.study.time. 
 observations_time<-ifelse(!is.na(donnees$toxicity.time),donnees$toxicity.time,t)
 
 #Rappel: 
-#Nous sommes dans le cadre oÃ¹ la fonction de survie 
+#Nous sommes dans le cadre où la fonction de survie 
 #suit une loi exponentielle de paramÃ¨tre exp(-xi*exp(beta)). Notons epsi cette valeur. 
-# donc la fonction de densitÃ© est :
-#epsi*exp(-epsi*t) [fonction densitÃ© d'une loi exponentielle.]
+# donc la fonction de densité est :
+#epsi*exp(-epsi*t) [fonction densité d'une loi exponentielle.]
 
 
 

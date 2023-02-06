@@ -9,8 +9,9 @@ source("fonctions.R")
 
 #####I) Simulation des données et import des donnees simulees.######
 #####On utilise le code fourni pour générer les données. 
-N=18
-p<-0.33
+N=18 #Nombre de patients simulés
+p<-0.33 # Valeur limite de toxicité
+#Simulation des données par la fonction titesim
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
                prior=getprior(0.05, 0.25, 2, 5), 
                0.25, N, 1,
@@ -18,11 +19,14 @@ res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50),
                rate=3,
                accrual = "poisson", seed=1234)
 
-
+#Création d'un dataframe avec ces valeurs
 base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
 head(base_tox)
+#Transformation des valeurs de la variable toxicity.study.time en NA si Inf
 base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
+#idem pour toxicity.time
 base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
+#On arrondit les valeurs à 2 chiffres après la virgule
 base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
 base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
 base_tox$time_arrival <- round(base_tox$time_arrival, 2)
@@ -69,7 +73,7 @@ windows<-runif(10,-0.1,0)
 beta_init<-(-3)
 
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a ete choisie 
-##### car la vraisemblance ne permettait pas d'avoir des it�rations. En effet, la valeur du gradient �tait trop faible
+##### car la vraisemblance ne permettait pas d'avoir des itÃ¯Â¿Â½rations. En effet, la valeur du gradient Ã¯Â¿Â½tait trop faible
 #### au point initial. 
 fenetre<-runif(10,-20,-1)
 ##### Autre methode, utiliser plusieurs points initiaux. . ####
@@ -80,4 +84,4 @@ fenetre<-runif(10,-20,-1)
 ### Si on utilise cette methode, on obtient des resultats tres differents du modele puissance. 
 ### Ces methodes ne sont donc pas convenables. 
 afficher_resultat(beta=test_bayes,x_ref=x_ref,probabilites_priori = skeleton)
-
+test_newton<-modele_survie_Newton(observations_time = observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse,1)
