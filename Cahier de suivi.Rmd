@@ -3,8 +3,8 @@ title: "Cahier de suivi Projet Statistique Sujet 23"
 author: "NEBANGA KANGA-NZANGA Odilon cyrille, GORSE Nathan, THOMASSIN Mathieu"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 editor_options:
   markdown:
     wrap: 72

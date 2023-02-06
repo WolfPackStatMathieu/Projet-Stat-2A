@@ -37,6 +37,7 @@ res <- titesim(# PI A vector of the true toxicity probabilites associated with t
                seed=1234)
 
 
+
 base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
 head(base_tox)
 base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
