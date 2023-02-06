@@ -30,6 +30,8 @@ base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
 base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
 base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
 base_tox$time_arrival <- round(base_tox$time_arrival, 2)
+
+
 essai_n18 <- base_tox
 essai_n18
 plot(essai_n18)
@@ -43,6 +45,7 @@ donnees<-read.table("essai_n18.txt",header=TRUE)
 #Le vecteur reponse vaut 0 sinon. 
 #Dans notre cas, on donne 0 si le temps d'apparition  de la toxicité est NA.
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+# le t star
 t<-6
 #Les doses administrées à chaque patient sont données par la colonne dose. 
 level_dose<-donnees$dose
