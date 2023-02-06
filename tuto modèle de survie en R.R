@@ -3,6 +3,8 @@ library(survival)
 #install.packages("survminer")
 library(survminer)
 library(dplyr)
+library(dfcrm)
+
 
 N=100 #Nombre de patients simulés
 p<-0.33 # Valeur limite de toxicité
@@ -54,6 +56,7 @@ head(donnees)
 summary(donnees)
 donnees$toxicity.time <- ifelse(is.na(donnees$toxicity.time), 6, donnees$toxicity.time)
 head(donnees)
+table(donnees$isobserved)
 # Fit survival data using the Kaplan-Meier method
 surv_object <- Surv(time = donnees$toxicity.time, event = donnees$isobserved)
 surv_object
@@ -73,6 +76,16 @@ ggforest(fit.coxph, data = donnees)
 coefficient <- fit.coxph$coefficients[["dose"]]
 coefficient
 
+
+
 y = 1 - exp(-c(1:5) * coefficient * 6 )
 y
-     
+  
+
+fit$surv   
+fit$n
+table(donnees$dose, donnees$isobserved)
+valeur_dose4 <- fit$surv[29]
+valeur_dose5 <- fit$surv[33]
+fit$n
+  
