@@ -1,6 +1,7 @@
 # Import package
 library("dfcrm")
 
+
 # construction de la base de donn√©es
 dose <- c(rep(0.5,3),rep(3,3), rep(5,3), rep(5,3), rep(5,3),rep(5,3))
 dosesWm <- c(0.05, 0.1, 0.15, 0.33, 0.50)
@@ -81,16 +82,24 @@ essai_n18 <- base_tox
 # et le utiliser le package "Survival" pour la modÈlisation
 # le modËle s'Ècrit de la forme :
 
-#         h(t|dose) = h0(t) exp(??1dose)
+#         h(t|dose) = h0(t) exp(beta1dose)
 
 essai_n18$event <- ifelse(is.na(essai_n18$toxicity.study.time), 0, 1)
 
 # modÈlisation 
 library("survival")
 
-fit <- coxph(formula = Surv(toxicity.study.time, event) ~ dose, data = essai_n18)
-fit
+fit <- coxph(formula = Surv(toxicity.study.time, event == 1) ~ dose, data = essai_n18)
 
-df$toxicity.study.time <- ifelse(is.na(df$toxicity.study.time), Inf, df$toxicity.study.time)
+# l'attente de temps que le patient aura survÈcu en fonction des facteurs prÈdictifs.(ici la dose)
+predict(fit, type = "expected")
 
-fit1 <- coxph(formula = Surv(toxicity.study.time, event) ~ dose, data = df)
+# probabilitÈs cumulÈes de dÈcËs pour chaque individu pour les doses spÈcifiÈes
+predict(fit, type = "risk")
+
+# probabilitÈ de survie pour chaque individu
+predict(fit, type = "survival")
+
+# objectif : estimer l'effet de chaque dose sur l'incidence de "guÈrison"
+# idÈe peut Ítre : On peut soustraire les probabilitÈs cumulÈes de dÈcËs des probabilitÈs totales(Kaplan-Meier.),
+# ensuite comparer ces probabilitÈs de chaque ???
