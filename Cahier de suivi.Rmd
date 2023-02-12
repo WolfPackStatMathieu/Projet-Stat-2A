@@ -273,3 +273,14 @@ plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabili
 
 ```
 Le modèle logit est davantage ambigüe vis-à-vis du choix de la dose.
+##5) Simulation de temps.
+```{r}
+#############calcul_temps.#######
+n<-18
+beta<-0.5
+k<-3
+temps_simul_exp<-simul_temps_exp(n,beta)
+ks.test(temps_simul_exp,"pexp")
+temps_weibull<-simul_temp_weibull(n,beta,k)
+```
+

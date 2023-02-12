@@ -31,7 +31,7 @@ temps<-ifelse(vecteur_reponse==0,6,temps)
 #####
 skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
 xref <-  log(-log(1-skeleton)/6)              #Set of numerical labels for the doses investigated in the trial
-test_bayes<-modele_survie_bayes(p,tstar,observations_time=temps,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
+test_bayes<-modele_survie_bayes(p,tstar,observations_time=temps,id_dose=vecteur_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
 afficher_resultat(beta=test_bayes,x_ref=x_ref,probabilites_priori = skeleton)
 #####
 temps_beta_hasard<-simul_temps_alt(n)
