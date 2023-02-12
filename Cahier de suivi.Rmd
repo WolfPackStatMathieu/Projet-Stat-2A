@@ -3,8 +3,8 @@ title: "Cahier de suivi Projet Statistique Sujet 23"
 author: "NEBANGA KANGA-NZANGA Odilon cyrille, GORSE Nathan, THOMASSIN Mathieu"
 date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 editor_options:
   markdown:
     wrap: 72
@@ -222,7 +222,7 @@ skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6)
 xref <-  log(-log(1-skeleton)/6)
 test<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose = xref,vecteur_reponse = vecteur_reponse )
 ```
-Un message d'erreur s'affiche en raison de l'intÃ©gration. Nous avons donc essayÃ© de trouver un autre moyen de calculer le beta en conservant le modele de survie.Deux mÃ©thodes ont Ã©tÃ© envisagÃ©es avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
+Deux mÃ©thodes ont Ã©tÃ© envisagÃ©es avec l'utilisation d'un ensemble de beta possibles ou l'utilisation de l'algorithme de Newton, avec la fonction nlm.  
 ```{r}
 windows<-runif(10,-0.1,0)
 beta_init<-1
@@ -243,6 +243,7 @@ Nous avons essayÃ© de maniÃ¨re expÃ©rimentale de trouver $\hat{\beta}$ en combin
                                                          #fenetre)
 ```
 Nous avons obtenu des rÃ©sultats trÃ¨s diffÃ©rents avec des probabilitÃ©s proches de 1, en raison de la valeur de beta. Ces methodes ne sont donc pas convenables. 
+###4 Courbe dose/toxicité. 
 ```{r}
 y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
 plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="Probabilité de DLT",main="Essai avec la methode d'un ensemble de beta")
@@ -254,7 +255,12 @@ beta_Newton<-test_beta_Newton
 y_proba2<-1-exp(-lambda(beta=beta_Newton,x=xref)*tstar)
 plot(x=c(1:5),y=y_proba2,main="Essai avec l'algorithme de Newton.",xlab="Index de la dose",ylab="Probabilité de la dose")
 ```
-Nous pouvons utiliser d'autres méthodes ne mobilisant pas la logique bayésienne. Les méthodes glm permettent notamment d'expliquer la probabilité que Y vaut 1 c'est-à-dire que l'individu manifeste la toxicité. 
+Nous pouvons aussi projeter les valeurs avec le modèle bayésien.
+```{r}
+afficher_resultat(beta=test_bayes,x_ref,skeleton)
+```
+#b) Modèle logit.
+Nous pouvons utiliser d'autres méthodes ne mobilisant pas la logique bayésienne. Les méthodes glm permettent notamment d'expliquer la probabilité que Y vaille 1 c'est-à-dire que l'individu manifeste la toxicité. 
 ```{r}
 donnees2<-cbind.data.frame(donnees,dlt,xref[donnees$dose])
 logit_proba_dlt<-glm(dlt~xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
@@ -266,6 +272,3 @@ test_bayes<-modele_survie_bayes(p,tstar,observations_time,id_dose,valeur_dose =x
 
 ```
 
-```{r}
-afficher_resultat(beta=test_bayes,x_ref,skeleton)
-```
