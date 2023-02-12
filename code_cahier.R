@@ -73,7 +73,7 @@ windows<-runif(10,-0.1,0)
 beta_init<-(-3)
 
 ######On remarque que la valeur de beta selon l'algorithme de Newton peut beaucoup varier. Par ailleurs, la log -vraisemblance a ete choisie 
-##### car la vraisemblance ne permettait pas d'avoir des itÃ¯Â¿Â½rations. En effet, la valeur du gradient Ã¯Â¿Â½tait trop faible
+##### car la vraisemblance ne permettait pas d'avoir des iterations. En effet, la valeur du gradient Ã¯Â¿Â½tait trop faible
 #### au point initial. 
 fenetre<-runif(10,-20,-1)
 ##### Autre methode, utiliser plusieurs points initiaux. . ####
