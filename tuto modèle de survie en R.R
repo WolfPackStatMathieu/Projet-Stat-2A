@@ -64,15 +64,72 @@ surv_object
 
 fit <- survfit(surv_object ~ dose, data = donnees)
 summary(fit)
-
-# on cherche à récupérer les données au temps T=6
-#afin de pouvoir tracer la droite Toxicité =f(dose)
+quantile <-quantile(fit)
+quantile$quantile
+centiles <- quantile(fit, 1:100/100)
+cent <-centiles$quantile
+cent["dose=1",] #liste les valeurs des centiles de la dose 1
+doses <- rownames(cent) # liste du nom de chaque ligne
+m <- nrow(cent) #nombre de lignes (= nombre de doses)
+vecteur <- rep(NA, m) #création du vecteur qui va récupérer 
+j <- 1
+for (i in doses){
+  print(i)
+  n<-1
+  individu <- cent[i,n]
+  while (is.na(individu)==FALSE) {
+    n<- n +1
+    individu <- cent[i,n]
+  }
+  vecteur[j]=n
+  j <- j + 1
+}
+vecteur # les valeurs des centiles pour chaque dose
 
 
 
 
 ggsurvplot(fit, data= donnees, pval = TRUE)
 
+# Basic survival curves
+#++++++++++++++++++++++++++++++++++++
+ggsurv <- ggsurvplot(fit, data = donnees, risk.table = TRUE,
+                     main = "Survival curves",
+                     submain = "Based on Kaplan-Meier estimates",
+                     caption = "created with survminer"
+)
+# Change font size, style and color
+#++++++++++++++++++++++++++++++++++++
+# Change font size, style and color at the same time
+# Use font.x = 14, to change only font size; or use
+# font.x = "bold", to change only font face.
+ggsurv %+% theme_survminer(
+  font.main = c(16, "bold", "darkblue"),
+  font.submain = c(15, "bold.italic", "purple"),
+  font.caption = c(14, "plain", "orange"),
+  font.x = c(14, "bold.italic", "red"),
+  font.y = c(14, "bold.italic", "darkred"),
+  font.tickslab = c(12, "plain", "darkgreen")
+)
+
+# Clean risk table
+# +++++++++++++++++++++++++++++
+ggsurv$table <- ggsurv$table + theme_cleantable()
+ggsurv
+
+# on cherche à récupérer les données au temps T=6
+#afin de pouvoir tracer la droite Toxicité =f(dose)
+
+fit["dose"==4]
+
+# Distribution of Events' Times
+# from survfit
+fit <- survfit(surv_object ~ dose, data = donnees)
+ggsurvevents(fit = fit, data = donnees)
+
+proportion_failed <- fit$n
+fit$strata
+model$events
 
 # Fit a Cox proportional hazards model
 fit.coxph <- coxph(surv_object ~ dose , 
@@ -95,3 +152,8 @@ valeur_dose4 <- fit$surv[29]
 valeur_dose5 <- fit$surv[33]
 fit$n
   
+
+
+
+
+
