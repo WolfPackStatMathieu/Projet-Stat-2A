@@ -5,11 +5,12 @@ library(survminer)
 library(dplyr)
 library(dfcrm)
 
-
+####### Simulation des données ####################
 N=100 #Nombre de patients simulés
 p<-0.33 # Valeur limite de toxicité
 #Simulation des données par la fonction titesim
 res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
+               # prior=getprior(0.05, 0.25, 2, 5),
                prior=getprior(0.05, 0.25, 2, 5), 
                0.25, N, 1,
                obswin=6,
@@ -42,7 +43,7 @@ head(donnees)
 donnees$temps <- donnees$toxicity.study.time - donnees$time_arrival
 head(donnees)
 
-
+####Kaplan-Meier et proportion de non toxicité à la fin de la fenêtre d'observation#######
 
 #time_arrival  : quand est-ce que le patient arrive
 # toxicity.study.time : le temps mis pour développer la toxicité
@@ -78,15 +79,25 @@ for (i in doses){
   n<-1
   individu <- cent[i,n]
   while (is.na(individu)==FALSE) {
-    n<- n +1
     individu <- cent[i,n]
+    n<- n +1
   }
   vecteur[j]=n
   j <- j + 1
 }
 vecteur # les valeurs des centiles pour chaque dose
-
-
+transformation <- vecteur -1
+transformation <- transformation / 100
+plot(transformation,
+     xlab= "N° de la dose",
+     ylab = "probabilité de DLT pendant la fenêtre d'observation",
+     )
+# Lecture : La dose numéro 4 est associée à une probabilité de déclencher 
+# une toxicité  égale à 29%.
+# Lecture : La dose numéro 5 est associée à une probabilité de déclencher 
+# une toxicité  égale à 58%.
+# Lecture : La dose numéro 1, 2 et 3 est associée à une probabilité de déclencher 
+# une toxicité  égale à 0%. (ou 1% mais c'est dû au décalage dans la boucle)
 
 
 ggsurvplot(fit, data= donnees, pval = TRUE)
@@ -138,7 +149,6 @@ ggforest(fit.coxph, data = donnees)
 
 coefficient <- fit.coxph$coefficients[["dose"]]
 coefficient
-
 
 
 y = 1 - exp(-c(1:5) * coefficient * 6 )
