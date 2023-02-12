@@ -65,6 +65,12 @@ surv_object
 fit <- survfit(surv_object ~ dose, data = donnees)
 summary(fit)
 
+# on cherche à récupérer les données au temps T=6
+#afin de pouvoir tracer la droite Toxicité =f(dose)
+
+
+
+
 ggsurvplot(fit, data= donnees, pval = TRUE)
 
 
