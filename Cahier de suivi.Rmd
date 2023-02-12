@@ -12,6 +12,10 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+require(dfcrm)
+source("MainFunctions_Andrillon_JBS_2020.R")
+source("crm_simul.R")
+
 ```
 
 ## 1 To do list
@@ -32,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 La fonction de survie du modele de guerison vaut : $$
 P(T>=t)=\pi(z) \times S_{U}(T>=t)+1-\pi(z) \qquad (1)$$
-O� $T$ est le temps d'apparition de la toxicité chez le sujet, $\pi(\cdot)$ est la proportion de sujets ayant manifesté une toxicité durant la fenêtre d'observation (la proportion de sujets non guéris), $S_U(\cdot)$ est la fonction de survie des sujets non guéris.
+O? $T$ est le temps d'apparition de la toxicité chez le sujet, $\pi(\cdot)$ est la proportion de sujets ayant manifesté une toxicité durant la fenêtre d'observation (la proportion de sujets non guéris), $S_U(\cdot)$ est la fonction de survie des sujets non guéris.
 
 ### 2 Tenter écrire vraisemblance du modèle de guérison (produit des contributions des sujets dans les deux sous-populations)
 
@@ -44,7 +48,7 @@ correspond alors à la fonction de densité sachant $U(Y=1)$ soit :
 $$
 f(t_i|x_i)=\pi(x_{i})*f_{U}(t)
 $$
-O� $f_U(\cdot)$ est la densit� de $T$ chez les sujets non guéris.
+O? $f_U(\cdot)$ est la densit? de $T$ chez les sujets non guéris.
 
 A l'inverse, pour les individus n'ayant pas manifesté de toxicité durant cette fenêtre, on ne connaît pas T. Autrement dit, Y=0. Par conséquent, on sait juste que T est supérieure à une certaine valeur. On mobilise par conséquent la fonction de survie donnée dans l'équation
 (1). La vraisemblance vaut donc :
@@ -129,13 +133,14 @@ prior_probabilities <- c(0.05,0.1,0.15,0.33,0.5)
 Nous assignons la valeur de toxicité limitante (Dose Limiting Toxicity)
 
 ```{r}
-p <- 0.33
+
 ```
 
 Nous appliquons la fonction crm aux données, avec le modèle puissance et
 affichons les données
 
 ```{r}
+p <- 0.33
 infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18) # puissance avec empiric
 infos
 ```
@@ -204,15 +209,16 @@ id_dose<-donnees$dose
 vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
 tstar<-6
 ```
-Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisé 2 méthodes pour estimer le Beta. La première se base sur l'article fourni. La seconde methode consiste à utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne.Nous sommes dans le cas o� la fonction de densit� f suit une loi exponentielle :
+Comme nous ne voulions pas utiliser directement l'inference bayesienne, nous avons utilisé 2 méthodes pour estimer le Beta. La première se base sur l'article fourni. La seconde methode consiste à utiliser plusieurs points initiaux. Nous utilisons la fonction modele_survie_bayes pour l'inference bayesienne.Nous sommes dans le cas o? la fonction de densit? f suit une loi exponentielle :
 $$
 \lambda(t)=exp(exp(\beta)*dose)
 $$
-La fonction de survie correspond �:
+La fonction de survie correspond ?:
 $$
 S(t)=exp(-\lambda*t)=exp(-exp(exp(\beta)*dose)*t)
 $$
-```{r}
+```{r }
+
 #Rappel: 
 #Nous sommes dans le cadre ou la fonction de survie 
 #suit une loi exponentielle de parametre exp(-xi*exp(beta)). Notons epsi cette valeur. 
@@ -242,34 +248,111 @@ Nous avons essayé de manière expérimentale de trouver $\hat{\beta}$ en combin
                                                          #vecteur_reponse = vecteur_reponse,
                                                          #fenetre)
 ```
-###4 Courbe dose/toxicit�. 
+###4 Courbe dose/toxicit?. 
+#### a) par l'algorithme de Newton
 ```{r}
 y_proba<-1-exp(-lambda(beta=test_beta,x=xref)*tstar)
-plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="Probabilit� de DLT",main="Essai avec la methode d'un ensemble de beta")
+plot(x=c(1:5),y=y_proba,type="l",xlab="Index",ylab="Probabilit? de DLT",main="Essai avec la methode d'un ensemble de beta")
 abline(h=p,col="red")
 ```
 On prendrait selon le graphique la dose 4.
 ```{r}
 beta_Newton<-test_beta_Newton
 y_proba2<-1-exp(-lambda(beta=beta_Newton,x=xref)*tstar)
-plot(x=c(1:5),y=y_proba2,type="l",xlab="Index de la dose",ylab="Probabilit� de DLT",main="Essai avec l'algorithme de Newton")
+plot(x=c(1:5),y=y_proba2,type="l",xlab="Index de la dose",ylab="Probabilit? de DLT",main="Essai avec l'algorithme de Newton")
 abline(h=p,col="red")
 ```
-Nous prendrions la dose num�ro 5 selon cet algorithme. 
-Nous pouvons aussi projeter les valeurs avec le mod�le bay�sien. La ligne bleue correspond aux probablit�s a posteriori.
+Nous prendrions la dose num?ro 5 selon cet algorithme. 
+Nous pouvons aussi projeter les valeurs avec le mod?le bay?sien. La ligne bleue correspond aux probablit?s a posteriori.
 ```{r}
 afficher_resultat(beta=test_bayes,x_ref,skeleton)
 ```
-Le graphique permet de voir que la dose utilis�e serait la dose 5.
-#b) Mod�le logit.
-Nous pouvons utiliser d'autres m�thodes ne mobilisant pas la logique bay�sienne. Les m�thodes glm permettent notamment d'expliquer la probabilit� que Y vaille 1 c'est-�-dire que l'individu manifeste la toxicit�. 
+Le graphique permet de voir que la dose utilis?e serait la dose 5.
+####b) Modèle logit.
+Nous pouvons utiliser d'autres m?thodes ne mobilisant pas la logique bay?sienne. Les m?thodes glm permettent notamment d'expliquer la probabilit? que Y vaille 1 c'est-?-dire que l'individu manifeste la toxicit?. 
 ```{r}
 donnees2<-cbind.data.frame(donnees,dlt,xref[donnees$dose])
 logit_proba_dlt<-glm(dlt~xref[donnees$dose],data=donnees2,family =binomial(link="logit"))
 #beta0<-logit_proba_dlt$coefficients[["(Intercept)"]]
 beta1<-logit_proba_dlt$coefficients[["xref[donnees$dose]"]]
 y_predicted<-sapply(xref[c(1:5)],fonction_logit,beta0=beta0,beta1=beta1)
-plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabilit�",main="M�thode logit",col="red")
+plot(x=c(1:5),y=y_predicted,xlab="Index de la dose",ylab="Valeur de la probabilit?",main="M?thode logit",col="red")
 
 ```
-Le mod�le logit est davantage ambig�e vis-�-vis du choix de la dose.
+Le mod?le logit est davantage ambig?e vis-?-vis du choix de la dose.
+####c) par Kaplan-Meier
+```{r include=FALSE}
+# Load required packages
+library(survival)
+#install.packages("survminer")
+library(survminer)
+library(dplyr)
+library(dfcrm)
+
+####### Simulation des données ####################
+N=100 #Nombre de patients simulés
+p<-0.33 # Valeur limite de toxicité
+#Simulation des données par la fonction titesim
+res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
+               # prior=getprior(0.05, 0.25, 2, 5),
+               prior=getprior(0.05, 0.25, 2, 5), 
+               0.25, N, 1,
+               obswin=6,
+               restrict=1,
+               rate=3,
+               accrual = "poisson", seed=1234)
+
+#Création d'un dataframe avec ces valeurs
+base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
+head(base_tox)
+#Transformation des valeurs de la variable toxicity.study.time en NA si Inf
+base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
+#idem pour toxicity.time
+base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
+#On arrondit les valeurs à 2 chiffres après la virgule
+base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
+base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
+base_tox$time_arrival <- round(base_tox$time_arrival, 2)
+
+
+essai_n18 <- base_tox
+essai_n18
+plot(essai_n18)
+#####On écrit une base de données. 
+write.table(essai_n18, file="essai_n18.txt", sep="\t", row.names=F)
+donnees<-read.table("essai_n18.txt",header=TRUE)
+head(donnees)
+
+
+donnees$temps <- donnees$toxicity.study.time - donnees$time_arrival
+head(donnees)
+
+####Kaplan-Meier et proportion de non toxicité à la fin de la fenêtre d'observation#######
+
+#time_arrival  : quand est-ce que le patient arrive
+# toxicity.study.time : le temps mis pour développer la toxicité
+# toxicity.time = toxicity.study.time - time_arrival
+
+#on crée une variable indiquant si l'observation a été 
+#censurée ou non. 0= non censurée ; 1 = a été censurée.
+donnees$isobserved <- ifelse(is.na(donnees$toxicity.study.time), 0, 1)
+#quand il voit iscensored = 1, il ne met pas de +
+head(donnees)
+summary(donnees)
+donnees$toxicity.time <- ifelse(is.na(donnees$toxicity.time), 6, donnees$toxicity.time)
+head(donnees)
+table(donnees$isobserved)
+# Fit survival data using the Kaplan-Meier method
+surv_object <- Surv(time = donnees$toxicity.time, event = donnees$isobserved)
+surv_object
+
+
+fit <- survfit(surv_object ~ dose, data = donnees)
+summary(fit)
+```
+
+
+
+
+
+

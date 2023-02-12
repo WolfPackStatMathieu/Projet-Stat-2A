@@ -65,6 +65,9 @@ surv_object
 
 fit <- survfit(surv_object ~ dose, data = donnees)
 summary(fit)
+
+# on cherche à récupérer les données au temps T=6
+#afin de pouvoir tracer la droite Toxicité =f(dose)
 quantile <-quantile(fit)
 quantile$quantile
 centiles <- quantile(fit, 1:100/100)
@@ -128,10 +131,8 @@ ggsurv %+% theme_survminer(
 ggsurv$table <- ggsurv$table + theme_cleantable()
 ggsurv
 
-# on cherche à récupérer les données au temps T=6
-#afin de pouvoir tracer la droite Toxicité =f(dose)
 
-fit["dose"==4]
+
 
 # Distribution of Events' Times
 # from survfit
