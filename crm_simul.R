@@ -11,6 +11,7 @@ valeur_dose<-c(0.5,1,3,5,6)
 t_star<-6
 valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
 prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
+p <- 0.33
 crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
 infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
 teta<-infos$estimate
@@ -29,9 +30,15 @@ temps<-temps_simul_exp
 temps<-ifelse(vecteur_reponse==0,6,temps)
 
 #####
+p <- 0.33
 skeleton <- getprior_exp(halfwidth=0.05, target=p, nu=4, nlevel=5, tstar=6) 
 xref <-  log(-log(1-skeleton)/6)              #Set of numerical labels for the doses investigated in the trial
+<<<<<<< HEAD
 test_bayes<-modele_survie_bayes(p,tstar,observations_time=temps,id_dose=vecteur_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
+=======
+
+test_bayes<-modele_survie_bayes(p,tstar,observations_time=temps,id_dose,valeur_dose =xref,vecteur_reponse = vecteur_reponse )
+>>>>>>> b7c3a7d463521b102cd96e952867469a7e67f422
 afficher_resultat(beta=test_bayes,x_ref=x_ref,probabilites_priori = skeleton)
 #####
 temps_beta_hasard<-simul_temps_alt(n)
