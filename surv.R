@@ -64,4 +64,4 @@ Simuler_Nfois_n_echantillons<-function(N,n,lambda,t_star){
 }
 N<-100
 test_simul_total<-Simuler_Nfois_n_echantillons(N,n,lambda_test,t_star)
-boxplot(test_simul_total)
+boxplot(test_simul_total,main="Distribution du biais pour le modèle de survie",col="Sky blue")

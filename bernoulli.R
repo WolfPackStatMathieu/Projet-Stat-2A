@@ -16,4 +16,15 @@ biais_pi<-function(n,p){
 }
 test_biais<-biais_pi(18,0.33)
 
-
+Simuler_Nfois_n_echantillons_bern<-function(N,n,p){
+  #### Simuler 
+  vecteur_biais<-rep(NA,N)
+  vecteur_taille<-rep(n,N)
+  ##On utilise le p donné en entrée. 
+  vecteur_biais<-sapply(vecteur_taille,biais_pi,p=p)
+  return(vecteur_biais)
+}
+N<-100
+p<-0.33
+test_simul_bern_total<-Simuler_Nfois_n_echantillons_bern(N,n,p)
+boxplot(test_simul_bern_total,main="Distribution du biais pour le modèle de guerison",col="red")
