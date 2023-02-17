@@ -13,10 +13,18 @@ fonction_generation_taille_differente<-function(vector_size,model,liste_paramete
     return(vecteur_realisation)
   }}
 }
+#################TEST EXP #####################
 vecteur_size<-sample(c(1:100),10)
 lamdba_test<-0.33
 t_star<-6
 liste_parameter<-list(lambda_test,t_star)
 names(liste_parameter)<-c("lambda","t_star")
 modele<-"surv"
-test_generation_taillediff<-fonction_generation_taille_differente(vector_size=vecteur_size,model=modele,liste_parameter = liste_parameter)
+test_generation_taillediff_exp<-fonction_generation_taille_differente(vector_size=vecteur_size,model=modele,liste_parameter = liste_parameter)
+
+#################TEST BERNOULLI ###################
+prop<-0.33
+list_param<-list(prop)
+names(list_param)<-c("p")
+modele2<-"bernoulli"
+test_generation_taillediff_bern<-fonction_generation_taille_differente(vector_size = vecteur_size,model=modele2,liste_parameter = list_param)
