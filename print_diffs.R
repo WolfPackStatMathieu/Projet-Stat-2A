@@ -36,12 +36,7 @@ p2<-0.3
 k<-50
 lambda7<-0.33
 t_star<-6
-<<<<<<< HEAD
-test_plot<-fonction_compar_plots(vector_size =vecteur_size,p=p2,lambda=lambda7,t_star=t_star,K=k)
-
-=======
 lmoins<-1
 l_plus<-1000
 N<-50
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k)
->>>>>>> cdc50ca9ca1bce032cf158023b8320f3a5b08cd1

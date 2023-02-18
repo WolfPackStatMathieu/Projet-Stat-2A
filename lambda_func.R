@@ -4,7 +4,8 @@ source("bernoulli.R")
 library("ggplot2")
 
 lambda_func <- function(lambda_vec, list_params){
-  vec_biais_surv <- sapply(lambda_vec,fonction_biais_survie,n=list_params[["n"]],t_star=list_params[["t_star"]])
+  vec_biais_surv <- sapply(lambda_vec,fonction_biais_survie,n=list_params[["n"]],
+                           t_star=list_params[["t_star"]])
   return(vec_biais_surv)
 }
 
@@ -21,7 +22,7 @@ test1 <- pbinom_func(vec_p, n)
 
 ggplot(data.frame(x = vec_p, y = test1), aes(x = x, y = y)) +
   geom_line(color = "blue", size = 1.5) +
-  ggtitle("Biais with different p") +
+  ggtitle("Bias with different p") +
   xlab("p") + ylab("Biais") +
   theme_minimal()
 
@@ -37,7 +38,7 @@ names(liste_parameter)<-c("n","t_star")
 test <-lambda_func(lambda_vec=lambda_vec,list_params =  liste_parameter)
 ggplot(data.frame(x = lambda_vec, y = test), aes(x = x, y = y)) +
   geom_line(color = "blue", size = 1.5) +
-  ggtitle("Biais with different lambdas") +
+  ggtitle("Bias with different lambdas") +
   xlab("lambda") + ylab("Biais") +
   theme_minimal()
 test
