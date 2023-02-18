@@ -23,7 +23,6 @@ simul_survie<-function(n,lambda,t_star){
   colnames(donnees_ensemble)<-c("tox_time","isobserved")
   surv_object<-Surv(donnees_ensemble$tox_time,event=donnees_ensemble$isobserved)
   fit <- survfit(surv_object ~1, data = donnees_ensemble)
-  summary(fit)
   # on cherche a recuperer les donnees au temps T=6
   #afin de pouvoir tracer la droite Toxicite =f(dose)
   quantile <-quantile(fit)
