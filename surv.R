@@ -5,17 +5,17 @@ library(roxygen2)
 #' @return A numeric vector giving number of characters (code points) in each
 #'    element of the character vector. Missing string have missing length.
 #' @examples
-############################# Premiere modélisation du modèle de survie #############
+############################# Premiere mod?lisation du mod?le de survie #############
 ############################## avec une loi exponentielle et t
 set.seed(133)
 simul_exp<-function(n,lambda){
-  ###générer un échantillon de taille n suivant une loi exponentielle de paramètre lambda.
- return(rexp(n,lambda)) 
+  ###g?n?rer un ?chantillon de taille n suivant une loi exponentielle de param?tre lambda.
+ return(rexp(n,lambda))
 }
 simul_survie<-function(n,lambda,t_star){
-  #### Calculer la probabilite que la toxicite apparaisse de 0 à t_star. 
-  ### Se base sur la simulation de temps via la fonction simul_exp. 
-  ### KAPLAN-MEIER. 
+  #### Calculer la probabilite que la toxicite apparaisse de 0 ? t_star.
+  ### Se base sur la simulation de temps via la fonction simul_exp.
+  ### KAPLAN-MEIER.
   donnees<-simul_exp(n,lambda)
   donnees_censure_tstar<-ifelse(donnees<t_star,donnees,t_star)
   donnees_indicatrice_observee<-ifelse(donnees<t_star,1,0)
@@ -32,6 +32,7 @@ simul_survie<-function(n,lambda,t_star){
   cent <-centiles$quantile
   m<-1
   individu <- cent[m]
+  # on touche la proportion de tstar au premier NA
   while (is.na(individu)==FALSE) {
     individu <- cent[m]
     m<- m+1
@@ -44,8 +45,8 @@ simul_survie<-function(n,lambda,t_star){
 n<-100
 test_surv<-simul_survie(n,0.5,6)
 fonction_biais_survie<-function(n,lambda,t_star){
-  #### Calcul du biais de la probabilite de toxicite estimee par la fonction simul_survie. 
-  ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star. 
+  #### Calcul du biais de la probabilite de toxicite estimee par la fonction simul_survie.
+  ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star.
   estimateur<-simul_survie(n,lambda,t_star)
   valeur_theorique<-pexp(t_star,rate=lambda)
   return(abs(valeur_theorique-estimateur))
@@ -64,4 +65,4 @@ Simuler_Nfois_n_echantillons<-function(N,n,lambda,t_star){
 }
 N<-100
 test_simul_total<-Simuler_Nfois_n_echantillons(N,n,lambda_test,t_star)
-boxplot(test_simul_total,main="Distribution du biais pour le modèle de survie",col="Sky blue")
+boxplot(test_simul_total,main="Distribution du biais pour le mod?le de survie",col="Sky blue")
