@@ -23,7 +23,7 @@ t_star<-6
 liste_parameter<-list(lambda_test,t_star)
 names(liste_parameter)<-c("lambda","t_star")
 modele<-"surv"
-K<-50
+k<-20
 test_generation_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_parameter)
 
 
