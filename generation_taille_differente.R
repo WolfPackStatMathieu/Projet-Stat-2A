@@ -1,4 +1,3 @@
-
 source("surv.R")
 source("bernoulli.R")
 fonction_generation_taille_differente<-function(vector_size,model,liste_parameter){

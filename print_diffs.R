@@ -32,3 +32,4 @@ k<-20
 lambda7<-0.33
 t_star<-6
 test_plot<-fonction_compar_plots(vector_size =vecteur_size,p=p2,lambda=lambda7,t_star=t_star,K=k)
+
