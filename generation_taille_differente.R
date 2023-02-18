@@ -9,7 +9,7 @@ fonction_generation_taille_differente<-function(vector_size,model,liste_paramete
     return(vecteur_realisation)
   }
   else{if(model=="surv"){
-    vecteur_realisation<-sapply(vector_size,fonction_biais_survie,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]])
+    vecteur_realisation<-sapply(vector_size[order(vector_size)],fonction_biais_survie,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]])
     return(vecteur_realisation)
   }}
 }
@@ -50,6 +50,5 @@ modele<-"surv"
 test_graph_exp<-fonction_graph_fonc_size(vector_size = vecteur_size,model=modele,liste_parameter=liste_parameter)
 h_DPI<-KernSmooth::dpill(x=test_graph_exp$Size,y=test_graph_exp$Bias)
 estimation_y<-KernSmooth::locpoly(x=test_graph_exp$Size,y=test_graph_exp$Bias,bandwidth=h_DPI,degree=3,gridsize = N)$y
-
 plot(test_graph_exp,col="blue",main="Value of the bias in surv model according to the size",type="p")
-lines(estimation_y)
+lines(x=test_graph_exp$Size,y=estimation_y)
