@@ -47,3 +47,15 @@ Simuler_Nfois_n_weibull<-function(N,n,lambda,k,t_star){
   return(vecteur_biais)
 }
 vecteur<-Simuler_Nfois_n_weibull(N,n,lambda=lambda_test,k,t_star)
+
+function_influence_rate<-function(n,lim_moins,lim_plus,lambda,t_star,number_k){
+  vector_k<-as.vector(seq.int(lim_moins,lim_plus,length.out = number_k))
+  curve_k<-sapply(vector_k,fonction_biais_survie_weibull,lambda=lambda,t_star=t_star,n=n)
+  return(curve_k)
+}
+number_trials<-10
+l_plus<-5
+l_moins<-0.1
+vecteur_k_bias<-function_influence_rate(n,lim_moin=l_moins,lim_plus=l_plus,
+                                        lambda=lambda_test,number_k=number_trials,t_star=t_star)
+plot(vecteur_k_bias,type="l")
