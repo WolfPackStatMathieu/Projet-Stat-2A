@@ -7,7 +7,7 @@ fonction_generation_taille_mean<-function(vector_size,model,liste_parameter,K){
   ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
   vector_size<-vector_size[order(vector_size)]
   if (model=="bernoulli"){
-    vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,liste_parameter[["p"]])
+    vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,p=liste_parameter[["p"]])
     return(colMeans(vecteur_realisation))
   }
   else{if(model=="surv"){

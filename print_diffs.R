@@ -20,11 +20,11 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   colnames(whole_data_expbern)<-c("Size","Mean_Bias_Bern","Mean_Bias_Surv")
   ####plot 
   gg1<-ggplot(data=whole_data_expbern,aes(x=Size,y=Mean_Bias_Bern))+
-    geom_line(colour="red")+
+    geom_smooth(colour="red")+
     labs(y="Mean Bias with Bern model")
   
   gg2<-ggplot(data=whole_data_expbern,aes(x=Size,y=Mean_Bias_Surv))+
-    geom_line(colour="blue")+
+    geom_smooth(colour="blue")+
     labs(y="Mean Bias with Surv model")
   
   whole_g<-grid.arrange(gg1,gg2,ncol=2,top="Comparison of the two methods")
@@ -32,11 +32,11 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
 }
 ######Test ######
 
-p2<-0.33
+p2<-0.3
 k<-20
 lambda7<-0.33
 t_star<-6
 lmoins<-1
 l_plus<-1000
-N<-20
+N<-100
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k)
