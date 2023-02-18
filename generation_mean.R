@@ -60,6 +60,9 @@ names(liste_parameter)<-c("lambda","t_star","k")
 modele_wei<-"weibull"
 test_weibull<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,
                                               K=k,liste_parameter = liste_param)
+donnees_weibull<-b_moy<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_weibull)
+colnames(donnees_weibull)<-c("Size","Mean_Bias")
+plot(donnees_weibull)
 
 #################### Plot des résultats en fonction de la taille.########
 donnees_bern_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_bern_taillemoy)
