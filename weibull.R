@@ -34,6 +34,7 @@ fonction_biais_survie_weibull<-function(n,lambda,k,t_star){
   valeur_theorique<-pweibull(t_star,scale=lambda,shape=k)
   return(abs(valeur_theorique-estimateur))
 }
+N<-20
 lambda_test<-1/3
 k<-3
 n<-100
