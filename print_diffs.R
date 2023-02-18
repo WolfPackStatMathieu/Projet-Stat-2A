@@ -30,6 +30,8 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   whole_g<-grid.arrange(gg1,gg2,ncol=2,top="Comparison of the two methods")
   return(whole_g)
 }
+######Test ######
+
 p2<-0.33
 k<-20
 lambda7<-0.33
