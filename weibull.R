@@ -58,4 +58,7 @@ l_plus<-5
 l_moins<-0.1
 vecteur_k_bias<-function_influence_rate(n,lim_moin=l_moins,lim_plus=l_plus,
                                         lambda=lambda_test,number_k=number_trials,t_star=t_star)
-plot(vecteur_k_bias,type="l")
+plot(vecteur_k_bias,main="Evolution of the bias",ylab="Value of the bias")
+###note : the bias decreased when k increased. The reason is that the hazard function becomes 
+## IFR so the probability that the event happens with time. It is thus more likely
+## that we don't have NA values. 
