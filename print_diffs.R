@@ -21,7 +21,7 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   ####plot 
   gg1<-ggplot(data=whole_data_expbern,aes(x=Size,y=Mean_Bias_Bern))+
     geom_line(colour="red")+
-    labs(y="Mean Bias with cure model")
+    labs(y="Mean Bias with Bern model")
   
   gg2<-ggplot(data=whole_data_expbern,aes(x=Size,y=Mean_Bias_Surv))+
     geom_line(colour="blue")+
