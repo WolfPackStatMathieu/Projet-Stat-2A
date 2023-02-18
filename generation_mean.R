@@ -13,6 +13,11 @@ fonction_generation_taille_mean<-function(vector_size,model,liste_parameter,K){
   else{if(model=="surv"){
     vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons,N=K,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]])
     return(colMeans(vecteur_realisation))
+  }
+  if(model=="weibull"){
+    vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_weibull,N=K,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]],
+                                k=liste_parameter[["k"]])
+    return(colMeans(vecteur_realisation))
   }}
 }
 
@@ -43,6 +48,18 @@ names(liste_param)<-c("p")
 modele<-"bernoulli"
 k<-20
 test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_param)
+
+######## Test bernoulli#####
+N<-100
+vecteur_size<-sample(c(1:1000),N)
+lamdba_test<-0.33
+t_star<-6
+k<-2
+liste_parameter<-list(lambda_test,t_star,k)
+names(liste_parameter)<-c("lambda","t_star","k")
+modele_wei<-"weibull"
+test_weibull<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,
+                                              K=k,liste_parameter = liste_param)
 
 #################### Plot des résultats en fonction de la taille.########
 donnees_bern_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_bern_taillemoy)

@@ -33,10 +33,10 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
 ######Test ######
 
 p2<-0.3
-k<-20
+k<-50
 lambda7<-0.33
 t_star<-6
 lmoins<-1
 l_plus<-1000
-N<-100
+N<-50
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k)
