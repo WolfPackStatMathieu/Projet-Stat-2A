@@ -49,20 +49,20 @@ modele<-"bernoulli"
 k<-20
 test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_param)
 
-######## Test bernoulli#####
+######## Test Weibull#####
 N<-100
-vecteur_size<-sample(c(1:1000),N)
+vecteur_size2<-vecteur_size
 lamdba_test<-0.33
 t_star<-6
 k<-2
 liste_parameter<-list(lambda_test,t_star,k)
 names(liste_parameter)<-c("lambda","t_star","k")
 modele_wei<-"weibull"
-test_weibull<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,
+test_weibull<-fonction_generation_taille_mean(vector_size=vecteur_size2,model=modele,
                                               K=k,liste_parameter = liste_param)
-donnees_weibull<-b_moy<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_weibull)
+donnees_weibull<-b_moy<-cbind.data.frame(vecteur_size2[order(vecteur_size2)],test_weibull)
 colnames(donnees_weibull)<-c("Size","Mean_Bias")
-plot(donnees_weibull)
+#plot(donnees_weibull)
 
 #################### Plot des résultats en fonction de la taille.########
 donnees_bern_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_bern_taillemoy)

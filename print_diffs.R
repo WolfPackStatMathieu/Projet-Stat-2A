@@ -31,10 +31,9 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   return(whole_g)
 }
 ######Test ######
-
 p2<-0.3
 k<-50
-lambda7<-0.33
+lambda7<-0.2
 t_star<-6
 lmoins<-1
 l_plus<-1000

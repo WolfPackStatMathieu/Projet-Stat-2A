@@ -32,7 +32,7 @@ fonction_biais_survie_weibull<-function(n,lambda,k,t_star){
   ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star.
   estimateur<-simul_survie_weibull(n,lambda,k,t_star)
   valeur_theorique<-pweibull(t_star,scale=lambda,shape=k)
-  return(abs(valeur_theorique-estimateur))
+  return(estimateur-valeur_theorique)
 }
 N<-20
 lambda_test<-1/3

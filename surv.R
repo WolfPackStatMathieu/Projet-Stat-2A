@@ -42,13 +42,13 @@ simul_survie<-function(n,lambda,t_star){
 }
 
 n<-100
-test_surv<-simul_survie(n,0.5,6)
+test_surv<-simul_survie(n,0.2,6)
 fonction_biais_survie<-function(n,lambda,t_star){
   #### Calcul du biais de la probabilite de toxicite estimee par la fonction simul_survie.
   ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star.
   estimateur<-simul_survie(n,lambda,t_star)
   valeur_theorique<-pexp(t_star,rate=lambda)
-  return(abs(valeur_theorique-estimateur))
+  return(estimateur-valeur_theorique)
 }
 lambda_test<-1/3
 n<-100
