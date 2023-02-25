@@ -29,3 +29,15 @@ nb_doses<-2
 k<-20
 test_surv<-fonction_simul_doses(vector_size = vecteur_size,nombre_doses=nb_doses,
                                 vecteur_parametres = vecteur_param,modele=modele,K=k)
+#install.packages("plotly")
+install.packages("purrr")
+library(purrr)
+library(plotly)
+donnees<-cbind.data.frame(vecteur_size,test_surv[1,])
+colnames(donnees)<-c("Size","Mean_Bias")
+donnees2<-cbind.data.frame(vecteur_size,test_surv[2,])
+colnames(donnees2)<-c("Size","Mean_Bias")
+graph1<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
+graph_2<-plot_ly(data=donnees2,type="scatter",x=~Size,y=~Mean_Bias)
+fig <- subplot(graph1,graph_2, nrows = 2) 
+fig
