@@ -39,8 +39,10 @@ colnames(donnees)<-c("Size","Mean_Bias")
 donnees2<-cbind.data.frame(vecteur_size,test_surv[2,])
 colnames(donnees2)<-c("Size","Mean_Bias")
 graph1<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
+graph1<-graph1 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with first dose'))
 graph1
 graph2<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
-graph2
-fig<-subplot(graph1,graph2,nrows=2)
+graph2<-graph2 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with second dose'))
+fig<-subplot(graph1,graph2,nrows=2) 
+fig<-fig %>% layout(plot_bgcolor='#e5ecf6')
 fig
