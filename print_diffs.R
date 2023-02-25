@@ -5,7 +5,6 @@ set.seed(133)
 fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   #### N corresponds to the number of sizes. K correspond to the number of samples for each size. 
   require(gridExtra)
-  require(ggplot2)
   vector_size<-sample(c(limit_inf:limit_sup),N)
   vector_size<-vector_size[order(vector_size)]
   liste_param1<-list(p)
