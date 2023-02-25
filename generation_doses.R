@@ -35,9 +35,12 @@ library(purrr)
 library(plotly)
 donnees<-cbind.data.frame(vecteur_size,test_surv[1,])
 colnames(donnees)<-c("Size","Mean_Bias")
+
 donnees2<-cbind.data.frame(vecteur_size,test_surv[2,])
 colnames(donnees2)<-c("Size","Mean_Bias")
 graph1<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
-graph_2<-plot_ly(data=donnees2,type="scatter",x=~Size,y=~Mean_Bias)
-fig <- subplot(graph1,graph_2, nrows = 2) 
+graph1
+graph2<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
+graph2
+fig<-subplot(graph1,graph2,nrows=2)
 fig
