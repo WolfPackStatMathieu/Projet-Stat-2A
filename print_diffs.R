@@ -2,7 +2,7 @@
 source("generation_mean.R")
 set.seed(133)
 
-fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
+fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   #### N corresponds to the number of sizes. K correspond to the number of samples for each size. 
   require(gridExtra)
   vector_size<-sample(c(limit_inf:limit_sup),N)
@@ -11,9 +11,9 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K){
   names(liste_param1)<-c("p")
   modele_bern<-"bernoulli"
   result1<-fonction_generation_taille_mean(vector_size,modele_bern,liste_param1,K)
-  liste_param2<-list(lambda,t_star)
-  names(liste_param2)<-c("lambda","t_star")
-  modele_exp<-"surv"
+  liste_param2<-list(lambda,t_star,sh)
+  names(liste_param2)<-c("lambda","t_star","k")
+  modele_exp<-"weibull"
   result2<-fonction_generation_taille_mean(vector_size,modele_exp,liste_param2,K)
   whole_data_expbern<-cbind.data.frame(vector_size,result1,result2)
   colnames(whole_data_expbern)<-c("Size","Mean_Bias_Bern","Mean_Bias_Surv")
@@ -36,8 +36,11 @@ lambda7<-0.2
 t_star<-6
 lmoins<-1
 l_plus<-1000
+shape<-1
 N<-50
-test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k)
+test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
+shape2<-3
+test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape2)
 NSimulations.selon.n<-function(N,lambda,t_star){
   #' Matrice composee des biais moyens associes a la taille de l'echantillon de n=20 a n=200 par saut de 20.
   #'

@@ -30,7 +30,6 @@ k<-20
 test_surv<-fonction_simul_doses(vector_size = vecteur_size,nombre_doses=nb_doses,
                                 vecteur_parametres = vecteur_param,modele=modele,K=k)
 #install.packages("plotly")
-install.packages("purrr")
 library(purrr)
 library(plotly)
 donnees<-cbind.data.frame(vecteur_size,test_surv[1,])
