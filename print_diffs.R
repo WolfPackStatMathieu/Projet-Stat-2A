@@ -32,15 +32,17 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
 ######Test ######
 p2<-0.3
 k<-50
-lambda7<-0.2
 t_star<-6
+lambda7<-(-1)*log(1-p2)/t_star
+print(pexp(t_star,beta=1/lambda7))
 lmoins<-1
 l_plus<-1000
 shape<-1
 N<-50
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
 shape2<-3
-test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape2)
+lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
+test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambdaweibull,t_star=t_star,K=k,sh=shape2)
 NSimulations.selon.n<-function(N,lambda,t_star){
   #' Matrice composee des biais moyens associes a la taille de l'echantillon de n=20 a n=200 par saut de 20.
   #'
