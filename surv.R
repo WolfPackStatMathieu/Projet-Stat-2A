@@ -98,12 +98,12 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   estimateur_survie <- transformation / 100
   biais_survie<-estimateur_survie-p
   liste_biais<-list(biais_cure,biais_survie)
-  names(liste_biais)<-c("Biais guerison","Biais survie")
+  names(liste_biais)<-c("Biais_guerison","Biais_survie")
   return(liste_biais)
 }
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   df_biases<-t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k)))
-  return(df_biases)
+  return(as.data.frame(df_biases))
 }
 test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
 test_several_times<-Simuler_biais_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)

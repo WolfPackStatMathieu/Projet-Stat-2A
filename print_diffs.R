@@ -62,10 +62,10 @@ NSimulations.selon.n<-function(N,lambda,t_star,p,k){
   {
     vecteur_biais<-rep(NA,N)
     biais<-  Simuler_biais_taillen(N,n,lambda,t_star,k=k,p=p)
-    results<-rbind(results,c(n,mean(biais[["Biais survie"]])  ))
+    mean_value<-mean(as.numeric(biais$Biais_survie))
+    results<-rbind(results,c(n,mean_value))
     n<- n+20
   }
-  print(results)
   return(results)
 }
 fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
@@ -101,19 +101,22 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
   RES<- NSimulations.selon.n(N,window_lambda[3],t_star,k=k,p=p)
   RES0.1.3<-data.frame(RES)
   colnames( RES0.1.3)<- c("n","mean.bias")
-  
+  borne_min<-min(min(RES0.5.3$mean.bias),min(RES0.1.3$mean.bias),min(RES0.2.3$mean.bias))
+  borne_max<-max(max(RES0.5.3$mean.bias),max(RES0.1.3$mean.bias),max(RES0.5.3$mean.bias))
   plot(RES0.2.3$n,RES0.2.3$mean.bias,title=paste("Influence of n"),
-       ylim=c(-0.05,0.05),type='b',bty="n",xlab="nbre sujets",ylab="biais moyen")
-  title("Influence de n et lambda")
+       ylim=c(-0.1+borne_min,borne_max+0.1),
+       type='b',bty="n",xlab="nbre sujets",ylab="biais moyen")
+  title("Influence de n et l.ambda")
   lines(RES0.5.3$n,RES0.5.3$mean.bias,type="b",col="blue")
   lines(RES0.1.3$n,RES0.1.3$mean.bias,type="b",col="red")
   abline(h=0)
   legend("topright",c("0.1","0.2","0.5"),col=c("red","black","blue"),lty=1,bty="n")
 }
 
-window_lambda<-c(0.2,0.5,0.1)
+window_lambda<-c(0.7,0.5,0.1)
 N<-50
 t_star<-6
 p<-0.33
 k<-1
 test_compar_lambda<-fonction_compar_plotsn_lambda(N,window_lambda,t_star,p=p,k=k)
+
