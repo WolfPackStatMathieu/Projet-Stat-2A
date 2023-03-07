@@ -1,5 +1,5 @@
 simul_weibull<-function(n,lambda,k){
-  return(rweibull(n,shape=k,scale=lambda))
+  return(rweibull(n,shape=k,scale=1/lambda))
 }
 simul_survie_weibull<-function(n,lambda,k,t_star){
   donnees<-simul_weibull(n,lambda,k)
@@ -9,7 +9,6 @@ simul_survie_weibull<-function(n,lambda,k,t_star){
   colnames(donnees_ensemble)<-c("tox_time","isobserved")
   surv_object<-Surv(donnees_ensemble$tox_time,event=donnees_ensemble$isobserved)
   fit <- survfit(surv_object ~1, data = donnees_ensemble)
-  summary(fit)
   # on cherche a recuperer les donnees au temps T=6
   #afin de pouvoir tracer la droite Toxicite =f(dose)
   quantile <-quantile(fit)
@@ -31,9 +30,10 @@ fonction_biais_survie_weibull<-function(n,lambda,k,t_star){
   #### Calcul du biais de la probabilite de toxicite estimee par la fonction simul_survie.
   ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star.
   estimateur<-simul_survie_weibull(n,lambda,k,t_star)
-  valeur_theorique<-pweibull(t_star,scale=lambda,shape=k)
-  return(abs(valeur_theorique-estimateur))
+  valeur_theorique<-pweibull(t_star,scale=1/lambda,shape=k)
+  return(estimateur-valeur_theorique)
 }
+N<-20
 lambda_test<-1/3
 k<-3
 n<-100
