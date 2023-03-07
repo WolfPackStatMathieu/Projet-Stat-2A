@@ -7,14 +7,17 @@ source("bernoulli.R")
 ##### Enlever donc les conditions, devenues inutiles. 
 ##### Doit toujours renvoyer une moyenne mais deux liste de moyennes. Utiliser peut-être un dataframe. 
 ##### Le colmeans ne marchera plus comme on sera sur deux listes de plusieurs colonnes. Solutions. 
-fonction_generation_taille_mean<-function(vector_size,model,liste_parameter,K){
+fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   ### renvoie la génération avec des tailles différentes du modèle model (string) ayant comme paramètre la liste_parameter, 
   ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
   vector_size<-vector_size[order(vector_size)]
   ##### idée. 
-  Value_means<-sapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+  Value_means<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                       p=liste_parameter[["p"]],k=liste_parameter[["k"]])
-  
+  value_eqm<-as.data.frame(t(sapply(Value_means,colMeans)))
+  value_eqm$Modele_survie<-(value_eqm$Modele_survie-liste_parameter[["p"]])^2
+  value_eqm$Modele_guerison<-(value_eqm$Modele_guerison-liste_parameter[["p"]])^2
+  return(value_eqm)
   ##if (model=="bernoulli"){
     ##vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,p=liste_parameter[["p"]])
     ##return(colMeans(vecteur_realisation))
@@ -33,13 +36,15 @@ fonction_generation_taille_mean<-function(vector_size,model,liste_parameter,K){
 ################# TEST exp de la méthode.#####
 N<-100
 vecteur_size<-sample(c(1:1000),N)
-lamdba_test<-0.33
+lamdba_test<-3
 t_star<-6
-liste_parameter<-list(lambda_test,t_star)
-names(liste_parameter)<-c("lambda","t_star")
+p<-0.33
+k<-1
+liste_parameter<-list(lambda_test,t_star,p=p,k)
+names(liste_parameter)<-c("lambda","t_star","p","k")
 modele<-"surv"
-k<-20
-test_exp_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_parameter)
+K2<-20
+test_exp_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
 
 
 #################### Plot des résultats en fonction de la taille.########
@@ -61,11 +66,12 @@ test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,mo
 ######## Test Weibull#####
 N<-100
 vecteur_size2<-vecteur_size
-lamdba_test<-0.33
+lamdba_test<-3
 t_star<-6
 k<-2
-liste_parameter<-list(lambda_test,t_star,k)
-names(liste_parameter)<-c("lambda","t_star","k")
+p<-0.33
+liste_parameter<-list(lambda_test,t_star,k,p=p)
+names(liste_parameter)<-c("lambda","t_star","k","p")
 modele_wei<-"weibull"
 test_weibull<-fonction_generation_taille_mean(vector_size=vecteur_size2,model=modele,
                                               K=k,liste_parameter = liste_param)

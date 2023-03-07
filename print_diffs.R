@@ -8,8 +8,8 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   vector_size<-sample(c(limit_inf:limit_sup),N)
   vector_size<-vector_size[order(vector_size)]
   liste_param<-list(lambda,t_star,sh,p)
-  names(liste_param2)<-c("lambda","t_star","k","p")
-  result<-fonction_generation_taille_mean(vector_size,modele_exp,liste_param2,K)
+  names(liste_param)<-c("lambda","t_star","k","p")
+  result<-fonction_generation_taille_mean(vector_size,liste_param,K)
   result$taille<-vector_size
   colnames(result)<-c("Mean_Bias_Surv","Mean_Bias_Bern","Size")
   ####plot 
@@ -31,9 +31,9 @@ t_star<-6
 lambda7<-(-1)*log(1-p2)/t_star
 print(pexp(t_star,beta=1/lambda7))
 lmoins<-1
-l_plus<-1000
+l_plus<-100
 shape<-1
-N<-50
+N<-20
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
 shape2<-3
 lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
@@ -62,7 +62,7 @@ NSimulations.selon.n<-function(N,lambda,t_star,p,k){
   {
     vecteur_biais<-rep(NA,N)
     biais<-  Simuler_biais_taillen(N,n,lambda,t_star,k=k,p=p)
-    mean_value<-mean(as.numeric(biais$Biais_survie))
+    mean_value<-mean(biais$Modele_survie)-p
     results<-rbind(results,c(n,mean_value))
     n<- n+20
   }
@@ -106,7 +106,7 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
   plot(RES0.2.3$n,RES0.2.3$mean.bias,title=paste("Influence of n"),
        ylim=c(-0.1+borne_min,borne_max+0.1),
        type='b',bty="n",xlab="nbre sujets",ylab="biais moyen")
-  title("Influence de n et l.ambda")
+  title("Influence de n et lambda")
   lines(RES0.5.3$n,RES0.5.3$mean.bias,type="b",col="blue")
   lines(RES0.1.3$n,RES0.1.3$mean.bias,type="b",col="red")
   abline(h=0)
