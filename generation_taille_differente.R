@@ -1,6 +1,6 @@
 source("surv.R")
 source("bernoulli.R")
-fonction_generation_taille_differente<-function(vector_size,model,liste_parameter){
+fonction_generation_taille_differente<-function(vector_size,model,liste_parameter){ezzzzzzze
   ### renvoie la génération avec des tailles différentes du modèle model (string) ayant comme paramètre la liste_parameter, 
   ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
   if (model=="bernoulli"){
