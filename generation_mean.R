@@ -32,20 +32,34 @@ fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   ##  return(colMeans(vecteur_realisation))
   ##}}
 }
+fonction_sapply<-function(x){
+  return(sapply(x,var))
+}
 
+fonction_generation_eqm<-function(vector_size,liste_parameter,K){
+  ### renvoie la génération avec des tailles différentes du modèle model (string) ayant comme paramètre la liste_parameter, 
+  ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
+  vector_size<-vector_size[order(vector_size)]
+  ##### idée. 
+  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+                     p=liste_parameter[["p"]],k=liste_parameter[["k"]])
+  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
+  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
+  value_eqm<-(value_means)^(2)+value_variance
+  return(value_eqm)
+}
 ################# TEST exp de la méthode.#####
-N<-100
-vecteur_size<-sample(c(1:1000),N)
+N<-10
+vecteur_size<-sample(c(1:100),N)
 lamdba_test<-3
 t_star<-6
 p<-0.33
 k<-1
 liste_parameter<-list(lambda_test,t_star,p=p,k)
 names(liste_parameter)<-c("lambda","t_star","p","k")
-modele<-"surv"
 K2<-20
 test_exp_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
-
+test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
 
 #################### Plot des résultats en fonction de la taille.########
 donnees_taille_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_exp_taillemoy)
