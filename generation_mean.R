@@ -3,9 +3,10 @@ library(ggplot2)
 source("surv.R")
 source("bernoulli.R")
 
-##### Mettre dans la même liste les trois éléments en appelant la fonction "Simuler biais taille n" de surv.R. 
+##### Mettre dans la même liste les trois éléments en appelant la fonction "Simuler biais taille n" de surv.R (Plus besoin des deux Simuler_N_fois.)###
 ##### Enlever donc les conditions, devenues inutiles. 
 ##### Doit toujours renvoyer une moyenne mais deux liste de moyennes. Utiliser peut-être un dataframe. 
+##### 
 fonction_generation_taille_mean<-function(vector_size,model,liste_parameter,K){
   ### renvoie la génération avec des tailles différentes du modèle model (string) ayant comme paramètre la liste_parameter, 
   ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).

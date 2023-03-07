@@ -1,7 +1,6 @@
 ##### Import fonctions.#####
 source("generation_mean.R")
 set.seed(133)
-
 ######Ne doit plus dépendre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
 fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   #### N corresponds to the number of sizes. K correspond to the number of samples for each size. 
@@ -39,7 +38,8 @@ test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,
 shape2<-3
 lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
 test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambdaweibull,t_star=t_star,K=k,sh=shape2)
-NSimulations.selon.n<-function(N,lambda,t_star){
+
+NSimulations.selon.n<-function(N,lambda,t_star,p,k){
   #' Matrice composee des biais moyens associes a la taille de l'echantillon de n=20 a n=200 par saut de 20.
   #'
   #' @param N nombre de tailles d'echantillon differents.
@@ -61,13 +61,14 @@ NSimulations.selon.n<-function(N,lambda,t_star){
   while (n<200)
   {
     vecteur_biais<-rep(NA,N)
-    biais<-  Simuler_Nfois_n_echantillons(N,n,lambda,t_star)
-    results<-rbind(results,c(n,mean(biais)  ))
+    biais<-  Simuler_biais_taillen(N,n,lambda,t_star,k=k,p=p)
+    results<-rbind(results,c(n,mean(biais[["Biais survie"]])  ))
     n<- n+20
   }
+  print(results)
   return(results)
 }
-fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star){
+fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
   #' Plot des valeurs des biais moyens selon la taille des echantillons et du lambda.
   #'
   #' @param N nombre de tailles d'echantillon differents.
@@ -86,18 +87,18 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star){
   
   set.seed(12345)
   RES<- NULL
-  RES<- NSimulations.selon.n(N,window_lambda[1],t_star)
+  RES<- NSimulations.selon.n(N,window_lambda[1],t_star,k=k,p=p)
   RES0.2.3<-data.frame(RES)
   colnames( RES0.2.3)<- c("n","mean.bias")
   set.seed(12345)
   RES<- NULL
-  RES<- NSimulations.selon.n(N,window_lambda[2],t_star)
+  RES<- NSimulations.selon.n(N,window_lambda[2],t_star,k=k,p=p)
   RES0.5.3<-data.frame(RES)
   colnames( RES0.5.3)<- c("n","mean.bias")
   
   set.seed(12345)
   RES<- NULL
-  RES<- NSimulations.selon.n(N,window_lambda[3],t_star)
+  RES<- NSimulations.selon.n(N,window_lambda[3],t_star,k=k,p=p)
   RES0.1.3<-data.frame(RES)
   colnames( RES0.1.3)<- c("n","mean.bias")
   
@@ -113,4 +114,6 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star){
 window_lambda<-c(0.2,0.5,0.1)
 N<-50
 t_star<-6
-test_compar_lambda<-fonction_compar_plotsn_lambda(N,window_lambda,t_star)
+p<-0.33
+k<-1
+test_compar_lambda<-fonction_compar_plotsn_lambda(N,window_lambda,t_star,p=p,k=k)
