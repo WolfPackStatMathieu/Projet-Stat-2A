@@ -10,12 +10,13 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   liste_param<-list(lambda,t_star,sh,p)
   names(liste_param)<-c("lambda","t_star","k","p")
   result<-fonction_generation_taille_mean(vector_size,liste_param,K)
+  print(result)
   result$taille<-vector_size
-  colnames(result)<-c("Mean_Bias_Surv","Mean_Bias_Bern","Size")
+  colnames(result)<-c("Mean_Bias_Cure","Mean_Bias_Surv","Size")
   ####plot 
-  gg1<-ggplot(data=result,aes(x=Size,y=Mean_Bias_Bern))+
+  gg1<-ggplot(data=result,aes(x=Size,y=Mean_Bias_Cure))+
     geom_point(colour="red")+
-    labs(y="Mean Bias with Bern model")
+    labs(y="Mean Bias with cure model")
   
   gg2<-ggplot(data=result,aes(x=Size,y=Mean_Bias_Surv))+
     geom_point(colour="blue")+
@@ -33,7 +34,7 @@ print(pexp(t_star,beta=1/lambda7))
 lmoins<-1
 l_plus<-100
 shape<-1
-N<-20
+N<-10
 test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
 shape2<-3
 lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
