@@ -1,14 +1,17 @@
 source("generation_mean.R")
+
+#### Ne doit plus dépendre de l'argument modele.######
 fonction_simul_doses<-function(vector_size,nombre_doses,vecteur_parametres,modele,K){
   vector_size<-vector_size[order(vector_size)]
-  matrix_bias_doses<-matrix(NA,nrow = nombre_doses,ncol=length(vector_size))
+  matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
     liste_param<-vecteur_parametres[[indice]]
+    ### besoin de modifier la fonction fonction_generation_taille_mean.
     moyenne_taille_dose<-fonction_generation_taille_mean(vector_size = vector_size,modele,
                                                          liste_parameter = liste_param,K)
-    matrix_bias_doses[indice,]=moyenne_taille_dose
+    matrix_bias_doses[[indice]]=moyenne_taille_dose
   }
-  colnames(matrix_bias_doses)<-c(1:length(vector_size))
+  names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
 

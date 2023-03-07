@@ -110,7 +110,7 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   colnames(df_biases)<-c("Biais guerison","Bias")
   return(resultat)
 }
-test_retour<-Simuler_biais_un_n_ech(n=10,lambda=3,t_star=6,0.33,2)
-test_several_times<-Simuler_biais_taillen(n,lambda=3,t_star=6,p=0.33,k=2,K=5)
+test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
+test_several_times<-Simuler_biais_taillen(n,lambda=0.5,t_star=6,p=0.33,k=2,K=5)
 N<-100
 
