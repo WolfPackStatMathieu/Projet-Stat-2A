@@ -40,6 +40,5 @@ ggplot(data.frame(x = lambda_vec, y = test), aes(x = x, y = y)) +
   ggtitle("Biais with different lambdas") +
   xlab("lambda") + ylab("Biais") +
   theme_minimal()
-test
-rm(test)
+
 

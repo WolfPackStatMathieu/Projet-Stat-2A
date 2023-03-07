@@ -1,0 +1,127 @@
+# Cahier de travail
+
+## To do list
+- Revoir modèle de survie et vraisemblance
+- Tenter écrire vraisemblance du modèle de guérison (produit des contributions des sujets dans les deux sous-populations)
+- Données
+- - Utiliser modèle puissance pour analyse données
+- - Utiliser modèle de survie après avoir simulé des délais
+- $\mathrm{R}$
+- dfcrm
+Code joint
+- Fonctions article anais andrillon
+
+
+## 1 Revoir modèle de survie et vraisemblance
+
+La fonction de survie du modèle de guérison vaut :
+$$
+P(T>=t)=\pi(z)*S_{U}(T>=t)+1-\pi(z) (1)
+$$
+
+
+## 2 Tenter écrire vraisemblance du modèle de guérison (produit des contributions des sujets dans les deux sous-populations)
+Pour écrire la vraisemblance du modèle, il faut distinguer deux cas. Dans le premier cas, on connaît la valeur de T qui n'a pas été censurée. L'individu a par conséquent bien manifesté la toxicité dans la fenêtre [0,t*]. La contribution pour ces individus à la vraisemblance correspond alors à la fonction de densité sachant U(Y=1) soit :
+
+$$
+f(t_i|xi)=\pi(x_{i})*f_{U}(t)
+$$
+
+A l'inverse, pour les individus n'ayant pas manifesté la toxicité durant cette fenêtre, on ne connaît pas T. Autrement dit, Y=0. Par conséquent, on sait juste que T est supérieure à une certaine valeur. On mobilise par conséquent la fonction de survie donnée dans l'équation (1). La vraisemblance vaut donc : 
+
+$$
+L(X,Y)= \prod_{i=1}^{n} \pi(x_{i}) * f_{U}(t_{i})^{Y_{i}} * S(t_{i}|x_{i})^{1-Y_{i}}
+$$
+$$
+=\prod_{i=1}^{n} \pi(x_{i}) f_{U}(t_{i})^{Y_{i} }* \left(S_{U} \left(t_{i} \right)*\pi \left( x_{i} \right)+\left( 1-\pi \left( x_{i} \right) \right) \right)^{1-Y_{i}}
+$$
+
+## 3 Utilisation de CRM: modèle puissance
+Installation du package
+```
+install.packages("dfcrm")
+library(dfcrm)
+help(dfcrm)
+```
+
+```
+vecteur_dose<-c(rep(0.5,3),rep(3,3),rep(5,4*3))
+vecteur_reponse<-c(rep(0,3),0,0,1,0,0,1,rep(0,3),0,1,0,1,0,1)
+nom_dose<-c("0.5","1","3","5","6")
+valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
+prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
+p<-0.33
+infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
+#puissance avec empiric? 
+plot.mtd(infos)
+```
+
+
+## 4 Utiliser modèle de survie après avoir simulé des délais
+```
+#######Modèle de survie logistique.######
+###################################
+####################
+
+#####I) Simulation des donnees et import des donnees simulées.######
+#####On utilise le code fourni pour générer les données. 
+N=18
+res <- titesim(PI=c(0.05, 0.1, 0.15, 0.33, 0.50), 
+               prior=getprior(0.05, 0.25, 2, 5), 
+               0.25, N, 1,
+               obswin=6,restrict=1,
+               rate=3,
+               accrual = "poisson", seed=1234)
+
+
+base_tox <- data.frame(id=1:N, dose=res$level, time_arrival=res$arrival, toxicity.study.time=res$toxicity.study.time, toxicity.time=res$toxicity.time)
+head(base_tox)
+base_tox$toxicity.study.time[base_tox$toxicity.study.time==Inf] <- NA
+base_tox$toxicity.time[base_tox$toxicity.time==Inf] <- NA
+base_tox$toxicity.study.time <- round(base_tox$toxicity.study.time, 2)
+base_tox$toxicity.time <- round(base_tox$toxicity.time, 2)
+base_tox$time_arrival <- round(base_tox$time_arrival, 2)
+essai_n18 <- base_tox
+essai_n18
+plot(essai_n18)
+#####On écrit une base de données. 
+write.table(essai_n18, file="essai_n18.txt", sep="\t", row.names=F)
+donnees<-read.table("essai_n18.txt",header=TRUE)
+
+#######II) Creation des arguments de la fonction titecrm. ######
+
+#Vecteur reponse avec reponse=1 si le temps d'apparition de la toxicite est connu. 
+#Le vecteur reponse vaut 0 sinon. 
+#Dans notre cas, on donne 0 si le temps d'apparition  de la toxicite est NA.
+vecteur_reponse<-ifelse(is.na(donnees$toxicity.time)==FALSE,1,0)
+
+#Les doses administrees à chaque patient sont donnees par la colonne dose. 
+level_dose<-donnees$dose
+
+#Le nombre de patient correspond au nombre de lignes. 
+nombre_int=nrow(donnees)
+
+#L'argument weights de la fonction titecrm peut renvoyer au poids donne à chaque individu. 
+#Comme nous ne sommes pas certains de sa signification à l'heure actuelle, nous donnons un poids uniforme. 
+
+#L'autre option serait aussi de prendre en compte la censure
+#pour un patient particulier. 
+poids<-rep(1/nombre_int,nombre_int)
+
+#La date d'arrivee du patient dans l'étude est donnee par la colonne time_arrival.
+entree<-donnees$time_arrival
+
+#la date de sortie est donnee par la colonne toxicity.study.time. 
+sortie<-donnees$toxicity.study.time
+
+
+######III) Utilisation de la fonction et resume des informations. ##### 
+titecrm(prior_probabilities,p,model="logistic",dosename=nom_dose,tox=vecteur_reponse,n=nrow(donnees),entry=entree,exit=sortie,level=level_dose,pid=donnees$id,weights =poids)
+
+
+#####IV) Graphiques. ######
+vue<-titecrm(prior_probabilities,p,model="logistic",tox=vecteur_reponse,dosename=nom_dose,n=nrow(donnees),entry=entree,exit=sortie,level=level_dose,pid=donnees$id,weights =poids)
+plot.mtd(vue)
+
+#######################################
+```
