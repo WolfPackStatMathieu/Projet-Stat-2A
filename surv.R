@@ -109,4 +109,12 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
 test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
 test_several_times<-Simuler_biais_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
-
+Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
+  data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
+  result<-rep(NA,2)
+  result<-colMeans(data)
+  result[1]<-result[1]-p
+  result[2]<-result[2]-p
+  return(result)
+}
+test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)

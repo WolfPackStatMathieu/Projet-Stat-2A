@@ -12,12 +12,12 @@ fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
   vector_size<-vector_size[order(vector_size)]
   ##### idée. 
-  Value_means<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                       p=liste_parameter[["p"]],k=liste_parameter[["k"]])
-  value_eqm<-as.data.frame(t(sapply(Value_means,colMeans)))
-  value_eqm$Modele_survie<-(value_eqm$Modele_survie-liste_parameter[["p"]])^2
-  value_eqm$Modele_guerison<-(value_eqm$Modele_guerison-liste_parameter[["p"]])^2
-  return(value_eqm)
+  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
+  value_means$Modele_survie<-value_means$Modele_survie-p
+  value_means$Modele_guerison<-value_means$Modele_guerison-p
+  return(value_means)
   ##if (model=="bernoulli"){
     ##vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,p=liste_parameter[["p"]])
     ##return(colMeans(vecteur_realisation))
