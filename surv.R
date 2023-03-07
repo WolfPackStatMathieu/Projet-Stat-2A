@@ -1,7 +1,8 @@
 library(survival)
 #install.packages("roxygen2")
 library(roxygen2)
-
+source("bernoulli.R")
+source("weibull.R")
 #' @return A numeric vector giving number of characters (code points) in each
 #'    element of the character vector. Missing string have missing length.
 #' @examples
@@ -65,3 +66,51 @@ Simuler_Nfois_n_echantillons<-function(N,n,lambda,t_star){
 N<-100
 test_simul_total<-Simuler_Nfois_n_echantillons(N,n,lambda_test,t_star)
 boxplot(test_simul_total,main="Distribution du biais pour le mod?le de survie",col="Sky blue")
+Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
+  vecteur_censure<-simul_bernoulli(n,p)
+  vecteur_temp<-rep(NA,n)
+  biais_cure<-mean(vecteur_censure)-p
+  df<-cbind.data.frame(vecteur_censure,vecteur_temp)
+  colnames(df)<-c("censure","temps")
+  id_censures<-which(df$censure==1)
+  id_obs<-which(df$censure==0)
+  df[id_censures,2]<-t_star
+  df[id_obs,2]<-simul_weibull(length(id_obs),lambda,k)
+  df$temps<-ifelse(df$temps<t_star,df$temps,t_star)
+  colnames(df)<-c("isobserved","tox_time")
+  df$isobserved<-ifelse(df$tox_time<t_star,1,0)
+  surv_object<-Surv(df$tox_time,event=df$isobserved)
+  fit <- survfit(surv_object ~1, data = df)
+  # on cherche a recuperer les donnees au temps T=6
+  #afin de pouvoir tracer la droite Toxicite =f(dose)
+  quantile <-quantile(fit)
+  quantile$quantile
+  centiles <- quantile(fit, 1:100/100)
+  cent <-centiles$quantile
+  m<-1
+  individu <- cent[m]
+  # on touche la proportion de tstar au premier NA
+  while (is.na(individu)==FALSE) {
+    individu <- cent[m]
+    m<- m+1
+  }
+  transformation <- m-1
+  estimateur_survie <- transformation / 100
+  biais_survie<-estimateur_survie-p
+  liste_biais<-list(biais_cure,biais_survie)
+  names(liste_biais)<-c("Biais guérison","Biais survie")
+  return(liste_biais)
+}
+Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
+  resultat<-list(rep(NA,K))
+  for (j in c(1:K)){
+    resultat[[j]]<-unlist(Simuler_biais_un_n_ech(n,lambda,t_star,p,k))
+  }
+  df_biases<-cbind.data.frame(resultat)
+  colnames(df_biases)<-c("Biais guerison","Bias")
+  return(resultat)
+}
+test_retour<-Simuler_biais_un_n_ech(n=10,lambda=3,t_star=6,0.33,2)
+test_several_times<-Simuler_biais_taillen(n,lambda=3,t_star=6,p=0.33,k=2,K=5)
+N<-100
+
