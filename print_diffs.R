@@ -1,7 +1,7 @@
 ##### Import fonctions.#####
 source("generation_mean.R")
 set.seed(133)
-######Ne doit plus dépendre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
+######Ne doit plus d?pendre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
 fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   #### N corresponds to the number of sizes. K correspond to the number of samples for each size. 
   require(gridExtra)
@@ -10,7 +10,6 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   liste_param<-list(lambda,t_star,sh,p)
   names(liste_param)<-c("lambda","t_star","k","p")
   result<-fonction_generation_taille_mean(vector_size,liste_param,K)
-  print(result)
   result$taille<-vector_size
   colnames(result)<-c("Mean_Bias_Cure","Mean_Bias_Surv","Size")
   ####plot 
