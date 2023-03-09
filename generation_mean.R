@@ -37,8 +37,7 @@ fonction_sapply<-function(x){
 }
 
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
-  ### renvoie la génération avec des tailles différentes du modèle model (string) ayant comme paramètre la liste_parameter, 
-  ### liste de paramètres avec le modèles. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
+  ### renvoie la génération avec des tailles différentes avec un lambda,k,t_star,p. 
   vector_size<-vector_size[order(vector_size)]
   ##### idée. 
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
@@ -63,11 +62,9 @@ test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parame
 
 #################### Plot des résultats en fonction de la taille.########
 donnees_taille_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_exp_taillemoy)
-colnames(donnees_taille_biaismoyen)<-c("Size","Mean_Bias")
-h_DPImean<-KernSmooth::dpill(x=donnees_taille_biaismoyen$Size,y=donnees_taille_biaismoyen$Mean_Bias)
-estimation_ymoy<-KernSmooth::locpoly(x=donnees_taille_biaismoyen$Size,y=donnees_taille_biaismoyen$Mean_Bias,bandwidth=h_DPImean,degree=3,gridsize = N)$y
-plot(donnees_taille_biaismoyen,main="The mean bias according to the size with Survival function")
-lines(x=donnees_taille_biaismoyen$Size,y=estimation_ymoy,col="red")
+colnames(donnees_taille_biaismoyen)<-c("Size","Mean_Bias_Cure","Mean_Bias_Surv")
+plot(donnees_taille_biaismoyen$Size,donnees_taille_biaismoyen$Mean_Bias_Cure,main="The mean bias according to the size with Survival function")
+points(x=donnees_taille_biaismoyen$Size,y=donnees_taille_biaismoyen$Mean_Bias_Surv,col="red")
 
 #####################Test bernoulli######
 prop<-0.33

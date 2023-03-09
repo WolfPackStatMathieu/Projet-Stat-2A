@@ -3,9 +3,9 @@ library(survival)
 library(roxygen2)
 source("bernoulli.R")
 source("weibull.R")
+#' @examples
 #' @return A numeric vector giving number of characters (code points) in each
 #'    element of the character vector. Missing string have missing length.
-#' @examples
 ############################# Premiere mod?lisation du mod?le de survie #############
 ############################## avec une loi exponentielle et t
 set.seed(133)
