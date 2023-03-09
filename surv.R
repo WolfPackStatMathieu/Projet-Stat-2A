@@ -3,9 +3,9 @@ library(survival)
 library(roxygen2)
 source("bernoulli.R")
 source("weibull.R")
+#' @examples
 #' @return A numeric vector giving number of characters (code points) in each
 #'    element of the character vector. Missing string have missing length.
-#' @examples
 ############################# Premiere mod?lisation du mod?le de survie #############
 ############################## avec une loi exponentielle et t
 set.seed(133)
@@ -69,7 +69,7 @@ boxplot(test_simul_total,main="Distribution du biais pour le mod?le de survie",c
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-simul_bernoulli(n,p)
   vecteur_temp<-rep(NA,n)
-  biais_cure<-mean(vecteur_censure)-p
+  estimateur_cure<-mean(vecteur_censure)
   df<-cbind.data.frame(vecteur_censure,vecteur_temp)
   colnames(df)<-c("censure","temps")
   id_censures<-which(df$censure==1)
@@ -96,16 +96,25 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   }
   transformation <- m-1
   estimateur_survie <- transformation / 100
-  biais_survie<-estimateur_survie-p
-  liste_biais<-list(biais_cure,biais_survie)
-  names(liste_biais)<-c("Biais_guerison","Biais_survie")
+  liste_biais<-list(estimateur_cure,estimateur_survie)
+  names(liste_biais)<-c("Modele_guerison","Modele_survie")
   return(liste_biais)
 }
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
-  df_biases<-t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k)))
-  return(as.data.frame(df_biases))
+  df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
+  df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
+  df_biases$Modele_survie<-as.numeric(df_biases$Modele_survie)
+  return(df_biases)
 }
 test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
 test_several_times<-Simuler_biais_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
-
+Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
+  data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
+  result<-rep(NA,2)
+  result<-colMeans(data)
+  result[1]<-result[1]-p
+  result[2]<-result[2]-p
+  return(result)
+}
+test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
