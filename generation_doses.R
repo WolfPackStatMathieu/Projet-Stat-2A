@@ -1,7 +1,7 @@
 source("generation_mean.R")
 
 #### Ne doit plus dépendre de l'argument modele.######
-fonction_simul_doses<-function(vector_size,nombre_doses,vecteur_parametres,K){
+fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
@@ -15,6 +15,19 @@ fonction_simul_doses<-function(vector_size,nombre_doses,vecteur_parametres,K){
   return(matrix_bias_doses)
 }
 
+fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
+  vector_size<-vector_size[order(vector_size)]
+  matrix_bias_doses<-list(rep(NA,nombre_doses))
+  for(indice in c(1:nombre_doses)){
+    liste_param<-vecteur_parametres[[indice]]
+    ### besoin de modifier la fonction fonction_generation_taille_mean.
+    moyenne_taille_dose<-fonction_generation_eqm(vector_size = vector_size,
+                                                         liste_parameter = liste_param,K)
+    matrix_bias_doses[[indice]]=moyenne_taille_dose
+  }
+  names(matrix_bias_doses)<-c(1:nombre_doses)
+  return(matrix_bias_doses)
+}
 ########## TEST surv####
 N<-100
 p<-0.33
@@ -33,8 +46,10 @@ names(liste_2)<-c("lambda","t_star","p","k")
 vecteur_param<-list(liste_parameter,liste_2)
 nb_doses<-2
 k<-20
-test_surv<-fonction_simul_doses(vector_size = vecteur_size,nombre_doses=nb_doses,
+test_surv<-fonction_simul_doses_mean(vector_size = vecteur_size,nombre_doses=nb_doses,
                                 vecteur_parametres = vecteur_param,K=k)
+test_eqm<-fonction_simul_doses_eqm(vector_size = vecteur_size,nombre_doses=nb_doses,
+                                   vecteur_parametres = vecteur_param,K=k)
 #install.packages("plotly")
 library(purrr)
 library(plotly)
