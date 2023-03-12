@@ -30,8 +30,8 @@ function_calc_MCSE<-function(n,p,nsim,coverage){
   alpha<-1-coverage
   for(i in c(1:nsim)){
   result<-simul_bernoulli(n,p)
-  estim_moins<-mean(result)-qnorm(1-(alpha/2))*var(result)
-  estim_plus<-mean(result)+qnorm(1-(alpha/2))*var(result)
+  estim_moins<-mean(result)-qnorm(1-(alpha/2))*sqrt(var(result))
+  estim_plus<-mean(result)+qnorm(1-(alpha/2))*sqrt(var(result))
   reponse=ifelse((estim_plus>p && p>estim_moins)==TRUE,1,0)
   somme_proba<-somme_proba + reponse
   }
@@ -39,8 +39,16 @@ function_calc_MCSE<-function(n,p,nsim,coverage){
   MCSE<-sqrt(coverage_estimated*(1-coverage_estimated)/nsim)
   return(MCSE)
 }
-n<-5
+n<-10
 nsim<-4
 p<-0.33
 coverage<-0.95
 test_MCerror<-function_calc_MCSE(n,p,nsim,coverage)
+
+function_calc_nsim<-function(n,p,coverage){
+  estimateur_MCSE<-function_calc_MCSE(n,p,10,coverage)
+  print(estimateur_MCSE)
+  nsim_estim<-(100*coverage*(100-100*coverage))/((estimateur_MCSE)^(2))
+  return(nsim_estim)
+}
+nsim_estimated<-function_calc_nsim(n,p,0.7)
