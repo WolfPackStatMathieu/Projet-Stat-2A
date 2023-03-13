@@ -100,6 +100,27 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   names(liste_biais)<-c("Modele_guerison","Modele_survie")
   return(liste_biais)
 }
+Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
+  surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
+  fit <- survfit(surv_object ~1, data = df)
+  # on cherche a recuperer les donnees au temps T=6
+  #afin de pouvoir tracer la droite Toxicite =f(dose)
+  quantile <-quantile(fit)
+  quantile$quantile
+  centiles <- quantile(fit, 1:100/100)
+  cent <-centiles$quantile
+  m<-1
+  individu <- cent[m]
+  # on touche la proportion de tstar au premier NA
+  while (is.na(individu)==FALSE) {
+    individu <- cent[m]
+    m<- m+1
+  }
+  transformation <- m-1
+  estimateur_survie <- transformation / 100
+  return(estimateur_survie)
+}
+
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
   df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
