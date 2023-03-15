@@ -30,11 +30,14 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     df[index_dosek,"temps"]<-ifelse(df[index_dosek,"obs"]==1,NA,t_star)
     index_obs_dosek<-which(df$dose==k & df$obs==1)
     vect1<-df[index_dosek,"obs"]
+    print(vect1)
+    print("------")
     if(length(index_obs_dosek)>=1){
       df[index_obs_dosek,"temps"]<-simul_weibull(length(index_obs_dosek),lambda=sous_liste[["lambda"]],k=sous_liste[["k"]])
       df[index_obs_dosek,"temps"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,df[index_obs_dosek,"temps"],t_star)
       df[index_obs_dosek,"obs"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,1,0)}
     vect2<-df[index_dosek,"obs"]
+    print(vect2)
     data_dosek<-df[index_dosek,c("temps","obs")]
     data_dosek$temps<-as.numeric(data_dosek$temps)
     estimateur_surv<-Calcul_estim_depuis_df(data_dosek,nom_col_obs = "obs",nom_coltemps = "temps")
@@ -45,12 +48,12 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   return(data_returns)
 }
 
-n<-100
+n<-30
 k<-1
-lambda<-0.7
+lambda<-0.1
 p<-0.33
 k2<-1
-lambda2<-2
+lambda2<-0.2
 p2<-0.6
 liste1<-list(lambda,k,p)
 names(liste1)<-c("lambda","k","p")
@@ -60,6 +63,7 @@ liste_whole<-list(liste1,liste2)
 t_star<-6
 nb_doses<-2
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+set.seed(133)
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   ### Génère la moyenne des estimateurs pour la taille n
   result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
@@ -72,6 +76,7 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
     ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
     ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_modele_survie)
     ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    print(ensemble_obs_dosek)
     matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
   }
   return(matrice)

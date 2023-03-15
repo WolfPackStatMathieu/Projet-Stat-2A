@@ -8,7 +8,6 @@ source("weibull.R")
 #'    element of the character vector. Missing string have missing length.
 ############################# Premiere mod?lisation du mod?le de survie #############
 ############################## avec une loi exponentielle et t
-set.seed(133)
 simul_exp<-function(n,lambda){
   ###g?n?rer un ?chantillon de taille n suivant une loi exponentielle de param?tre lambda.
  return(rexp(n,lambda))
