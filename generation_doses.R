@@ -30,13 +30,11 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     df[index_dosek,"temps"]<-ifelse(df[index_dosek,"obs"]==1,NA,t_star)
     index_obs_dosek<-which(df$dose==k & df$obs==1)
     vect1<-df[index_dosek,"obs"]
-    print(vect1)
     if(length(index_obs_dosek)>=1){
       df[index_obs_dosek,"temps"]<-simul_weibull(length(index_obs_dosek),lambda=sous_liste[["lambda"]],k=sous_liste[["k"]])
       df[index_obs_dosek,"temps"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,df[index_obs_dosek,"temps"],t_star)
       df[index_obs_dosek,"obs"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,1,0)}
     vect2<-df[index_dosek,"obs"]
-    print(vect1==vect2)
     data_dosek<-df[index_dosek,c("temps","obs")]
     data_dosek$temps<-as.numeric(data_dosek$temps)
     estimateur_surv<-Calcul_estim_depuis_df(data_dosek,nom_col_obs = "obs",nom_coltemps = "temps")
@@ -47,13 +45,13 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   return(data_returns)
 }
 
-n<-20
+n<-100
 k<-1
-lambda<-0.5
+lambda<-0.7
 p<-0.33
 k2<-1
-lambda2<-1
-p2<-0.5
+lambda2<-2
+p2<-0.6
 liste1<-list(lambda,k,p)
 names(liste1)<-c("lambda","k","p")
 liste2<-list(lambda2,k2,p2)
@@ -62,6 +60,24 @@ liste_whole<-list(liste1,liste2)
 t_star<-6
 nb_doses<-2
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
+  ### Génère la moyenne des estimateurs pour la taille n
+  result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
+  matrice<-as.data.frame(matrix(NA,nb_doses,4))
+  colnames(matrice)<-c("numero_dose","moyenne_estimateur_survie","moyenne_estimateur_guerison","p")
+  matrice$numero_dose<-c(1:nb_doses)
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_modele_survie)
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
+  }
+  return(matrice)
+}
+K<-10
+test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
   matrix_bias_doses<-list(rep(NA,nombre_doses))
