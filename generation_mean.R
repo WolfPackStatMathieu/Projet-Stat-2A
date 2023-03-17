@@ -10,6 +10,8 @@ source("bernoulli.R")
 fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   ### renvoie la g?n?ration avec des tailles diff?rentes du mod?le model (string) ayant comme param?tre la liste_parameter, 
   ### liste de param?tres avec le mod?les. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
+  
+  #on réordonne vector_size par ordre des tailles d'echantillon
   vector_size<-vector_size[order(vector_size)]
   ##### id?e. 
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
