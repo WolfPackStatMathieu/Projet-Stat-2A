@@ -39,6 +39,7 @@ fonction_sapply<-function(x){
   return(sapply(x,var))
 }
 
+#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
   ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
   vector_size<-vector_size[order(vector_size)]
