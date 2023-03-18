@@ -106,17 +106,17 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
   EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-{
-  par(mfrow=c(nombre_doses,2))
+  par(mfrow=c(nombre_doses,1))
   for (j in c(1:nombre_doses)){
     data<-EQM[[j]]
-    print(data)
     minimum<-min(data)
     maximum<-max(data)
     plot(x=vector_size,y=data$Modele_guerison,xlab="Taille de l'échantillon",ylab="EQM_modele_guerison",ylim=c(minimum,maximum))
-    plot(x=vector_size,y=data$Modele_survie,col="red",ylab="EQM_modele_survie",ylim=c(minimum,maximum))
-    element_lam<-paste0(as.character(expression(lambda)),paste0("=",round(liste_parameter[[j]][["lambda"]],digits=2)))
-    element_k<-paste0("k=",liste_parameter[[j]][["k"]])
-    legend(x="topright",legend=c(element_lam,element_k),bty="n")
+    points(x=vector_size,y=data$Modele_survie,col="red",ylab="EQM_modele_survie",ylim=c(minimum,maximum))
+    k<-liste_parameter[[j]][["k"]]
+    lambda_chat<-round(liste_parameter[[j]][["lambda"]],digits=2)
+    element_lam<-paste("lambda","=",as.character(lambda_chat))
+    legend(x="topright",legend=element_lam,bty="n")
                                              
   }
   }
