@@ -68,6 +68,7 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
 }
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
+  print(nombre_doses)
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
     liste_param<-vecteur_parametres[[indice]]
