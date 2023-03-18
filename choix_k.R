@@ -27,14 +27,17 @@ fonction_calc_coverage<-function(n,p,nsim,t_star,lambda,k){
   estimateurs<-Simuler_biais_taillen(nsim,n,lambda,t_star,p,k)
   estim_survie<-estimateurs$Modele_survie
   estim_cure<-estimateurs$Modele_guerison
-  Estim_coverage<-sum(as.numeric((estim_survie>p & p>estim_cure)|| (estim_cure>p & p>estim_survie))/nsim)
+  condition1<-estim_survie>p & p>=estim_cure
+  condition2<-estim_cure>p & p>=estim_survie
+  data<-cbind.data.frame(condition1,condition2)
+  data$respect_conditions<-ifelse(data$condition1==TRUE,1,ifelse(data$condition2==TRUE,1,0))
+  Estim_coverage<-sum(data$respect_conditions)/nsim
   return(Estim_coverage)
 }
 
 function_calc_nsim<-function(n,p,cible_erreur_MC,lambda,t_star,k){
-  nsim<-sample(c(1:10),1)
+  nsim<-10
   coverage<-fonction_calc_coverage(n=n,nsim,t_star=t_star,lambda,p=p,k=k)
-  print(coverage)
   nsim_estim<-(100*coverage*(100-100*coverage))/((cible_erreur_MC)^(2))
   return(nsim_estim)
 }
@@ -44,12 +47,12 @@ function_calc_nsim<-function(n,p,cible_erreur_MC,lambda,t_star,k){
 n<-100
 p<-0.33
 result_print<-function_print_p_theoretical(n,p)
-n<-10
+n<-1000
 nsim<-4
 p<-0.33
 coverage<-0.95
 test_MCerror<-function_calc_MCSE(n,p,nsim,coverage)
-lambda<-0.7
-k_test<-3
+lambda<-0.007
+k_test<-1
 nsim_estimated<-function_calc_nsim(n,p=p,lambda=lambda,cible_erreur_MC =0.5,t_star=6,k=k_test)
 
