@@ -3,13 +3,13 @@ library(survival)
 library(roxygen2)
 source("bernoulli.R")
 source("weibull.R")
+############################# Premiere modelisation du modele de survie #############
+############################## avec une loi exponentielle et t
 #' @examples
 #' @return A numeric vector giving number of characters (code points) in each
 #'    element of the character vector. Missing string have missing length.
-############################# Premiere mod?lisation du mod?le de survie #############
-############################## avec une loi exponentielle et t
 simul_exp<-function(n,lambda){
-  ###g?n?rer un ?chantillon de taille n suivant une loi exponentielle de param?tre lambda.
+  ###generer un echantillon de taille n suivant une loi exponentielle de parametre lambda.
  return(rexp(n,lambda))
 }
 
@@ -21,6 +21,9 @@ simul_exp<-function(n,lambda){
 ####################################### Deux estimateurs pour un échantillon crééé. ####################"
 #################################################################################################################################
 
+
+#' @return une liste contenant un estimateur de du modele de guerison et un estimateur
+#' du modele de survie
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-simul_bernoulli(n,p) #simule un n-echantillon de loi de Bernoulli
   #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
@@ -75,6 +78,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
 
 
 ########## calculer l'estimateur du modèle de survie [POUR EVITER DE le mettre partout.]######
+# on isole ici une partie du code de la fonction Simuler_biais_un_n_ech
 
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
@@ -100,7 +104,7 @@ Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
 
 
 ##################### On simule plusieurs fois les estimateurs.  ici. ##################################################
-###########################################################################################
+
 
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
