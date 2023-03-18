@@ -16,8 +16,11 @@ simul_exp<-function(n,lambda){
 
 
 
-#' @return une liste contenant un estimateur de du modele de guerison et un estimateur
-#' du modele de survie
+
+
+####################################### Deux estimateurs pour un échantillon crééé. ####################"
+#################################################################################################################################
+
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-simul_bernoulli(n,p) #simule un n-echantillon de loi de Bernoulli
   #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
@@ -70,7 +73,9 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   return(liste_biais)
 }
 
-#pour calculer l estimateur de survie
+
+########## calculer l'estimateur du modèle de survie [POUR EVITER DE le mettre partout.]######
+
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
   fit <- survfit(surv_object ~1, data = df)
@@ -92,6 +97,11 @@ Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   return(estimateur_survie)
 }
 
+
+
+##################### On simule plusieurs fois les estimateurs.  ici. ##################################################
+###########################################################################################
+
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
   df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
@@ -101,6 +111,8 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
 test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
 test_several_times<-Simuler_biais_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
+
+################################# On calcule les biais moyens ici. ###############################################################
 Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
   data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
   result<-rep(NA,2)
