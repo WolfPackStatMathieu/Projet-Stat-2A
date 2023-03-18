@@ -18,14 +18,24 @@ simul_exp<-function(n,lambda){
 ####################################### Deux estimateurs pour un échantillon crééé. ####################"
 #################################################################################################################################
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
-  vecteur_censure<-simul_bernoulli(n,p)
-  vecteur_temp<-rep(NA,n)
-  estimateur_cure<-mean(vecteur_censure)
+  vecteur_censure<-simul_bernoulli(n,p) #simule un n-echantillon de loi de Bernoulli
+  #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
+  vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
+  # l'estimateur du modele de guerison est la moyenne des 1 du vecteur_censure
+  estimateur_cure<-mean(vecteur_censure) 
+  # on cree un dataframe qui acolle la DLT au vecteur_temps
   df<-cbind.data.frame(vecteur_censure,vecteur_temp)
+  #on les renomme
   colnames(df)<-c("censure","temps")
+  #recuperation des numeros de lignes des individus censures
   id_censures<-which(df$censure==1)
+  #recuperation des numeros de lignes des individus a risque de DLT
   id_obs<-which(df$censure==0)
+  #tous les individu censure se voient attribues comme temps la limite de la 
+  #fenetre d observation
   df[id_censures,2]<-t_star
+  # les autres individus se voient attribuer un temps simule a partir d une 
+  # loi de Weibull (qui peut etre une loi exponentielle si k=1)
   df[id_obs,2]<-simul_weibull(length(id_obs),lambda,k)
   df$temps<-ifelse(df$temps<t_star,df$temps,t_star)
   colnames(df)<-c("isobserved","tox_time")
@@ -52,7 +62,11 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   return(liste_biais)
 }
 
+<<<<<<< HEAD
 ########## calculer l'estimateur du modèle de survie [POUR EVITER DE le mettre partout.]######
+=======
+#pour calculer l'estimateur de survie
+>>>>>>> bfa935943d7fbd30179659d077707c5f5bfecdb7
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
   fit <- survfit(surv_object ~1, data = df)
