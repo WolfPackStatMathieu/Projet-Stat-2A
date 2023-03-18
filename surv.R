@@ -16,7 +16,8 @@ simul_exp<-function(n,lambda){
 
 
 
-
+#' @return une liste contenant un estimateur de du modele de guerison et un estimateur
+#' du modele de survie
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-simul_bernoulli(n,p) #simule un n-echantillon de loi de Bernoulli
   #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
@@ -37,9 +38,15 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   # les autres individus se voient attribuer un temps simule a partir d une 
   # loi de Weibull (qui peut etre une loi exponentielle si k=1)
   df[id_obs,2]<-simul_weibull(length(id_obs),lambda,k)
+  # bien sur, si le temps observe est superieur a la fenetre d observation, alors
+  # on le remplace par la fin de fenetre d observation
   df$temps<-ifelse(df$temps<t_star,df$temps,t_star)
+  # on renomme les colonnes pour une meilleure interpretation
   colnames(df)<-c("isobserved","tox_time")
+  # on remplit la colonne isobserved avec des 1 si on observe une toxicite avant
+  #la fin de la fenetre d observation, sinon on met des 0
   df$isobserved<-ifelse(df$tox_time<t_star,1,0)
+  # cela nous permet d utiliser le package survival et les surv_object
   surv_object<-Surv(df$tox_time,event=df$isobserved)
   fit <- survfit(surv_object ~1, data = df)
   # on cherche a recuperer les donnees au temps T=6
@@ -57,12 +64,13 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   }
   transformation <- m-1
   estimateur_survie <- transformation / 100
+  # on prepare une liste avec les deux estimateurs calcules
   liste_biais<-list(estimateur_cure,estimateur_survie)
   names(liste_biais)<-c("Modele_guerison","Modele_survie")
   return(liste_biais)
 }
 
-#pour calculer l'estimateur de survie
+#pour calculer l estimateur de survie
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
   fit <- survfit(surv_object ~1, data = df)
