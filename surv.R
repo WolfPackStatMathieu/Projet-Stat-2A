@@ -51,6 +51,8 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   names(liste_biais)<-c("Modele_guerison","Modele_survie")
   return(liste_biais)
 }
+
+
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
   surv_object<-Surv(df[,nom_coltemps],event=df[,nom_col_obs])
   fit <- survfit(surv_object ~1, data = df)
