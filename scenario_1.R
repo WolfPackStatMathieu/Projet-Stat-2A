@@ -51,7 +51,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   # df à 2 colones (modèle de guérison et modèle de survie)
   res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
   # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
-  # ensuite ajouter une nouvelle colonne modele qui servra a 
+  # ensuite ajouter une nouvelle colonne modele qui servira a 
   # distinguer les 2 modèles
   df <- res %>% gather(key = "modele", value = "valeurs")
   
@@ -120,4 +120,4 @@ gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
         axis.title=element_text(size=14),
         plot.title = element_text(size = 16))
 
-return(gg)
+
