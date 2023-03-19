@@ -124,9 +124,15 @@ N<-100
 
 ################################# On calcule les biais moyens ici. ###############################################################
 Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
+  # on effectue la simulation des biais pour K échantillons de taille n selon
+  # les deux modèles (de guérison, de survie)
   data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
+  # on va calculer le biais moyen. On prépare donc un vecteur pour stocker les
+  # deux biais moyens
   result<-rep(NA,2)
+  #on calcule les biais moyens
   result<-colMeans(data)
+  # Rappel : biais = estimateur - valeur théorique
   result[1]<-result[1]-p
   result[2]<-result[2]-p
   return(result)
