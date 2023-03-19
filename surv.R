@@ -121,6 +121,10 @@ Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
 }
 
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
+  # Simuler_biais_un_n_ech retourne le biais du modele de guerison
+  # et le biais du modele de survie
+  # on crée un dataframe de K lignes de ces deux biais, pour des échantillons de 
+  #taille n. 
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
   df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
   df_biases$Modele_survie<-as.numeric(df_biases$Modele_survie)
