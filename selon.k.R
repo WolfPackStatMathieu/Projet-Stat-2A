@@ -4,7 +4,7 @@ source("weibull.R")
 
 
 biais.selon.k <-function(K, n, lambda, t_star,p){
-  k <- seq(1, 2, by = 0.1)
+  k <- seq(1, 5, by = 0.1)
   results <- NULL
   
   for(i in c(1:length(k))){
@@ -66,7 +66,6 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 fnct_compar_plt_biais.selon.k(15, 10, c(0.1,0.2, 0.5), 6, 0.33)
 
 
-?plot()
 
 
 

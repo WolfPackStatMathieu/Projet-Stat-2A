@@ -15,9 +15,6 @@ simul_exp<-function(n,lambda){
 
 
 
-
-
-
 ####################################### Deux estimateurs pour un échantillon crééé. ####################"
 #################################################################################################################################
 
@@ -122,3 +119,4 @@ Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
   return(result)
 }
 test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
+

@@ -140,3 +140,4 @@ graph2<-graph2 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bi
 fig<-subplot(graph1,graph2,nrows=2) 
 fig<-fig %>% layout(plot_bgcolor='#e5ecf6')
 fig
+
