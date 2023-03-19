@@ -48,21 +48,6 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   return(data_returns)
 }
 
-n<-30
-k<-1
-lambda<-0.1
-p<-0.33
-k2<-1
-lambda2<-0.2
-p2<-0.6
-liste1<-list(lambda,k,p)
-names(liste1)<-c("lambda","k","p")
-liste2<-list(lambda2,k2,p2)
-names(liste2)<-c("lambda","k","p")
-liste_whole<-list(liste1,liste2)
-t_star<-6
-nb_doses<-2
-test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
 set.seed(133)
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   ### Génère la moyenne des estimateurs pour la taille n
@@ -81,10 +66,9 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   }
   return(matrice)
 }
-K<-10
-test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
+  print(nombre_doses)
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
     liste_param<-vecteur_parametres[[indice]]
@@ -96,10 +80,32 @@ fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K
   names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
-########## TEST surv####
-N<-100
+
+######## Partie TEST#####
+n<-10
+k<-1
+lambda<-0.1
 p<-0.33
-vecteur_size<-sample(c(1:1000),N)
+k2<-1
+lambda2<-0.2
+p2<-0.6
+liste1<-list(lambda,k,p)
+names(liste1)<-c("lambda","k","p")
+liste2<-list(lambda2,k2,p2)
+names(liste2)<-c("lambda","k","p")
+liste_whole<-list(liste1,liste2)
+t_star<-6
+nb_doses<-2
+test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+
+K<-10
+test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+
+
+########## TEST surv####
+N<-20
+p<-0.33
+vecteur_size<-sample(c(1:100),N)
 lamdba_test<-0.33
 t_star<-6
 k1<-1

@@ -1,5 +1,6 @@
 source("surv.R")
 source("bernoulli.R")
+source("generation_mean.R")
 function_choice_k<-function(Coverage,target_MCerror){
   return(Coverage*(100-Coverage)/(target_MCerror)^2)
 }
@@ -17,38 +18,41 @@ function_print_p_theoretical<-function(n,p){
   abline(h=p,col="blue")}
   return(result)
 }
-n<-10000
-p<-0.33
-result_print<-function_print_p_theoretical(n,p)
 ### le but est de calculer l'erreur de Monte Carlo du "coverage" soit de la 
 ### probabilite que theta soit present dans l'intervalle entre theta-inf et 
 ### theta-sup. 
 ### On somme ces probabilites pour chaque echantillon creee. 
 ### creation des estimateurs. 
-function_calc_MCSE<-function(n,p,nsim,coverage){
-  somme_proba<-0
-  alpha<-1-coverage
-  for(i in c(1:nsim)){
-  result<-simul_bernoulli(n,p)
-  estim_moins<-mean(result)-qnorm(1-(alpha/2))*sqrt(var(result))
-  estim_plus<-mean(result)+qnorm(1-(alpha/2))*sqrt(var(result))
-  reponse=ifelse((estim_plus>p && p>estim_moins)==TRUE,1,0)
-  somme_proba<-somme_proba + reponse
-  }
-  coverage_estimated<-somme_proba/(nsim)
-  MCSE<-sqrt(coverage_estimated*(1-coverage_estimated)/nsim)
-  return(MCSE)
+fonction_calc_coverage<-function(n,p,nsim,t_star,lambda,k){
+  estimateurs<-Simuler_biais_taillen(nsim,n,lambda,t_star,p,k)
+  estim_survie<-estimateurs$Modele_survie
+  estim_cure<-estimateurs$Modele_guerison
+  condition1<-estim_survie>p & p>=estim_cure
+  condition2<-estim_cure>p & p>=estim_survie
+  data<-cbind.data.frame(condition1,condition2)
+  data$respect_conditions<-ifelse(data$condition1==TRUE,1,ifelse(data$condition2==TRUE,1,0))
+  Estim_coverage<-sum(data$respect_conditions)/nsim
+  return(Estim_coverage)
 }
-n<-10
+
+function_calc_nsim<-function(n,p,cible_erreur_MC,lambda,t_star,k){
+  nsim<-10
+  coverage<-fonction_calc_coverage(n=n,nsim,t_star=t_star,lambda,p=p,k=k)
+  nsim_estim<-(100*coverage*(100-100*coverage))/((cible_erreur_MC)^(2))
+  return(nsim_estim)
+}
+
+
+##################### TEST ###############
+n<-100
+p<-0.33
+result_print<-function_print_p_theoretical(n,p)
+n<-1000
 nsim<-4
 p<-0.33
 coverage<-0.95
 test_MCerror<-function_calc_MCSE(n,p,nsim,coverage)
+lambda<-0.007
+k_test<-1
+nsim_estimated<-function_calc_nsim(n,p=p,lambda=lambda,cible_erreur_MC =0.5,t_star=6,k=k_test)
 
-function_calc_nsim<-function(n,p,coverage){
-  estimateur_MCSE<-function_calc_MCSE(n,p,10,coverage)
-  print(estimateur_MCSE)
-  nsim_estim<-(100*coverage*(100-100*coverage))/((estimateur_MCSE)^(2))
-  return(nsim_estim)
-}
-nsim_estimated<-function_calc_nsim(n,p,0.7)
