@@ -112,14 +112,14 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   # on crée un dataframe de K lignes de ces deux biais, pour des échantillons de 
   #taille n. 
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
+  # on donne un nom aux deux colonnes
   df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
   df_biases$Modele_survie<-as.numeric(df_biases$Modele_survie)
   return(df_biases)
 }
 
-
 test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
-test_several_times<-Simuler_biais_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
+test_several_times<-Simuler_biais_taillen(n=100,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
 
 ################################# On calcule les biais moyens ici. ###############################################################
