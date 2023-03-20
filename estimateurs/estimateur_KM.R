@@ -22,6 +22,6 @@ fonction_KM<-function(df,t_star){
 }
 
 ##### TEST ####
-df<-Generation_un_ech(n=50,lambda=0.5,p=0.5,k=1,t_star=6)
+df<-Generation_un_ech(n=10,lambda=0.5,p=0.33,k=1,t_star=6)
 str(df)
 estim_KM<-fonction_KM(df)
