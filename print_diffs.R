@@ -55,6 +55,8 @@ NSimulations.selon.n<-function(N,lambda,t_star,p,k){
   }
   return(results)
 }
+NSimulations.selon.n(K, lambda, t_star, p, k)
+
 fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
   #' Plot des valeurs des biais moyens selon la taille des echantillons et du lambda.
   #'

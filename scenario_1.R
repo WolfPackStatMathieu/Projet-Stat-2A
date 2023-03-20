@@ -12,7 +12,7 @@ k <- 1
 
 
 res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
-res
+res - p
 
 plots_scenario <- function(K, n, lambda, t_star, p, k){
   require(gridExtra)
@@ -50,6 +50,14 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(tidyr)
   # df à 2 colones (modèle de guérison et modèle de survie)
   res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
+  res <- res - p
+  
+  
+  # bornes
+  borne_min <- min(res)
+  borne_max <- max(res) 
+  
+  
   # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
   # distinguer les 2 modèles
@@ -57,14 +65,15 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
   # boxplot
   boxplot <- ggplot(df, aes(x = modele, y = valeurs, fill = modele)) + 
-    geom_boxplot(alpha = 0.8) +
+    geom_violin(alpha = 0.8) +
     scale_fill_manual(values = c("#0072B2", "#E69F00")) +
-    theme_classic()
+    theme_classic()+
+    ylim(borne_min, borne_max)
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modèles", y = "Biais moyen", title = "Comparaison du biais moyen pour N échantillons") +
-    theme(plot.title = element_text(hjust = 0.5, size = 15, face = "bold"),
+    labs(x = "Modèles", y = "Biais moyen", title = "Comparaison du biais moyen pour K n-échantillons") +
+    theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
           axis.text = element_text(size = 14),
           axis.title = element_text(size = 14, face = "bold"))
   
@@ -89,35 +98,51 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   means_matrix <- matrix(0, nrow = ncol(result[[1]]), ncol = length(result))
   
   for (i in 1:length(result)) {
-    means_matrix[, i] <- colMeans(result[[i]])
+    means_matrix[, i] <- colMeans(result[[i]]) - p
   }
   
   # Créer un dataframe à partir de la matrice de moyennes
   result_final <- data.frame(t(means_matrix), n)
   colnames(result_final) <- c("modele_guerison", "modele_survie", "taille_echantillon")
-  return(result_final)
+  # plot 
+  borne_min <- min(result_final$modele_guerison, result_final$modele_survie)
+  borne_max <- max(result_final$modele_guerison, result_final$modele_survie)
+  
+  gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
+    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
+    geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
+    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    xlab("Taille echantillon") + ylab("Biais moyen") +
+    # scale_color_manual(values=c("blue1", "red1")) +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(size=12),
+          axis.title=element_text(size=14),
+          plot.title = element_text(size = 12))+
+    ylim(borne_min, borne_max)
+  
+  return(gg)
   
 }
 
 plots_scenario_1(K, n, lambda, t_star, p, k)
 
-
-
-
-
+biais.selon.taille_echantillon(K, lambda, t_star, p, k)
 
 
 # plot
-gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
-  geom_line(aes(y = modele_guerison),col = "blue1", size = 1)+
-  geom_line(aes(y = modele_survie), col = "red1", size = 1)+
+ggplot(data = result_final, aes(x = taille_echantillon))+
+  geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
+  geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
   ggtitle("Comparaison du biais moyen des 2 méthodes pour un n échantillon") +
   xlab("Taille echantillon") + ylab("Biais moyen") +
-  scale_color_manual(values=c("black" = "black", "Modele guerison" = "blue1", "Modele survie" = "red1")) +
+  # scale_color_manual(values=c("blue1", "red1")) +
   theme_classic() +
   theme(legend.title=element_blank(),
         axis.text=element_text(size=12),
         axis.title=element_text(size=14),
-        plot.title = element_text(size = 16))
+        plot.title = element_text(size = 12))+
+  ylim(borne_min, borne_max)
 
+result_final
 
