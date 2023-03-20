@@ -29,7 +29,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
   vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
   # l'estimateur du modele de guerison est la moyenne des 1 du vecteur_censure
-  estimateur_cure<-mean(vecteur_censure) 
+  pi<-mean(vecteur_censure) 
   # on cree un dataframe qui acolle la DLT au vecteur_temps
   df<-cbind.data.frame(vecteur_censure,vecteur_temp)
   #on les renomme
@@ -40,7 +40,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   id_obs<-which(df$censure==0)
   #tous les individu censure se voient attribues comme temps la limite de la 
   #fenetre d observation
-  df[id_censures,2]<-t_star
+  df[id_censures,2]<-Inf
   # les autres individus se voient attribuer un temps simule a partir d une 
   # loi de Weibull (qui peut etre une loi exponentielle si k=1)
   df[id_obs,2]<-simul_weibull(length(id_obs),lambda,k)
@@ -70,6 +70,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   }
   transformation <- m-1
   estimateur_survie <- transformation / 100
+  estimateur_cure<-
   # on prepare une liste avec les deux estimateurs calcules
   liste_biais<-list(estimateur_cure,estimateur_survie)
   names(liste_biais)<-c("Modele_guerison","Modele_survie")
@@ -138,3 +139,63 @@ Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
   return(result)
 }
 test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
+
+
+
+
+
+
+
+
+
+tp.surv <- function(obj, times)
+{
+  x <- summary(obj)
+  if(is.null(x$strata))
+  {
+    y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
+    res <- t(sapply(times,function(z,y){tps.surv(y,z)},y=y))
+  } else
+  {
+    res <- NULL
+    ld <- c(0,cumsum(table(x$strata)))
+    for(i in 1:(length(ld)-1))
+    {
+      y <- as.data.frame(matrix(cbind(x$time,x$surv,x$lower,x$upper,x$std.err)[(1+ld[i]):ld[i+1],],ncol=5))
+      res[[i]] <- t(sapply(times,function(z,y){tps.surv(y,z)},y=y))
+    }
+  }
+  return(res)
+}
+clep <- function(x,y)
+{
+  a <- which(y<=x)
+  b <- rep(0,length(y))
+  b[a[length(a)]] <- 1
+  return(b)
+}
+extps.surv <- function(obj, times)
+{
+  y <- obj
+  names(y) <- c("time","surv","lower","upper","se")
+  y$indic <- apply(sapply(times,clep,y=y[,1]),1,sum)
+  y <- y[y$indic==1,]
+  y <- cbind(times,y)
+  names(y)[1:2] <- c("time","lastev.time")
+  return(y[,1:6])
+}
+
+tps.surv <- function(obj, time)
+{
+  y <- rbind(c(0,1,NA,NA,NA),obj)
+  names(y) <- c("time","surv","lower","upper","se")
+  y$indic <- clep(time,y[,1])
+  y <- y[y$indic==1,]
+  y <- cbind(time,y)
+  names(y)[1:2] <- c("time","lastev.time")
+  return(y[,1:6])
+}
+
+est.t <- tp.surv(fit,6) [3]               # rend estimation de Km au temps 6
+# IC en position 4 et 5
+cure.rate <- 1-est.t                       # calcule estimation de A-S(t) au temps t selon la methode de Kaplan Meier
