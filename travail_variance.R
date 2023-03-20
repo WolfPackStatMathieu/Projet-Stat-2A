@@ -49,7 +49,7 @@ var_estimated_bern<-variance_bern_Ntimes_sizen(N,n=n,p=p)
 variance_sizes<-function(vector_size,model,liste_parameter,K){
   vector_size<-vector_size[order(vector_size)]
   if (model=="bernoulli"){
-    #pour plusieurs tailles, calculer la variance pour chaque taille. 
+    #pour plusieurs tailles, calculer la variance pour chaque taille.
     realisation_variance<-sapply(vector_size,variance_bern_Ntimes_sizen,N=K,p=liste_parameter[["p"]])
     return(realisation_variance)
   }
