@@ -3,13 +3,6 @@
 rm(list = ls())
 source("surv.R")
 
-K <- 50
-n <- 25
-lambda <- 0.5
-t_star <- 6
-p <- 0.30
-k <- 1
-
 
 res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
 res - p
@@ -72,16 +65,25 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modèles", y = "Biais moyen", title = "Comparaison du biais moyen pour K n-échantillons") +
-    theme(plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-          axis.text = element_text(size = 14),
-          axis.title = element_text(size = 14, face = "bold"))
+    labs(x = "Modèles", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-échantillons",
+         caption = sprintf("K = %s, lambda = %s, k = %s, n = %s" , 
+                           as.character(K), 
+                            as.character(lambda), 
+                           as.character(k), 
+                           as.character(n))) +
+    theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+          axis.text = element_text(size = 12),
+          axis.title = element_text(size = 12, face = "bold"))
   
 }
 
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 50
-  n <- seq(10, 100, 5)
+  debut <- 10
+  fin <- 100
+  pas <- 5
+  n <- seq(debut,fin , pas)
   
   # On crée une liste de dataframe nulle qu'on va stocker les biais pour 
   # differentes tailles d'échantillons (n)
@@ -107,42 +109,41 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   # plot 
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie)
-  
+
   gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
-    # scale_color_manual(values=c("blue1", "red1")) +
     theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(size=12),
           axis.title=element_text(size=14),
           plot.title = element_text(size = 12))+
-    ylim(borne_min, borne_max)
-  
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" , 
+                           as.character(K), 
+                           as.character(lambda), 
+                           as.character(k),
+                           as.character(debut), 
+                           as.character(fin), 
+                           as.character(pas)))
+
   return(gg)
-  
+
 }
 
-plots_scenario_1(K, n, lambda, t_star, p, k)
+K 
+n 
+lambda 
+t_star
+p 
+k
 
-biais.selon.taille_echantillon(K, lambda, t_star, p, k)
+plots_scenario_1(K=50, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
+biais.selon.taille_echantillon(K = 50, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
-# plot
-ggplot(data = result_final, aes(x = taille_echantillon))+
-  geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
-  geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
-  ggtitle("Comparaison du biais moyen des 2 méthodes pour un n échantillon") +
-  xlab("Taille echantillon") + ylab("Biais moyen") +
-  # scale_color_manual(values=c("blue1", "red1")) +
-  theme_classic() +
-  theme(legend.title=element_blank(),
-        axis.text=element_text(size=12),
-        axis.title=element_text(size=14),
-        plot.title = element_text(size = 12))+
-  ylim(borne_min, borne_max)
 
-result_final
 
