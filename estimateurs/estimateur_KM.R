@@ -1,5 +1,6 @@
 source("generation_echantillon/generation_echantillon.R")
-fonction_KM<-function(df){
+fonction_KM<-function(df,t_star){
+  df<-df[,c("tox_time","is_observed")]
   surv_object<-Surv(df$tox_time,event=df$is_observed)
   fit <- survfit(surv_object ~1, data = df)
   # on cherche a recuperer les donnees au temps T=6
@@ -17,9 +18,10 @@ fonction_KM<-function(df){
   }
   transformation <- m-1
   estimateur_survie <- transformation / 100
-  return(c(estimateur_survie,calcul_fonction_surv))
+  return(1-estimateur_survie)
 }
 
 ##### TEST ####
 df<-Generation_un_ech(n=50,lambda=0.5,p=0.5,k=1,t_star=6)
+str(df)
 estim_KM<-fonction_KM(df)

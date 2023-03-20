@@ -1,5 +1,5 @@
 library(survival)
-library(flexsurvcure)
+require(flexsurvcure)
 source("surv.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-simul_bernoulli(n,p) 
@@ -15,7 +15,7 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
   id_sensibles<-which(df$sensible==1)
   #tous les individu censure se voient attribues comme temps la limite de la 
   #fenetre d observation
-  df[id_non_sensibles,2]<-Inf
+  df[id_non_sensibles,2]<-t_star+1
   # les autres individus se voient attribuer un temps simule a partir d une 
   # loi de Weibull (qui peut etre une loi exponentielle si k=1)
   df[id_sensibles,2]<-simul_weibull(length(id_sensibles),lambda,k)

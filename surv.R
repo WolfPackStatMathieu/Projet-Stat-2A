@@ -3,6 +3,8 @@ library(survival)
 library(roxygen2)
 source("bernoulli.R")
 source("weibull.R")
+source("generation_echantillon/generation_echantillon.R")
+source("estimateurs/mod_bernoulli.R")
 ############################# Premiere modelisation du modele de survie #############
 ############################## avec une loi exponentielle et t
 #' @examples
@@ -22,55 +24,12 @@ simul_exp<-function(n,lambda){
 #' @return une liste contenant un estimateur de du modele de guerison et un estimateur
 #' du modele de survie
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
-  vecteur_censure<-simul_bernoulli(n,p) #simule un n-echantillon de loi de Bernoulli
-  #le 0/1 indique si l'individu est a risuqe de DLT ou si il est gueri
-  vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
-  # l'estimateur du modele de guerison est la moyenne des 1 du vecteur_censure
-  pi<-mean(vecteur_censure) 
-  # on cree un dataframe qui acolle la DLT au vecteur_temps
-  df<-cbind.data.frame(vecteur_censure,vecteur_temp)
-  #on les renomme
-  colnames(df)<-c("censure","temps")
-  #recuperation des numeros de lignes des individus censures
-  id_censures<-which(df$censure==1)
-  #recuperation des numeros de lignes des individus a risque de DLT
-  id_obs<-which(df$censure==0)
-  #tous les individu censure se voient attribues comme temps la limite de la 
-  #fenetre d observation
-  df[id_censures,2]<-Inf
-  # les autres individus se voient attribuer un temps simule a partir d une 
-  # loi de Weibull (qui peut etre une loi exponentielle si k=1)
-  df[id_obs,2]<-simul_weibull(length(id_obs),lambda,k)
-  # bien sur, si le temps observe est superieur a la fenetre d observation, alors
-  # on le remplace par la fin de fenetre d observation
-  df$temps<-ifelse(df$temps<t_star,df$temps,t_star)
-  # on renomme les colonnes pour une meilleure interpretation
-  colnames(df)<-c("isobserved","tox_time")
-  # on remplit la colonne isobserved avec des 1 si on observe une toxicite avant
-  #la fin de la fenetre d observation, sinon on met des 0
-  df$isobserved<-ifelse(df$tox_time<t_star,1,0)
-  # cela nous permet d utiliser le package survival et les surv_object
-  surv_object<-Surv(df$tox_time,event=df$isobserved)
-  fit <- survfit(surv_object ~1, data = df)
-  # on cherche a recuperer les donnees au temps T=6
-  #afin de pouvoir tracer la droite Toxicite =f(dose)
-  quantile <-quantile(fit)
-  quantile$quantile
-  centiles <- quantile(fit, 1:100/100)
-  cent <-centiles$quantile
-  m<-1
-  individu <- cent[m]
-  # on touche la proportion de tstar au premier NA
-  while (is.na(individu)==FALSE) {
-    individu <- cent[m]
-    m<- m+1
-  }
-  transformation <- m-1
-  estimateur_survie <- transformation / 100
-  estimateur_cure<-
+  database<-Generation_un_ech(n=n,lambda=lambda,t_star=t_star,p=p,k=k)
+  estimateur_bern<-fonction_Bern(df=database)
+  estimateur_surv<-fonction_KM(df=database)
   # on prepare une liste avec les deux estimateurs calcules
-  liste_biais<-list(estimateur_cure,estimateur_survie)
-  names(liste_biais)<-c("Modele_guerison","Modele_survie")
+  liste_biais<-list(estimateur_bern,estimateur_survie)
+  names(liste_biais)<-c("Modele_bernoulli","Modele_survie")
   return(liste_biais)
 }
 
