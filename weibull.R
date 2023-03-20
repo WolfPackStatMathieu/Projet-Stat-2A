@@ -6,13 +6,13 @@ test_simul_weibull<-simul_weibull(50, 0.5, 1)
 
 
 
-fonction_biais_survie_weibull<-function(n,lambda,k,t_star){
+#fonction_biais_survie_weibull<-function(n,lambda,k,t_star){
   #### Calcul du biais de la probabilite de toxicite estimee par la fonction simul_survie.
   ### Comparaison avec la fonction de repartition d'une exp(lambda) en t_star.
-  estimateur<-simul_survie_weibull(n,lambda,k,t_star)
-  valeur_theorique<-pweibull(t_star,scale=1/lambda,shape=k)
-  return(estimateur-valeur_theorique)
-}
+ # estimateur<-simul_survie_weibull(n,lambda,k,t_star)
+#  valeur_theorique<-pweibull(t_star,scale=1/lambda,shape=k)
+#  return(estimateur-valeur_theorique)
+#}
 N<-20
 lambda_test<-1/3
 k<-3
