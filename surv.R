@@ -4,7 +4,7 @@ library(roxygen2)
 source("bernoulli.R")
 source("weibull.R")
 source("generation_echantillon/generation_echantillon.R")
-source("estimateurs/mod_bernoulli.R")
+source("estimateurs/estimateur_cure.R")
 ############################# Premiere modelisation du modele de survie #############
 ############################## avec une loi exponentielle et t
 #' @examples
@@ -27,9 +27,10 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   database<-Generation_un_ech(n=n,lambda=lambda,t_star=t_star,p=p,k=k)
   estimateur_bern<-fonction_Bern(df=database)
   estimateur_surv<-fonction_KM(df=database)
+  estimateur_cure<-fonction_cure(df=database)
   # on prepare une liste avec les deux estimateurs calcules
-  liste_biais<-list(estimateur_bern,estimateur_survie)
-  names(liste_biais)<-c("Modele_bernoulli","Modele_survie")
+  liste_biais<-list(estimateur_bern,estimateur_survie,estimateur_cure)
+  names(liste_biais)<-c("Modele_bernoulli","Modele_survie","Modele_guerison")
   return(liste_biais)
 }
 
@@ -70,8 +71,9 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   #taille n. 
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
   # on donne un nom aux deux colonnes
-  df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
+  df_biases$Modele_bernoulli<-as.numeric(df_biases$Modele_bernoulli)
   df_biases$Modele_survie<-as.numeric(df_biases$Modele_survie)
+  df_biases$Model_guerison<-as.numeric(df_biases$Modele_guerison)
   return(df_biases)
 }
 
@@ -86,12 +88,13 @@ Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
   data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
   # on va calculer le biais moyen. On prépare donc un vecteur pour stocker les
   # deux biais moyens
-  result<-rep(NA,2)
+  result<-rep(NA,3)
   #on calcule les biais moyens
   result<-colMeans(data)
   # Rappel : biais = estimateur - valeur théorique
   result[1]<-result[1]-p
   result[2]<-result[2]-p
+  result[3]<-result[3]-p
   return(result)
 }
 test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)

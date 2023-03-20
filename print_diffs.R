@@ -11,7 +11,7 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   names(liste_param)<-c("lambda","t_star","k","p")
   result<-fonction_generation_taille_mean(vector_size,liste_param,K)
   result$taille<-vector_size
-  colnames(result)<-c("Mean_Bias_Cure","Mean_Bias_Surv","Size")
+  colnames(result)<-c("Mean_Bias_Bernoulli","Mean_Bias_Surv","Mean_Bias_Cure","Size")
   ####plot 
   borne_min<-min(min(result$Mean_Bias_Cure),min(result$Mean_Bias_Surv))
   borne_max<-max(max(result$Mean_Bias_Cure),max(result$Mean_Bias_Surv))
