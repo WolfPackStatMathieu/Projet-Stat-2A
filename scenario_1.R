@@ -102,14 +102,15 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   
   # Créer un dataframe à partir de la matrice de moyennes
   result_final <- data.frame(t(means_matrix), n)
-  colnames(result_final) <- c("modele_guerison", "modele_survie", "taille_echantillon")
+  colnames(result_final) <- c("modele_bernoulli","modele_survie", "modele_guerison", "taille_echantillon")
   # plot 
-  borne_min <- min(result_final$modele_guerison, result_final$modele_survie)
-  borne_max <- max(result_final$modele_guerison, result_final$modele_survie)
+  borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
 
   gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
+    geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1)+
     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -134,7 +135,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 plots_scenario_1(K=50, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 10000, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=2)
 
 
 
