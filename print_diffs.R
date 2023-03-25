@@ -133,8 +133,8 @@ print(pexp(t_star,beta=1/lambda7))
 lmoins<-1
 l_plus<-100
 shape<-1
-N<-20
-test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
+N<-2
+test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=0.7,t_star=t_star,K=k,sh=shape)
 shape2<-3
 lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
 test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambdaweibull,t_star=t_star,K=k,sh=shape2)

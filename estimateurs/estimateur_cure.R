@@ -11,6 +11,8 @@ fonction_cure<-function(df,t_star){
   df$sensible<-as.numeric(df$sensible)
   probabilite_etre_sensible<-mean(df$sensible)
   df<-df[,c("tox_time","is_observed")]
+  id_obs<-which(df$is_observed==1)
+  if (length(id_obs)>0){
   result<-flexsurvcure(surv_object ~1, data = df, link="logistic", dist="weibullPH", mixture=T)
   shape_model<-result[["coefficients"]][["shape"]]
   scale<-result[["coefficients"]][["scale"]]
@@ -20,7 +22,12 @@ fonction_cure<-function(df,t_star){
   #1 modele de melange#
   # pour les sensibles#
   probabilitegroup1<-probabilite_etre_sensible*probabilite_survenue_sensible
+  probabilitegroup2<-1-probabilite_etre_sensible}
+  else{
+  ### nous sommes sûrs que tous les individus sont censurés donc que S(t_star)=1.###
+  probabilitegroup1<-probabilite_etre_sensible*1
   probabilitegroup2<-1-probabilite_etre_sensible
+  }
   probabilite_DLT<-1-(probabilitegroup1+probabilitegroup2)
   return(probabilite_DLT)
 }

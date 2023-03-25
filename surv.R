@@ -73,7 +73,7 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   # on donne un nom aux deux colonnes
   df_biases$Modele_bernoulli<-as.numeric(df_biases$Modele_bernoulli)
   df_biases$Modele_survie<-as.numeric(df_biases$Modele_survie)
-  df_biases$Model_guerison<-as.numeric(df_biases$Modele_guerison)
+  df_biases$Modele_guerison<-as.numeric(df_biases$Modele_guerison)
   return(df_biases)
 }
 
