@@ -1,7 +1,7 @@
 source("generation_echantillon/generation_echantillon.R")
 fonction_KM<-function(df,t_star){
   df<-df[,c("tox_time","is_observed")]
-  surv_object<-Surv(df$tox_time,event=df$is_observed)
+  surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   fit <- survfit(surv_object ~1, data = df)
   # on cherche a recuperer les donnees au temps T=6
   #afin de pouvoir tracer la droite Toxicite =f(dose)

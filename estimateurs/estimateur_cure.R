@@ -6,7 +6,7 @@ library(flexsurvcure)
 
 ####### Fonction ######
 fonction_cure<-function(df,t_star){
-  surv_object<-Surv(df$tox_time,event=df$is_observed)
+  surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   ## group correspond au groupe des personnes à risque ou non. 
   df$sensible<-as.numeric(df$sensible)
   probabilite_etre_sensible<-mean(df$sensible)

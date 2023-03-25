@@ -27,9 +27,9 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   database<-Generation_un_ech(n=n,lambda=lambda,t_star=t_star,p=p,k=k)
   estimateur_bern<-fonction_Bern(df=database)
   estimateur_surv<-fonction_KM(df=database)
-  estimateur_cure<-fonction_cure(df=database)
+  estimateur_cure<-fonction_cure(df=database,t_star=t_star)
   # on prepare une liste avec les deux estimateurs calcules
-  liste_biais<-list(estimateur_bern,estimateur_survie,estimateur_cure)
+  liste_biais<-list(estimateur_bern,estimateur_surv,estimateur_cure)
   names(liste_biais)<-c("Modele_bernoulli","Modele_survie","Modele_guerison")
   return(liste_biais)
 }
@@ -77,7 +77,7 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   return(df_biases)
 }
 
-test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,0.33,2)
+test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,p=0.33,k=2)
 test_several_times<-Simuler_biais_taillen(n=100,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
 

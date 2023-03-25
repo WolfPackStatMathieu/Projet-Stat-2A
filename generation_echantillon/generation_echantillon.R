@@ -2,7 +2,7 @@ library(survival)
 require(flexsurvcure)
 source("surv.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
-  vecteur_censure<-simul_bernoulli(n,p) 
+  vecteur_censure<-rbinom(n,1,p)
   vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
   # l'estimateur du modele de guerison est la moyenne des 1 du vecteur_censure
   # on cree un dataframe qui acolle la DLT au vecteur_temps
