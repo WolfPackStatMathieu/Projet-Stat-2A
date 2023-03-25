@@ -56,7 +56,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   # boxplot
   boxplot <- ggplot(df, aes(x = modele, y = valeurs, fill = modele)) + 
     geom_violin(alpha = 0.8) +
-    scale_fill_manual(values = c("#0072B2", "#E69F00")) +
+    scale_fill_manual(values = c("#0072B2", "#E69F00","Sky blue")) +
     theme_classic()+
     ylim(borne_min, borne_max)
   
