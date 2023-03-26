@@ -126,7 +126,7 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
     labs(caption = sprintf("lambda = %s, k = %s, p=%s" , 
                       as.character(lambda), 
                       as.character(k),
-                      as.character(p)))
+                      as.character(p)),title = "Evolution de l'EQM")
     result[[j]]<-essai
   }
   return(result)
@@ -174,3 +174,4 @@ nb_doses<-2
 lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+test_print_mult_doses[[1]]
