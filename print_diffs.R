@@ -110,6 +110,9 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
   EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-rep(NA,nombre_doses)
+  collage<-""
+  final_print<-c()
+  collection_1<-c()
   for (j in c(1:nombre_doses)){
     data<-EQM[[j]]
     minimum<-min(data)
@@ -117,7 +120,7 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
     k<-liste_parameter[[j]][["k"]]
     lambda<-liste_parameter[[j]][["lambda"]]
     p<-liste_parameter[[j]][["p"]]
-    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+    essai<-{ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
     geom_line()+
     geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
     geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
@@ -126,9 +129,8 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
     labs(caption = sprintf("lambda = %s, k = %s, p=%s" , 
                       as.character(lambda), 
                       as.character(k),
-                      as.character(p)))
+                      as.character(p)))}
     print(essai)
-    result[j]<-essai
   }
 }
 ######Test ######
@@ -174,3 +176,4 @@ nb_doses<-2
 lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+plot(test_print_mult_doses[1])
