@@ -10,10 +10,16 @@ fonction_cure<-function(df,t_star){
   ## group correspond au groupe des personnes à risque ou non. 
   df$sensible<-as.numeric(df$sensible)
   probabilite_etre_sensible<-mean(df$sensible)
-  df<-df[,c("tox_time","is_observed")]
-  id_obs<-which(df$is_observed==1)
+  id_sensible<-which(df$sensible==1)
+  if(length(id_sensible)==0){
+    ## si l'ensemble des individus est insensible au risque, la probabilite DLT est nulle. 
+    probabilite_DLT<-0
+    return(probabilite_DLT)
+  }
+  df2<-df[id_sensible,]
+  id_obs<-which(df2$is_observed==1)
   if (length(id_obs)>0){
-  result<-flexsurvcure(surv_object ~1, data = df, link="logistic", dist="weibullPH", mixture=T)
+  result<-flexsurvcure(surv_object ~1, data = df2, link="logistic", dist="weibullPH", mixture=T)
   shape_model<-result[["coefficients"]][["shape"]]
   scale<-result[["coefficients"]][["scale"]]
   ### la valeur de scale peut être négative. Le scale correspond aux covariables. 
