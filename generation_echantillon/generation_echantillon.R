@@ -1,4 +1,8 @@
 library(survival)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9a975411a4f9eb1e2fa5cd10ae63fa4742ad4522
 library(flexsurvcure)
 
 
@@ -9,7 +13,7 @@ source("surv.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-rbinom(n,1,p)
   vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
-  # l'estimateur du modele de guerison est la moyenne des 1 du vecteur_censure
+  # l'estimateur du modele de Bernoulli est la moyenne des 1 du vecteur_censure
   # on cree un dataframe qui acolle la DLT au vecteur_temps
   df<-cbind.data.frame(vecteur_censure,vecteur_temp)
   #on les renomme
@@ -39,4 +43,7 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
 ############# TEST #####
 generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9a975411a4f9eb1e2fa5cd10ae63fa4742ad4522

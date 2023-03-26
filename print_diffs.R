@@ -1,7 +1,8 @@
 ##### Import fonctions.#####
 source("generation_mean.R")
 set.seed(133)
-######Ne doit plus d?pendre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
+######Ne doit plus dependre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
+
 fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   #### N corresponds to the number of sizes. K correspond to the number of samples for each size. 
   require(gridExtra)
