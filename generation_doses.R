@@ -1,5 +1,6 @@
 source("generation_mean.R")
 source("surv.R")
+source("estimateurs/estimateur_cure.R")
 #### Ne doit plus dépendre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
@@ -19,30 +20,28 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   df<-matrix(NA,n,3)
   df<-as.data.frame(df)
   data_returns<-as.data.frame(matrix(NA,nb_doses,3))
-  colnames(data_returns)<-c("estimateur_guerison","estimateur_modele_survie","p")
+  colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
   colnames(df)<-c("dose","obs","temps")
   df$dose<-sample(c(1:nb_doses))
   for (k in c(1:nb_doses)){
     index_dosek<-which(df$dose==k)
     sous_liste<-liste_params[[k]]
     df[index_dosek,"obs"]<-simul_bernoulli(length(index_dosek),sous_liste[["p"]])
-    estimateur_cure<-mean(df[index_dosek,"obs"])
+    estimateur_bern<-mean(df[index_dosek,"obs"])
     df[index_dosek,"temps"]<-ifelse(df[index_dosek,"obs"]==1,NA,t_star)
     index_obs_dosek<-which(df$dose==k & df$obs==1)
     vect1<-df[index_dosek,"obs"]
-    print(vect1)
     print("------")
     if(length(index_obs_dosek)>=1){
       df[index_obs_dosek,"temps"]<-simul_weibull(length(index_obs_dosek),lambda=sous_liste[["lambda"]],k=sous_liste[["k"]])
-      df[index_obs_dosek,"temps"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,df[index_obs_dosek,"temps"],t_star)
       df[index_obs_dosek,"obs"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,1,0)}
     vect2<-df[index_dosek,"obs"]
-    print(vect2)
+    estimateur_cure<-fonction_cure(df,t_star=t_star)
     data_dosek<-df[index_dosek,c("temps","obs")]
     data_dosek$temps<-as.numeric(data_dosek$temps)
     estimateur_surv<-Calcul_estim_depuis_df(data_dosek,nom_col_obs = "obs",nom_coltemps = "temps")
-    estimateur_surv_cure<-c(estimateur_cure,estimateur_surv)
-    ligne_dosek<-c(estimateur_surv_cure,sous_liste[["p"]])
+    estimateurs<-c(estimateur_bern,estimateur_surv,estimateur_cure)
+    ligne_dosek<-c(estimateurs,sous_liste[["p"]])
     data_returns[k,]<-ligne_dosek
   }
   return(data_returns)
@@ -58,8 +57,9 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   for(j in c(1:nb_doses)){
     ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
     ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
     ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
-    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_modele_survie)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
     ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
     print(ensemble_obs_dosek)
     matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
@@ -140,3 +140,4 @@ graph2<-graph2 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bi
 fig<-subplot(graph1,graph2,nrows=2) 
 fig<-fig %>% layout(plot_bgcolor='#e5ecf6')
 fig
+

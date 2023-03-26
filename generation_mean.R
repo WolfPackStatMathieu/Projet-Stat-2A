@@ -20,6 +20,7 @@ fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   p<-liste_parameter[["p"]]
   value_means$Modele_survie<-value_means$Modele_survie-p
   value_means$Modele_guerison<-value_means$Modele_guerison-p
+  value_means$Modele_bernoulli<-value_means$Modele_bernoulli-p
   return(value_means)
   ##if (model=="bernoulli"){
     ##vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,p=liste_parameter[["p"]])

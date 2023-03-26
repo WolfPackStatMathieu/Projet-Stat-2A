@@ -12,7 +12,7 @@ fonction_compar_plots<-function(limit_inf,limit_sup,N,p,lambda,t_star,K,sh){
   names(liste_param)<-c("lambda","t_star","k","p")
   result<-fonction_generation_taille_mean(vector_size,liste_param,K)
   result$taille<-vector_size
-  colnames(result)<-c("Mean_Bias_Cure","Mean_Bias_Surv","Size")
+  colnames(result)<-c("Mean_Bias_Bernoulli","Mean_Bias_Surv","Mean_Bias_Cure","Size")
   ####plot 
   borne_min<-min(min(result$Mean_Bias_Cure),min(result$Mean_Bias_Surv))
   borne_max<-max(max(result$Mean_Bias_Cure),max(result$Mean_Bias_Surv))
@@ -56,6 +56,8 @@ NSimulations.selon.n<-function(N,lambda,t_star,p,k){
   }
   return(results)
 }
+NSimulations.selon.n(K, lambda, t_star, p, k)
+
 fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
   #' Plot des valeurs des biais moyens selon la taille des echantillons et du lambda.
   #'
@@ -132,8 +134,8 @@ print(pexp(t_star,beta=1/lambda7))
 lmoins<-1
 l_plus<-100
 shape<-1
-N<-20
-test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambda7,t_star=t_star,K=k,sh=shape)
+N<-2
+test_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=0.7,t_star=t_star,K=k,sh=shape)
 shape2<-3
 lambdaweibull<-(-log(1-p2))^(1/shape2)/t_star
 test2_plot<-fonction_compar_plots(limit_sup = l_plus,limit_inf = lmoins,N=N,p=p2,lambda=lambdaweibull,t_star=t_star,K=k,sh=shape2)
