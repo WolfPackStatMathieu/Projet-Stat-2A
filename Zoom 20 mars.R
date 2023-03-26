@@ -155,7 +155,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   }
   transformation <- m-1
   estimateur_survie <- transformation / 100
-  # on prepare une liste avec les deux estimateurs calcules
+  # on prepare une liste avec les trois estimateurs calcules
   liste_biais<-list(estimateur_cure,estimateur_survie)
   names(liste_biais)<-c("Modele_guerison","Modele_survie")
   return(liste_biais)
