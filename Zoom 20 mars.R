@@ -25,7 +25,9 @@ tp.surv <- function(obj, times)
     # on recupere les colonnes time, surv, lower, upper et std.err
     y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
     # y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
-    # on applique la fonction tpS.surv sur times. cf la definition de la fonction
+    # on applique la fonction tpS.surv sur times.
+    # tps.surv(y,z) retourne la ligne de y precedent time=z 
+    # on le fait pour chaque valeur du vecteur times
     res <- t(sapply(times,function(z,y){tps.surv(y,z)},y=y))
   } else
   {
@@ -58,6 +60,7 @@ clep <- function(x,y)
   # la derniere ligne où time est inferieur a x
   return(b)
 }
+
 extps.surv <- function(obj, times)
 {
   y <- obj
