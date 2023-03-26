@@ -2,12 +2,30 @@
 
 ## utils.r
 
-tp.surv <- function(obj, times)
+tp.surv <- function(obj, times) 
+  # obj est un objet de type survfit(Surv_object)
+  # times est (a priori) un vecteur de temps
+  
+  # # premier cas: pas de groupe
+  # df<-Generation_un_ech(n=10,lambda=0.1,p=0.5,k=1,t_star=6)
+  # obj_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+  # obj <- survfit(Surv(as.numeric(df$tox_time),event=df$is_observed) ~1, data = df)
+  # x <- summary(obj)
+  # y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
+  
 {
-  x <- summary(obj)
+  x <- summary(obj) #Returns a list containing the survival curve, confidence 
+  # limits for the curve, and other information.
+  #Deux traitements: avec groupes selon les covariables (="strata") ou sans.
+  # ex: x <- survfit( Surv(futime, fustat)~1, data=ovarian) # pas de groupe
+  # x <- survfit( Surv(futime, fustat)~rx, data=ovarian) # deux groupes selon rx
+  # x$strata
   if(is.null(x$strata))
   {
+    # on recupere les colonnes time, surv, lower, upper et std.err
     y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
+    # y <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
+    # on applique la fonction tpS.surv sur times. cf la definition de la fonction
     res <- t(sapply(times,function(z,y){tps.surv(y,z)},y=y))
   } else
   {
@@ -22,10 +40,22 @@ tp.surv <- function(obj, times)
   return(res)
 }
 clep <- function(x,y)
+  # prend en entree 
+  # x : la colonne time
+  # y : colonne "time" d un summary(survit(Surv(Genretation_un_ech)))
+  # retourne un vecteur de 0 et un seul 1, avec le 1 apparaissant a la derniere
+  # ligne ou "time" est plus petit que x (le temps fourni)
+  # x <- 3
+  # y <- y[,1]
+  # a <- which(y[,1]<=x)
+  # b <-  rep(0,length(y))
+  # b[a[length(a)]] <- 1
 {
-  a <- which(y<=x)
-  b <- rep(0,length(y))
-  b[a[length(a)]] <- 1
+  a <- which(y<=x) # identifier les lignes où "time" est inferieur au time du x
+  # OR les temps sont classés par ordre decroissant
+  b <- rep(0,length(y)) # autant de 0 que de y
+  b[a[length(a)]] <- 1 # on met 1 à l indice identifie par a[length(a)], qui est
+  # la derniere ligne où time est inferieur a x
   return(b)
 }
 extps.surv <- function(obj, times)
@@ -39,13 +69,27 @@ extps.surv <- function(obj, times)
   return(y[,1:6])
 }
 
-tps.surv <- function(obj, time)
-{
-  y <- rbind(c(0,1,NA,NA,NA),obj)
+tps.surv <- function(obj, time)  # obj est un objet de type survfit(surv_object))
+  # dont on a recupere les colonnes time, surv, lower, upper et std.err
+  
+  df<-Generation_un_ech(n=10,lambda=0.1,p=0.5,k=1,t_star=6)
+  obj_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+  obj <- survfit(Surv(as.numeric(df$tox_time),event=df$is_observed) ~1, data = df)
+  x <- summary(obj)
+  obj <- as.data.frame(cbind(x$time,x$surv,x$lower,x$upper,x$std.err))
+  y<- rbind(c(0,1,NA,NA,NA),obj)
   names(y) <- c("time","surv","lower","upper","se")
-  y$indic <- clep(time,y[,1])
+  y$indic <- clep(3,y[,1])
+  
+  
+{
+  y <- rbind(c(0,1,NA,NA,NA),obj) # on ajoute en ligne 1 une ligne supplementaire
+  # elle correspond à temps = 0 et taux de survie = 100 pourcent
+  names(y) <- c("time","surv","lower","upper","se") # on renomme les colonnes
+  y$indic <- clep(time,y[,1]y[,1]) # on ajoute une variable indicatrice avec 1 lorsque le temps y de l echantillon
+  # est plus petit que le temps x
   y <- y[y$indic==1,]
-  y <- cbind(time,y)
+  y <- cbind(time,y) 
   names(y)[1:2] <- c("time","lastev.time")
   return(y[,1:6])
 }
