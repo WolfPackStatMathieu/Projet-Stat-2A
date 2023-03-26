@@ -132,7 +132,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
-plots_scenario_1(K=50, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=10000, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 biais.selon.taille_echantillon(K = 10000, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
