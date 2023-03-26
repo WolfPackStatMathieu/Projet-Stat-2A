@@ -1,10 +1,10 @@
 library(survival)
-<<<<<<< HEAD
+
 library(flexsurvcure)
 
 
 ?flexsurvcure()
-=======
+
 require(flexsurvcure)
 source("surv.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
@@ -40,4 +40,3 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
 ############# TEST #####
 generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
 
->>>>>>> 601c58de332dcea4e1eacc3d0cdd2769bc79efe2
