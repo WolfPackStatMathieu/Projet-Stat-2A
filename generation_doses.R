@@ -17,33 +17,31 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
 }
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){
-  df<-matrix(NA,n,3)
+  df<-matrix(NA,n,4)
   df<-as.data.frame(df)
-  data_returns<-as.data.frame(matrix(NA,nb_doses,3))
+  data_returns<-as.data.frame(matrix(NA,nb_doses,4))
   colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
-  colnames(df)<-c("dose","obs","temps")
-  df$dose<-sample(c(1:nb_doses))
+  colnames(df)<-c("dose","sensible","tox_time","is_observed")
+  df$dose<-as.factor(sample(c(1:nb_doses)))
   for (k in c(1:nb_doses)){
     index_dosek<-which(df$dose==k)
     sous_liste<-liste_params[[k]]
-    df[index_dosek,"obs"]<-simul_bernoulli(length(index_dosek),sous_liste[["p"]])
-    estimateur_bern<-mean(df[index_dosek,"obs"])
-    df[index_dosek,"temps"]<-ifelse(df[index_dosek,"obs"]==1,NA,t_star)
-    index_obs_dosek<-which(df$dose==k & df$obs==1)
-    vect1<-df[index_dosek,"obs"]
-    print("------")
-    if(length(index_obs_dosek)>=1){
-      df[index_obs_dosek,"temps"]<-simul_weibull(length(index_obs_dosek),lambda=sous_liste[["lambda"]],k=sous_liste[["k"]])
-      df[index_obs_dosek,"obs"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,1,0)}
-    vect2<-df[index_dosek,"obs"]
-    estimateur_cure<-fonction_cure(df,t_star=t_star)
-    data_dosek<-df[index_dosek,c("temps","obs")]
-    data_dosek$temps<-as.numeric(data_dosek$temps)
-    estimateur_surv<-Calcul_estim_depuis_df(data_dosek,nom_col_obs = "obs",nom_coltemps = "temps")
-    estimateurs<-c(estimateur_bern,estimateur_surv,estimateur_cure)
-    ligne_dosek<-c(estimateurs,sous_liste[["p"]])
-    data_returns[k,]<-ligne_dosek
+    n_k<-length(index_dosek)
+    df[index_dosek,]<-cbind(rep(k,n_k),Generation_un_ech(n=n_k,lambda=sous_liste[["lambda"]],t_star=t_star,p=sous_liste[["p"]],k=sous_liste[["k"]]))
+    data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
+    data_returns[k,"p"]<-sous_liste[["p"]]
   }
+  fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+  fit_surv <- survfit(fonction_surv ~dose, data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose, data = df, link="logistic", dist="weibullPH", mixture=T) 
+  Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
+  estimation_cure<-rep(NA,nb_doses)
+  estimation_surv<-rep(NA,nb_doses)
+  for (j in c(1:nb_doses)){
+    indice<-which(Predicted_survival_prob$dose==j)
+    estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
+    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+  data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
 

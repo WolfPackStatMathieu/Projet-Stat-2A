@@ -1,5 +1,8 @@
 library(survival)
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9a975411a4f9eb1e2fa5cd10ae63fa4742ad4522
 library(flexsurvcure)
 
 
@@ -40,3 +43,7 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
 ############# TEST #####
 generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9a975411a4f9eb1e2fa5cd10ae63fa4742ad4522
