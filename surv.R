@@ -68,7 +68,7 @@ Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   return(df_biases)
 }
 
-test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,p=0.33,k=1)
+test_retour<-Simuler_biais_un_n_ech(n=10,lambda=0.5,t_star=6,p=0.5,k=2)
 test_several_times<-Simuler_biais_taillen(n=100,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 N<-100
 

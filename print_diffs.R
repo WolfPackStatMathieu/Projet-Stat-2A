@@ -1,4 +1,5 @@
 ##### Import fonctions.#####
+rm(list=ls())
 source("generation_mean.R")
 source("generation_doses.R")
 set.seed(133)
@@ -108,7 +109,8 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
   require(gridExtra)
   vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
   vector_size<-vector_size[order(vector_size)]
-  EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,vecteur_parametres=liste_parameter,K=N)
+  EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,
+                                vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
@@ -159,7 +161,7 @@ test_compar_lambda<-fonction_compar_plotsn_lambda(N,window_lambda,t_star,p=p,k=k
 ##### test, print avec plusieurs doses. #####
 N<-20
 p<-0.33
-lamdba_test<-0.33
+lambda_test<-0.33
 t_star<-6
 k1<-1
 liste_parameter<-list(lambda_test,t_star,p,k1)
@@ -175,4 +177,4 @@ nb_doses<-2
 lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
-test_print_mult_doses[[1]]
+test_print_mult_doses[[2]]

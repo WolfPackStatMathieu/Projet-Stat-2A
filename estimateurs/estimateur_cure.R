@@ -28,7 +28,7 @@ fonction_cure<-function(df,t_star){
 # on cree un surv_object a partir du dataframe
 #surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
 # on estime la probabilite d avoir fait une DTL avant t_star avec la fonction flexsurvecure
-#result<-flexsurvcure(surv_object ~1, data = df, link="logistic", dist="weibullPH", mixture=T) 
+#result<-flexsurvcure(Surv(rectime,censrec)~1, data=bc, dist="weibullPH")
 # on recupere l estimation en t_star
 #appel_cure<-fonction_cure(df,t_star=6)
 #mean(df$is_observed)

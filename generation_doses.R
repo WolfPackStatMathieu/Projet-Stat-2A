@@ -1,6 +1,7 @@
 source("generation_mean.R")
 source("surv.R")
 source("estimateurs/estimateur_cure.R")
+set.seed(133)
 #### Ne doit plus dépendre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
@@ -15,6 +16,30 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
   names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
+#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
+fonction_generation_eqm<-function(vector_size,liste_parameter,K){
+  ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
+  vector_size<-vector_size[order(vector_size)]
+  ##### id?e. 
+  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+                     p=liste_parameter[["p"]],k=liste_parameter[["k"]])
+  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
+  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
+  value_eqm<-(value_means)^(2)+value_variance
+  return(value_eqm)
+}
+N<-10
+vecteur_size<-sample(c(1:100),N)
+lamdba_test<-3
+t_star<-6
+p<-0.33
+k<-1
+liste_parameter<-list(lambda_test,t_star,p=p,k)
+names(liste_parameter)<-c("lambda","t_star","p","k")
+K2<-20
+test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
+
+##############################################################
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   df<-matrix(NA,n,4)
@@ -44,8 +69,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
-
-set.seed(133)
+###########################################
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   ### Génère la moyenne des estimateurs pour la taille n
   result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
@@ -102,7 +126,7 @@ test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_d
 N<-20
 p<-0.33
 vecteur_size<-sample(c(1:100),N)
-lamdba_test<-0.33
+lambda_test<-0.33
 t_star<-6
 k1<-1
 liste_parameter<-list(lambda_test,t_star,p,k1)
