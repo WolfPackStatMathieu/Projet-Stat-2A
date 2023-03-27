@@ -4,35 +4,6 @@ rm(list = ls())
 source("surv.R")
 library(ggplot2)
 
-plots_scenario <- function(K, n, lambda, t_star, p, k){
-  require(gridExtra)
-  # df à 2 colones (modèle de guérison et modèle de survie)
-  res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
-  # Ajouter une abscisse pour le ggplot
-  res$Echantillon <- c(1:K)
- 
-  # plot 1 - modèle de guérison
-  gg1 <- ggplot(data = res, aes(x = Echantillon, y = Modele_guerison))+
-    geom_point(col = "blue1")+
-    labs(x = "Echantillon", y = "Biais moyen ")+
-    ggtitle("Modèle de guérison")+
-    theme_classic()
-  
-  # plot 1 - modèle de survie
-  gg2 <- ggplot(data = res, aes(x = Echantillon, y = Modele_survie))+
-    geom_point(col = "red1")+
-    labs(x = "Echantillon", y = "Biais moyen ")+
-    ylim(range(res$Modele_guerison))+
-    ggtitle("Modèle de survie")+
-    theme_classic()
-  
-  # Sur un même plan
-  whole_g <- grid.arrange(gg1, gg2, ncol = 2, top = "Comparaison du biais moyen des 2 méthodes pour N échantillons")
-  # return(whole_g)
-  return(res)
-  
-}
-
 
 plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(ggplot2)
