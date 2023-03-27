@@ -101,12 +101,6 @@ test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K
 
 
 
-
-
-
-
-
-
 tp.surv <- function(obj, times)
 {
   x <- summary(obj)
