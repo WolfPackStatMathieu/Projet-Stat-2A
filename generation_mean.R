@@ -15,7 +15,7 @@ fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   #on réordonne vector_size par ordre des tailles d'echantillon
   vector_size<-vector_size[order(vector_size)]
   ##### id?e. 
-  Value_bias<-lapply(cl=cores,vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                       p=liste_parameter[["p"]],k=liste_parameter[["k"]])
   value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
   p<-liste_parameter[["p"]]

@@ -1,4 +1,5 @@
 source("generation_echantillon/generation_echantillon.R")
+source("utils.R")
 fonction_KM<-function(df,t_star){
   df<-df[,c("tox_time","is_observed")]
   surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)

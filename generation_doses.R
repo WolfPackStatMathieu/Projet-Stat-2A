@@ -1,6 +1,7 @@
 source("generation_mean.R")
 source("surv.R")
 source("estimateurs/estimateur_cure.R")
+source("utils.R")
 set.seed(133)
 #### Ne doit plus dépendre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
