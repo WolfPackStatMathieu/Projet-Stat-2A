@@ -32,6 +32,10 @@ tp.surv <- function(obj, times)
   } else
   {
     res <- NULL
+    # x$strata va recuperer le nombre d individus dans chaque groupe
+    # table(x$strata) indique combien il y a de groupes de n individus
+    # cumsum(table(x$strata)) donne le nombre de groupes de n individus, en cumulant
+    # avec c(0,cumsum(table(x$strata))), on fait commencer à 0 le cumsum()
     ld <- c(0,cumsum(table(x$strata)))
     for(i in 1:(length(ld)-1))
     {
