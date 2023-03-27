@@ -39,6 +39,7 @@ tp.surv <- function(obj, times)
     ld <- c(0,cumsum(table(x$strata)))
     for(i in 1:(length(ld)-1))
     {
+      # separation des groupes et applcation de tps.surv pour chaque groupe, avec le vecteur times
       y <- as.data.frame(matrix(cbind(x$time,x$surv,x$lower,x$upper,x$std.err)[(1+ld[i]):ld[i+1],],ncol=5))
       res[[i]] <- t(sapply(times,function(z,y){tps.surv(y,z)},y=y))
     }
