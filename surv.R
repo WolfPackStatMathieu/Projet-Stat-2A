@@ -1,6 +1,8 @@
 library(survival)
 source("generation_echantillon/generation_echantillon.R")
 source("estimateurs/estimateur_cure.R")
+source("estimateurs/mod_bernoulli.R")
+source("estimateurs/estimateur_KM.R")
 ############################# Premiere modelisation du modele de survie #############
 simul_exp<-function(n,lambda){
   ###generer un echantillon de taille n suivant une loi exponentielle de parametre lambda.
