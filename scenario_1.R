@@ -38,10 +38,12 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
-  # df à 2 colones (modèle de guérison et modèle de survie)
+  # df à 3 colones (modèle de guérison, modèle de survie, modèle de bernouilli)
   res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
   res <- res - p
   
+  # on renomme les colonnes
+  colnames(res) <- c("Bernouilli", "Survie", "Guérison")
   
   # bornes
   borne_min <- min(res)
@@ -133,9 +135,9 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
-plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=2)
+biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=2)
 
 
 
