@@ -2,6 +2,7 @@
 
 rm(list = ls())
 source("surv.R")
+source("generation_mean.R")
 library(ggplot2)
 
 
@@ -49,34 +50,20 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
 }
 
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
-  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 50
+  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
   debut <- 10
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
   
-  # On crée une liste de dataframe nulle qu'on va stocker les biais pour 
-  # differentes tailles d'échantillons (n)
-  result <- list()
-  
-  for(i in seq_along(n)){
-    res <- Simuler_biais_taillen(K, n[i], lambda, t_star, p, k)
-    result[[i]] <- res
-  }
-  # On veut la moyenne de chaque de colone pour n taille d'échantillon
-  # qu'on stockera dans une nouvelle dataframe
-  
-  # Initialiser une matrice pour stocker les moyennes de chaque colonne pour chaque dataframe
-  means_matrix <- matrix(0, nrow = ncol(result[[1]]), ncol = length(result))
-  
-  for (i in 1:length(result)) {
-    means_matrix[, i] <- colMeans(result[[i]]) - p
-  }
-  
-  # Créer un dataframe à partir de la matrice de moyennes
-  result_final <- data.frame(t(means_matrix), n)
+  # On calcule le biais pour K simulations et n-échantillons
+  liste_parameter <- list(lambda, t_star, p, k)
+  names(liste_parameter)<-c("lambda","t_star","p","k")
+  result_final <- fonction_generation_taille_mean(vector_size = n, liste_parameter = liste_parameter, K=K)
+  result_final$n <- n
+
   colnames(result_final) <- c("modele_bernoulli","modele_survie", "modele_guerison", "taille_echantillon")
-  # plot 
+  # plot
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
 
@@ -92,12 +79,12 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.title=element_text(size=14),
           plot.title = element_text(size = 12))+
     ylim(borne_min, borne_max)+
-    labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" , 
-                           as.character(K), 
-                           as.character(lambda), 
+    labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
+                           as.character(K),
+                           as.character(lambda),
                            as.character(k),
-                           as.character(debut), 
-                           as.character(fin), 
+                           as.character(debut),
+                           as.character(fin),
                            as.character(pas)))
 
   return(gg)
