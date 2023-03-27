@@ -9,6 +9,7 @@ fonction_cure<-function(df,t_star){
   # retourne la probabilite de ne pas avoir fait de DLT a T_star
   indice_observed<-which(df$is_observed==1)
   if(length(indice_observed)>0){
+  print("chat")
   # on cree un surv_object a partir du dataframe
   surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   # on estime la probabilite d avoir fait une DTL avant t_star avec la fonction flexsurvecure

@@ -1,5 +1,6 @@
 ##### Import fonctions.#####
 source("generation_mean.R")
+source("generation_doses.R")
 set.seed(133)
 ######Ne doit plus dependre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
 
