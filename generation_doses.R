@@ -59,14 +59,12 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
     ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
     ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
     ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
-    print(ensemble_obs_dosek)
     matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
   }
   return(matrice)
 }
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
-  print(nombre_doses)
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
     liste_param<-vecteur_parametres[[indice]]

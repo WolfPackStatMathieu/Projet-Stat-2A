@@ -104,24 +104,30 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
 }
 print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_doses)
 {
+  require(gridExtra)
   vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
   vector_size<-vector_size[order(vector_size)]
   EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
-  result<-{
-  par(mfrow=c(nombre_doses,2))
+  result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
     data<-EQM[[j]]
     minimum<-min(data)
     maximum<-max(data)
-    plot(x=vector_size,y=data$Modele_guerison,xlab="Taille de l'échantillon",ylab="EQM_modele_guerison",ylim=c(minimum,maximum))
-    plot(x=vector_size,y=data$Modele_survie,col="red",ylab="EQM_modele_survie",ylim=c(minimum,maximum))
     k<-liste_parameter[[j]][["k"]]
-    lambda_chat<-round(liste_parameter[[j]][["lambda"]],digits=2)
-    element_lam<-paste("lambda","=",as.character(lambda_chat))
-    legend(x="topright",legend=element_lam,bty="n")
-                                             
-  }
+    lambda<-liste_parameter[[j]][["lambda"]]
+    p<-liste_parameter[[j]][["p"]]
+    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+    geom_line()+
+    geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
+    geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
+    ylim(minimum,maximum)+
+    xlab("Taille echantillon") + ylab("EQM")+
+    labs(caption = sprintf("lambda = %s, k = %s, p=%s" , 
+                      as.character(lambda), 
+                      as.character(k),
+                      as.character(p)),title = "Evolution de l'EQM")
+    result[[j]]<-essai
   }
   return(result)
 }
@@ -168,3 +174,4 @@ nb_doses<-2
 lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+test_print_mult_doses[[1]]

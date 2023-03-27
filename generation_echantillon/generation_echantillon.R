@@ -1,9 +1,4 @@
 library(survival)
-<<<<<<< HEAD
-=======
-
->>>>>>> 9a975411a4f9eb1e2fa5cd10ae63fa4742ad4522
-library(flexsurvcure)
 
 
 ?flexsurvcure()
