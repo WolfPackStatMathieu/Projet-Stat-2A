@@ -21,6 +21,11 @@ fonction_KM<-function(df,t_star){
   return(1-estimateur_survie)
 }
 
-##### TEST ####
-df<-Generation_un_ech(n=10,lambda=0.5,p=0.33,k=1,t_star=6)
+##### TEST : + verification pour remplacer par tp.surv ####
+df<-Generation_un_ech(n=1000,lambda=0.5,p=0.33,k=1,t_star=6)
 estim_KM<-fonction_KM(df)
+
+obj_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+obj <- survfit(Surv(as.numeric(df$tox_time),event=df$is_observed) ~1, data = df)
+estim_KM_new <- tp.surv(obj, 6) [3]
+estim_KM - estim_KM_new[[1]] # pas mal!, on n'avait pas trop mal travaillé
