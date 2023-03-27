@@ -28,9 +28,7 @@ surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
 result<-flexsurvcure(surv_object ~1, data = df, link="logistic", dist="weibullPH", mixture=T) 
 # on recupere l estimation en t_star
 appel_cure<-fonction_cure(df,t_star=6)
-print(appel_cure)
 mean(df$is_observed)
 
 surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
 
-plot(result)

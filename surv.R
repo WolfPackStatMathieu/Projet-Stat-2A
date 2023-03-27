@@ -1,15 +1,7 @@
 library(survival)
-#install.packages("roxygen2")
-library(roxygen2)
-source("bernoulli.R")
-source("weibull.R")
 source("generation_echantillon/generation_echantillon.R")
 source("estimateurs/estimateur_cure.R")
 ############################# Premiere modelisation du modele de survie #############
-############################## avec une loi exponentielle et t
-#' @examples
-#' @return A numeric vector giving number of characters (code points) in each
-#'    element of the character vector. Missing string have missing length.
 simul_exp<-function(n,lambda){
   ###generer un echantillon de taille n suivant une loi exponentielle de parametre lambda.
  return(rexp(n,lambda))
@@ -20,9 +12,6 @@ simul_exp<-function(n,lambda){
 ####################################### Deux estimateurs pour un échantillon crééé. ####################"
 #################################################################################################################################
 
-
-#' @return une liste contenant un estimateur de du modele de guerison et un estimateur
-#' du modele de survie
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   database<-Generation_un_ech(n=n,lambda=lambda,t_star=t_star,p=p,k=k)
   estimateur_bern<-fonction_Bern(df=database)
@@ -148,7 +137,3 @@ tps.surv <- function(obj, time)
   names(y)[1:2] <- c("time","lastev.time")
   return(y[,1:6])
 }
-
-est.t <- tp.surv(fit,6) [3]               # rend estimation de Km au temps 6
-# IC en position 4 et 5
-cure.rate <- 1-est.t                       # calcule estimation de A-S(t) au temps t selon la methode de Kaplan Meier

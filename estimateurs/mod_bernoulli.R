@@ -1,5 +1,4 @@
-source("estimateurs/estimateur_KM.R")
-source("estimateurs/estimateur_cure.R")
+
 fonction_Bern<-function(df){
   return(mean(df$is_observed))
 }
