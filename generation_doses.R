@@ -25,7 +25,7 @@ fonction_generation_eqm<-function(vector_size,liste_parameter,K){
                      p=liste_parameter[["p"]],k=liste_parameter[["k"]])
   value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
   value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
-  value_eqm<-(value_means)^(2)+value_variance
+  value_eqm<-(value_means-p)^(2)+value_variance
   return(value_eqm)
 }
 N<-10
