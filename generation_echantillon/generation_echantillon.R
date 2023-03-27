@@ -1,10 +1,6 @@
 library(survival)
-
-
-?flexsurvcure()
-
 require(flexsurvcure)
-source("surv.R")
+source("weibull.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-rbinom(n,1,p)
   vecteur_temp<-rep(NA,n) # cree un vecteur des temps associ?s
