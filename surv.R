@@ -17,12 +17,7 @@ simul_exp<-function(n,lambda){
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
   database<-Generation_un_ech(n=n,lambda=lambda,t_star=t_star,p=p,k=k)
   estimateur_bern<-fonction_Bern(df=database)
-  # estimateur_surv<-fonction_KM(df=database)
-  obj_surv<-Surv(as.numeric(df$tox_time),event=database$is_observed)
-  obj <- survfit(Surv(as.numeric(df$tox_time),event=df$is_observed) ~1, data = df)
-  estim_KM_new <- tp.surv(obj, 6) [3]
-  estimateur_surv<- estim_KM_new[[1]]
-  
+  estimateur_surv<-fonction_KM(df=database)
   estimateur_cure<-fonction_cure(df=database,t_star=t_star)
   # on prepare une liste avec les deux estimateurs calcules
   liste_biais<-list(estimateur_bern,estimateur_surv,estimateur_cure)
