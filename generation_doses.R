@@ -38,7 +38,6 @@ liste_parameter<-list(lambda_test,t_star,p=p,k)
 names(liste_parameter)<-c("lambda","t_star","p","k")
 K2<-20
 test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
-
 ##############################################################
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){

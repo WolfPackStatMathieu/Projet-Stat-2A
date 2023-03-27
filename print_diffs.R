@@ -126,10 +126,42 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
     geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
     ylim(minimum,maximum)+
     xlab("Taille echantillon") + ylab("EQM")+
-    labs(caption = sprintf("lambda = %s, k = %s, p=%s" , 
+    labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,K=%s" , 
                       as.character(lambda), 
                       as.character(k),
-                      as.character(p)),title = "Evolution de l'EQM")
+                      as.character(p),
+                      as.charater(N)),title = "Evolution de l'EQM")
+    result[[j]]<-essai
+  }
+  return(result)
+}
+print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_doses)
+{
+  require(gridExtra)
+  vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
+  vector_size<-vector_size[order(vector_size)]
+  MEAN<-fonction_simul_doses_mean(vector_size=vector_size,nombre_doses=nombre_doses,
+                                vecteur_parametres=liste_parameter,K=N)
+  vecteur_gg<-rep(NA,nombre_doses)
+  result<-list(rep(NA,nombre_doses))
+  for (j in c(1:nombre_doses)){
+    data<-MEAN[[j]]
+    minimum<-min(data)
+    maximum<-max(data)
+    k<-liste_parameter[[j]][["k"]]
+    lambda<-liste_parameter[[j]][["lambda"]]
+    p<-liste_parameter[[j]][["p"]]
+    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+      geom_line()+
+      geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
+      geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
+      ylim(minimum,maximum)+
+      xlab("Taille echantillon") + ylab("Moyenne")+
+      labs(caption = sprintf("lambda = %s, k = %s, p=%s,K=%s" , 
+                             as.character(lambda), 
+                             as.character(k),
+                             as.character(p),
+                             as.character(N)),title = "Evolution de la moyenne")
     result[[j]]<-essai
   }
   return(result)
@@ -178,3 +210,4 @@ lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
 test_print_mult_doses[[2]]
+test_mean_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
