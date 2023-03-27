@@ -77,7 +77,7 @@ liste_param<-list(prop)
 names(liste_param)<-c("p")
 modele<-"bernoulli"
 k<-20
-test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_param)
+test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=k,liste_parameter = liste_param)
 
 ######## Test Weibull#####
 #N<-100
