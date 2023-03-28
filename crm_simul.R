@@ -16,7 +16,16 @@ crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18)
 infos<-crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="logistic")
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
-plot.mtd(infos)
+
+##estimate to get beta ####
+p<-0.33
+a<-3
+vecteur_dose_scaled<-infos$dosescaled
+beta<-infos$estimate
+vecteur_p<-(1+exp(-a-exp(beta)*vecteur_dose_scaled))^(-1)
+plot(x=c(1:5),y=vecteur_p,xlab="Niveau de la dose",ylab="Probabilite de toxicité",
+     main="Valeur de la toxicité",type="b")
+abline(h=p,col="blue")
 #############calcul_temps.#######
 n<-18
 beta<-0.5
