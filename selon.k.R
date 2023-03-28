@@ -91,11 +91,10 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
     #     col=c("red","black","blue"),
      #     lty=1)
   plot.new()
-  legend("topright",
-    c("0.1","0.2","0.5"),
+  legend("center","0.2","0.5"),
     col=c("red","black","blue"),
     lty=1)
-  mtext("Influence de alpha", side = 3, line = -24, outer = TRUE)
+  title("Influence de alpha")
   
   
   # list_plot[[1]] <- plot_s
