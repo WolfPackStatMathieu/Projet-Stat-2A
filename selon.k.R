@@ -86,10 +86,15 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   lines(RES0.5.3$k,RES0.5.3$mean.bernoulli,type="b",col="blue")
   lines(RES0.1.3$k,RES0.1.3$mean.bernoulli,type="b",col="red")
   abline(h=0)
+  #legend("topright",
+   #      c("0.1","0.2","0.5"),
+    #     col=c("red","black","blue"),
+     #     lty=1)
+  plot.new()
   legend("topright",
-         c("0.1","0.2","0.5"),
-         col=c("red","black","blue"),
-          bty="n")
+    c("0.1","0.2","0.5"),
+    col=c("red","black","blue"),
+    lty=1)
   mtext("Influence de alpha", side = 3, line = -24, outer = TRUE)
   
   
