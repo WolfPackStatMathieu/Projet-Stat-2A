@@ -20,14 +20,14 @@ noms_fonction_surv.R <-c("simul exp",
                          "Simuler biais un n ech",
                          "Calcul estim depuis df",
                          "Simuler biais taillen",
-                         "Calcul biais moyen taillen")
-nodes_surv.R <- data.frame(id=1:5,
+                         "Calcul biais moyen taillen"
+                         ,"plots_scenario_1"
+                         ,"biais.selon.taille_echantillon"
+                         ,"fonction_generation_taille_mean")
+as.data.frame(noms_fonction_surv.R)
+nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
                            #add labels on nodes
-                           label = c("simul exp",
-                                     "Simuler biais un n ech",
-                                     "Calcul estim depuis df",
-                                     "Simuler biais taillen",
-                                     "Calcul biais moyen taillen"),
+                           label = noms_fonction_surv.R,
                            # control shape of nodes
                            shape = "square",
                            # color
@@ -45,4 +45,13 @@ edges <- rbind(edges_simul_exp, edges_simuler_biais_un_n_ech)
 # edges_Calcul_estim_depuis_df vide
 edges_Simuler_biais_taillen<-data.frame(from= c(4), to = c(2))
 edges<-rbind(edges, edges_Simuler_biais_taillen)
+edges_plots_scenario_1 <- data.frame(from = c(6), to = c(4,))
+edges_biais.selon.taille_echantillon <- data.frame(from = c(7), to = c(8))
 visNetwork(nodes, edges, height = "500px", width = "100%")
+
+
+
+
+
+
+
