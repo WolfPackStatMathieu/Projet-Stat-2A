@@ -8,7 +8,6 @@ source("estimateurs/estimateur_KM.R")
 ########### fonction un n_echantillon#####
 fonction_estim_comp_once<-function(p_cause1,p_cause2,n,type1,type2,t_star){
   data<-generation_comp(p_cause1 = p_cause1,p_cause2=p_cause2,t_star=t_star,nombre_obs = n,type1=type1,type2=type2)
-  print(data)
   element<-summary(data$status)
   liste_cause<-element[which(element>0)]
   liste_cause<-liste_cause[order(liste_cause)]
@@ -24,10 +23,10 @@ fonction_estim_comp_once<-function(p_cause1,p_cause2,n,type1,type2,t_star){
   }
   return(liste_estimateur)
 }
-p_cause1<-0.1
-p_cause2<-0.2
+p_cause1<-0.5
+p_cause2<-0.3
 n<-10
-type1<-"constant"
-type2<-"constant"
+type1<-"increasing"
+type2<-"increasing"
 t_star<-6
 test_estim_comp<-fonction_estim_comp_once(p_cause1,p_cause2 = p_cause2,n=n,type1,type2,t_star=t_star)
