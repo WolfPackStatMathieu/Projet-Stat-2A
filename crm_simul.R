@@ -25,20 +25,14 @@ mod_puissance <- crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_
 betaP <- mod_puissance$estimate
 dose <- mod_puissance$dosescaled
 probPrior <- dose^exp(betaP)
-
-plot(x = nom_dose, y = probPrior, 
-     xlab = "Niveau de dose",
-     ylab = "Probabilité de toxicité",
-     main = "Valeur de la toxicité",
-     type = "b")
-abline(h = p, col = "red")
+mod_puissance
 
 
-# Set color palette
+# color palette
 library(RColorBrewer)
 palette <- brewer.pal(8, "Set2")
 
-# Create plot
+# plot
 plot(x = nom_dose, y = vecteur_p, 
      xlab = "Niveau de dose",
      ylab = "Probabilité de toxicité",
