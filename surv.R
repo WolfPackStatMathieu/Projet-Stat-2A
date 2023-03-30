@@ -11,7 +11,7 @@ simul_exp<-function(n,lambda){
 
 
 
-####################################### Deux estimateurs pour un échantillon crééé. ####################"
+####################################### Deux estimateurs pour un ?chantillon cr???. ####################"
 #################################################################################################################################
 
 Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
@@ -26,7 +26,7 @@ Simuler_biais_un_n_ech<-function(n,lambda,t_star,p,k){
 }
 
 
-########## calculer l'estimateur du modèle de survie [POUR EVITER DE le mettre partout.]######
+########## calculer l'estimateur du mod?le de survie [POUR EVITER DE le mettre partout.]######
 # on isole ici une partie du code de la fonction Simuler_biais_un_n_ech
 
 Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
@@ -58,7 +58,7 @@ Calcul_estim_depuis_df<-function(df,nom_col_obs,nom_coltemps){
 Simuler_biais_taillen<-function(K,n,lambda,t_star,p,k){
   # Simuler_biais_un_n_ech retourne le biais du modele de guerison
   # et le biais du modele de survie
-  # on crée un dataframe de K lignes de ces deux biais, pour des échantillons de 
+  # on cr?e un dataframe de K lignes de ces deux biais, pour des ?chantillons de 
   #taille n. 
   df_biases<-as.data.frame(t(cbind.data.frame(sapply(rep(n,K),Simuler_biais_un_n_ech,lambda=lambda,t_star=t_star,p=p,k=k))))
   # on donne un nom aux deux colonnes
@@ -74,21 +74,21 @@ N<-100
 
 ################################# On calcule les biais moyens ici. ###############################################################
 Calcul_biais_moyen_taillen<-function(K,n,lambda,t_star,p,k){
-  # on effectue la simulation des biais pour K échantillons de taille n selon
-  # les deux modèles (de guérison, de survie)
+  # on effectue la simulation des biais pour K ?chantillons de taille n selon
+  # les deux mod?les (de gu?rison, de survie)
   data<-Simuler_biais_taillen(K,n,lambda,t_star,p,k)
-  # on va calculer le biais moyen. On prépare donc un vecteur pour stocker les
+  # on va calculer le biais moyen. On pr?pare donc un vecteur pour stocker les
   # deux biais moyens
   result<-rep(NA,3)
   #on calcule les biais moyens
   result<-colMeans(data)
-  # Rappel : biais = estimateur - valeur théorique
+  # Rappel : biais = estimateur - valeur th?orique
   result[1]<-result[1]-p
   result[2]<-result[2]-p
   result[3]<-result[3]-p
   return(result)
 }
-test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
+# test_biais_moy<-Calcul_biais_moyen_taillen(n=10,lambda=0.5,t_star=6,p=0.33,k=2,K=10)
 
 
 
