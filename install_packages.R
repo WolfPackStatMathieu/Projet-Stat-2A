@@ -26,3 +26,6 @@ pkgLoad <- function( packages = "favourites" ) {
   }
   
 }
+
+
+pkgLoad()
