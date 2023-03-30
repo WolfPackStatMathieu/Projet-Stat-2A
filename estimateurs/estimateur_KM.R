@@ -6,21 +6,7 @@ fonction_KM<-function(df,t_star){
   if(length(indice_cens)==0){return(1)}
   surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   fit <- survfit(surv_object ~1, data = df)
-  # on cherche a recuperer les donnees au temps T=6
-  #afin de pouvoir tracer la droite Toxicite =f(dose)
-  quantile <-quantile(fit)
-  quantile$quantile
-  centiles <- quantile(fit, 1:100/100)
-  cent <-centiles$quantile
-  m<-1
-  individu <- cent[m]
-  # on touche la proportion de tstar au premier NA
-  while (is.na(individu)==FALSE) {
-    individu <- cent[m]
-    m<- m+1
-  }
-  transformation <- m-1
-  estimateur_survie <- transformation / 100
+  estimateur_survie<-1-tp.surv(fit,6)[3][[1]]
   return(estimateur_survie)
 }
 
