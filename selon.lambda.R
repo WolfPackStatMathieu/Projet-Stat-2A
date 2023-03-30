@@ -72,17 +72,17 @@ fonction_compar_plotsn_lambda1 <- function(N, window_lambda, t_star, p, k) {
   library(ggplot2)
   # Generate the data
   set.seed(12345)
-  RES <- biais.selon.lambda(N, window_lambda[1], t_star, p = p, k)
+  RES <- biais.selon.lambda(K=N, lambda=window_lambda[1], t_star=t_star, p = p, k)
   RES0.1.3 <- data.frame(RES)
   colnames(RES0.1.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda(N, window_lambda[2], t_star, p = p, k)
+  RES <- biais.selon.lambda(K=N, lambda=window_lambda[2], t_star=t_star, p = p, k)
   RES0.2.3 <- data.frame(RES)
   colnames(RES0.2.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda(N, window_lambda[3], t_star, p = p, k)
+  RES <- biais.selon.lambda(K=N, lambda=window_lambda[3], t_star, p = p, k)
   RES0.5.3 <- data.frame(RES)
   colnames(RES0.5.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   

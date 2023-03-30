@@ -5,5 +5,5 @@ fonction_Bern<-function(df){
 
 
 ###### TEST #####
-df<-Generation_un_ech(n=50,lambda=0.5,p=0.5,k=1,t_star=6)
-test_bern<-fonction_Bern(df)
+# df<-Generation_un_ech(n=50,lambda=0.5,p=0.5,k=1,t_star=6)
+# test_bern<-fonction_Bern(df)

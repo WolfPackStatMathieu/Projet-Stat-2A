@@ -17,10 +17,6 @@ biais.selon.k <-function(K, n, lambda, t_star,p){
   
 }
 
-
-<<<<<<< HEAD
-=======
-
 fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   #' Plot des valeurs des biais moyens selon la taille des echantillons et du lambda.
   #'
@@ -100,7 +96,6 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 }
 
->>>>>>> d91b5d3264ac880314585a324830ab1e51eb3ed4
 ### C'est la fonction à utiliser pour le plot
 
 fnct_compar_plt_biais.selon.k1 <- function(N, n, window_lambda, t_star, p) {
@@ -286,8 +281,8 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 
 
-fnct_compar_plt_biais.selon.k1(1900, 10, c(0.1, 0.2, 0.5), 6, 0.33)
-fonction_compar_plotsn_lambda1(1900, c(0.1, 0.2, 0.5), 6, 0.33, 1)
+fnct_compar_plt_biais.selon.k1(N=10, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+fonction_compar_plotsn_lambda1(N=10, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
 
 
