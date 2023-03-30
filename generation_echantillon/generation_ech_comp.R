@@ -34,10 +34,10 @@ generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,type1,type2){
   return(data_estim)
 }
 ##### il faut mettre deux p pour chaque dose.#####
-p_cause1<-0.33
-p_cause2<-0.45
-t_star<-6
-nombre_obs<-10
-type1<-"decreasing"
-type2<-"decreasing"
+# p_cause1<-0.33
+# p_cause2<-0.45
+# t_star<-6
+# nombre_obs<-10
+# type1<-"decreasing"
+# type2<-"decreasing"
 # test<-generation_comp(p_cause1,p_cause2,t_star,nombre_obs,type1,type2)
