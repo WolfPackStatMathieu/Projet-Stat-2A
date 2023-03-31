@@ -2,7 +2,7 @@
 
 # can have new features in development version 
 # devtools::install_github("datastorm-open/visNetwork")
-
+rm(list=ls())
 require(visNetwork, quietly = TRUE)
 # minimal example
 # nodes <- data.frame(id = 1:3)
@@ -83,8 +83,14 @@ edges<-rbind(edges, edges_simul_temps_alt)
 # edges<-rbind(edges, edges_simul_weibull)
 edges_Generation_un_ech <- data.frame(from = c(16), to = c(15))
 edges<-rbind(edges, edges_Generation_un_ech)
+# edges_fonction_Bern <- data.frame(from = c(17), to = c())
+# edges<-rbind(edges, edges_fonction_Bern)
+edges_fonction_KM <- data.frame(from = c(18), to = c(10))
+edges<-rbind(edges, edges_fonction_KM)
 
-visNetwork(nodes, edges, height = "500px", width = "100%")
+
+visNetwork(nodes, edges, height = "500px", width = "100%") %>%
+  visEdges(arrows = "to")
 
 
 
