@@ -209,6 +209,7 @@ nb_doses<-2
 lmoins<-1
 l_plus<-100
 test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+test_print_mult_doses[[1]]
 test_print_mult_doses[[2]]
 test_mean_doses<-print_mean_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
 test_mean_doses[[1]]
