@@ -96,5 +96,3 @@ afficher_resultat(beta=test_bayes2,x_ref=x_ref,probabilites_priori = skeleton)
 
 
 
-rm(list = ls())
-?crm()

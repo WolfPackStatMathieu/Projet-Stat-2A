@@ -22,6 +22,11 @@ fonction_cure<-function(df,t_star){
   return(1-Predicted_survival_prob)
 }
 
+estimateur_cure_mult<-function(df,t_star,nb_doses){
+  data_return<-rep(NA,nb_doses)
+  somme<-as.data.frame(sapply(c(1:nb_doses),function(x,df)return(c(x,sum(df[which(df$label_dose==x),"observed"]))),df=df))
+  return(somme)
+}
 ###### Test###
 #df<-Generation_un_ech(n=10,lambda=0.1,p=0.5,k=1,t_star=6)
 
