@@ -1,7 +1,9 @@
 source("generation_mean.R")
 source("surv.R")
 source("estimateurs/estimateur_cure.R")
-#### Ne doit plus dépendre de l'argument modele.######
+source("utils.R")
+set.seed(133)
+#### Ne doit plus d?pendre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
   matrix_bias_doses<-list(rep(NA,nombre_doses))
@@ -15,41 +17,69 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
   names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
+#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
+fonction_generation_eqm<-function(vector_size,liste_parameter,K){
+  ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
+  vector_size<-vector_size[order(vector_size)]
+  ##### id?e. 
+  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
+                     p=liste_parameter[["p"]],k=liste_parameter[["k"]])
+  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
+  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
+  value_eqm<-(value_means-p)^(2)+value_variance
+  return(value_eqm)
+}
+N<-10
+vecteur_size<-sample(c(1:100),N)
+lamdba_test<-3
+t_star<-6
+p<-0.33
+k<-1
+liste_parameter<-list(lambda_test,t_star,p=p,k)
+names(liste_parameter)<-c("lambda","t_star","p","k")
+K2<-20
+test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
+##############################################################
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){
-  df<-matrix(NA,n,3)
+  df<-matrix(NA,n,4)
   df<-as.data.frame(df)
-  data_returns<-as.data.frame(matrix(NA,nb_doses,3))
+  data_returns<-as.data.frame(matrix(NA,nb_doses,4))
   colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
-  colnames(df)<-c("dose","obs","temps")
-  df$dose<-sample(c(1:nb_doses))
+  colnames(df)<-c("dose","sensible","tox_time","is_observed")
+  df$dose<-as.factor(sample(c(1:nb_doses)))
   for (k in c(1:nb_doses)){
     index_dosek<-which(df$dose==k)
     sous_liste<-liste_params[[k]]
-    df[index_dosek,"obs"]<-simul_bernoulli(length(index_dosek),sous_liste[["p"]])
-    estimateur_bern<-mean(df[index_dosek,"obs"])
-    df[index_dosek,"temps"]<-ifelse(df[index_dosek,"obs"]==1,NA,t_star)
-    index_obs_dosek<-which(df$dose==k & df$obs==1)
-    vect1<-df[index_dosek,"obs"]
-    print("------")
-    if(length(index_obs_dosek)>=1){
-      df[index_obs_dosek,"temps"]<-simul_weibull(length(index_obs_dosek),lambda=sous_liste[["lambda"]],k=sous_liste[["k"]])
-      df[index_obs_dosek,"obs"]<-ifelse(df[index_obs_dosek,"temps"]<t_star,1,0)}
-    vect2<-df[index_dosek,"obs"]
-    estimateur_cure<-fonction_cure(df,t_star=t_star)
-    data_dosek<-df[index_dosek,c("temps","obs")]
-    data_dosek$temps<-as.numeric(data_dosek$temps)
-    estimateur_surv<-Calcul_estim_depuis_df(data_dosek,nom_col_obs = "obs",nom_coltemps = "temps")
-    estimateurs<-c(estimateur_bern,estimateur_surv,estimateur_cure)
-    ligne_dosek<-c(estimateurs,sous_liste[["p"]])
-    data_returns[k,]<-ligne_dosek
+    n_k<-length(index_dosek)
+    df[index_dosek,]<-cbind(rep(k,n_k),Generation_un_ech(n=n_k,lambda=sous_liste[["lambda"]],t_star=t_star,p=sous_liste[["p"]],k=sous_liste[["k"]]))
+    data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
+    data_returns[k,"p"]<-sous_liste[["p"]]
   }
+  fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+  indice_cens<-which(df$is_observed==0)
+  if(length(indice_cens)==0){
+    estimateur_cure<-rep(1,nb_doses)
+    estimateur_surv<-rep(1,nb_doses)
+    data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
+  }
+  else{
+  fit_surv <- survfit(fonction_surv ~dose, data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose, data = df, link="logistic", dist="weibullPH", mixture=T) 
+  Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
+  estimation_cure<-rep(NA,nb_doses)
+  estimation_surv<-rep(NA,nb_doses)
+  for (j in c(1:nb_doses)){
+    indice<-which(Predicted_survival_prob$dose==j)
+    estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
+    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+  }
+  data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
-
-set.seed(133)
+###########################################
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
-  ### Génère la moyenne des estimateurs pour la taille n
+  ### G?n?re la moyenne des estimateurs pour la taille n
   result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
   matrice<-as.data.frame(matrix(NA,nb_doses,4))
   colnames(matrice)<-c("numero_dose","moyenne_estimateur_survie","moyenne_estimateur_guerison","p")
@@ -61,14 +91,26 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
     ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
     ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
     ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
-    print(ensemble_obs_dosek)
     matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
   }
   return(matrice)
 }
+Realisations_estim_cas_mult<-function(K,n,liste_params,nb_doses,t_star){
+  ### G?n?re la moyenne des estimateurs pour la taille n
+  result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
+  matrice<-list(rep(NA,nb_doses))
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    matrice[[j]]<-ensemble_obs_dosek}
+  return(matrice)
+}
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
   vector_size<-vector_size[order(vector_size)]
-  print(nombre_doses)
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
     liste_param<-vecteur_parametres[[indice]]
@@ -103,41 +145,41 @@ test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_d
 
 
 ########## TEST surv####
-N<-20
-p<-0.33
-vecteur_size<-sample(c(1:100),N)
-lamdba_test<-0.33
-t_star<-6
-k1<-1
-liste_parameter<-list(lambda_test,t_star,p,k1)
-names(liste_parameter)<-c("lambda","t_star","p","k")
-lb_test2<-0.2
-t_star2<-7
-p2<-0.5
-k2<-1
-liste_2<-list(lb_test2,t_star2,p2,k2)
-names(liste_2)<-c("lambda","t_star","p","k")
-vecteur_param<-list(liste_parameter,liste_2)
-nb_doses<-2
-k<-20
-test_surv<-fonction_simul_doses_mean(vector_size = vecteur_size,nombre_doses=nb_doses,
-                                vecteur_parametres = vecteur_param,K=k)
-test_eqm<-fonction_simul_doses_eqm(vector_size = vecteur_size,nombre_doses=nb_doses,
-                                   vecteur_parametres = vecteur_param,K=k)
+# N<-20
+# p<-0.33
+# vecteur_size<-sample(c(1:100),N)
+# lambda_test<-0.33
+# t_star<-6
+# k1<-1
+# liste_parameter<-list(lambda_test,t_star,p,k1)
+# names(liste_parameter)<-c("lambda","t_star","p","k")
+# lb_test2<-0.2
+# t_star2<-7
+# p2<-0.5
+# k2<-1
+# liste_2<-list(lb_test2,t_star2,p2,k2)
+# names(liste_2)<-c("lambda","t_star","p","k")
+# vecteur_param<-list(liste_parameter,liste_2)
+# nb_doses<-2
+# k<-20
+# test_surv<-fonction_simul_doses_mean(vector_size = vecteur_size,nombre_doses=nb_doses,
+#                                 vecteur_parametres = vecteur_param,K=k)
+# test_eqm<-fonction_simul_doses_eqm(vector_size = vecteur_size,nombre_doses=nb_doses,
+                                   # vecteur_parametres = vecteur_param,K=k)
 #install.packages("plotly")
 library(purrr)
 library(plotly)
-donnees<-cbind.data.frame(vecteur_size,test_surv[1,])
-colnames(donnees)<-c("Size","Mean_Bias")
-
-donnees2<-cbind.data.frame(vecteur_size,test_surv[2,])
-colnames(donnees2)<-c("Size","Mean_Bias")
-graph1<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
-graph1<-graph1 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with first dose'))
-graph1
-graph2<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
-graph2<-graph2 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with second dose'))
-fig<-subplot(graph1,graph2,nrows=2) 
-fig<-fig %>% layout(plot_bgcolor='#e5ecf6')
-fig
+# donnees<-cbind.data.frame(vecteur_size,test_surv[1,])
+# colnames(donnees)<-c("Size","Mean_Bias")
+# 
+# donnees2<-cbind.data.frame(vecteur_size,test_surv[2,])
+# colnames(donnees2)<-c("Size","Mean_Bias")
+# graph1<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
+# graph1<-graph1 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with first dose'))
+# graph1
+# graph2<-plot_ly(data=donnees,type="scatter",x=~Size,y=~Mean_Bias)
+# graph2<-graph2 %>% layout(xaxis = list(title = 'Size'), yaxis = list(title = 'Bias with second dose'))
+# fig<-subplot(graph1,graph2,nrows=2) 
+# fig<-fig %>% layout(plot_bgcolor='#e5ecf6')
+# fig
 

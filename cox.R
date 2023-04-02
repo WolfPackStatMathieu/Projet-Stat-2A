@@ -1,5 +1,6 @@
 # Import package
 library("dfcrm")
+library(visreg)
 
 
 # construction de la base de données

@@ -8,10 +8,11 @@ source("bernoulli.R")
 ##### Doit toujours renvoyer une moyenne mais deux liste de moyennes. Utiliser peut-?tre un dataframe. 
 ##### Le colmeans ne marchera plus comme on sera sur deux listes de plusieurs colonnes. Solutions. 
 fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
+  require(parallel)
   ### renvoie la g?n?ration avec des tailles diff?rentes du mod?le model (string) ayant comme param?tre la liste_parameter, 
   ### liste de param?tres avec le mod?les. 1 seul comme bernoulli et 2 pour exp() (lambda et t_star).
   
-  #on réordonne vector_size par ordre des tailles d'echantillon
+  #on r?ordonne vector_size par ordre des tailles d'echantillon
   vector_size<-vector_size[order(vector_size)]
   ##### id?e. 
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
@@ -40,44 +41,31 @@ fonction_sapply<-function(x){
   return(sapply(x,var))
 }
 
-#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
-fonction_generation_eqm<-function(vector_size,liste_parameter,K){
-  ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
-  vector_size<-vector_size[order(vector_size)]
-  ##### id?e. 
-  Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
-                     p=liste_parameter[["p"]],k=liste_parameter[["k"]])
-  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
-  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
-  value_eqm<-(value_means)^(2)+value_variance
-  return(value_eqm)
-}
 ################# TEST exp de la m?thode.#####
-N<-10
-vecteur_size<-sample(c(1:100),N)
-lamdba_test<-3
-t_star<-6
-p<-0.33
-k<-1
-liste_parameter<-list(lambda_test,t_star,p=p,k)
-names(liste_parameter)<-c("lambda","t_star","p","k")
-K2<-20
-test_exp_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
-test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
+# N<-10
+# vecteur_size<-sample(c(1:100),N)
+# lambda_test<-3
+# t_star<-6
+# p<-0.33
+# k<-1
+# liste_parameter<-list(lambda_test,t_star,p=p,k)
+# names(liste_parameter)<-c("lambda","t_star","p","k")
+# K2<-20
+# test_exp_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
 
 #################### Plot des r?sultats en fonction de la taille.########
-donnees_taille_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_exp_taillemoy)
-colnames(donnees_taille_biaismoyen)<-c("Size","Mean_Bias_Cure","Mean_Bias_Surv")
-plot(donnees_taille_biaismoyen$Size,donnees_taille_biaismoyen$Mean_Bias_Cure,main="The mean bias according to the size with Survival function")
-points(x=donnees_taille_biaismoyen$Size,y=donnees_taille_biaismoyen$Mean_Bias_Surv,col="red")
+# donnees_taille_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_exp_taillemoy)
+# colnames(donnees_taille_biaismoyen)<-c("Size","Mean_Bias_Cure","Mean_Bias_Surv")
+# plot(donnees_taille_biaismoyen$Size,donnees_taille_biaismoyen$Mean_Bias_Cure,main="The mean bias according to the size with Survival function")
+# points(x=donnees_taille_biaismoyen$Size,y=donnees_taille_biaismoyen$Mean_Bias_Surv,col="red")
 
 #####################Test bernoulli######
-prop<-0.33
-liste_param<-list(prop)
-names(liste_param)<-c("p")
-modele<-"bernoulli"
-k<-20
-test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,model=modele,K=k,liste_parameter = liste_param)
+# prop<-0.33
+# liste_param<-list(prop)
+# names(liste_param)<-c("p")
+# modele<-"bernoulli"
+# k<-20
+#test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,K=k,liste_parameter = liste_param)
 
 ######## Test Weibull#####
 #N<-100
@@ -95,10 +83,4 @@ test_bern_taillemoy<-fonction_generation_taille_mean(vector_size=vecteur_size,mo
 #colnames(donnees_weibull)<-c("Size","Mean_Bias")
 #plot(donnees_weibull)
 
-#################### Plot des r?sultats en fonction de la taille.########
-donnees_bern_biaismoyen<-cbind.data.frame(vecteur_size[order(vecteur_size)],test_bern_taillemoy)
-colnames(donnees_bern_biaismoyen)<-c("Size","Mean_Bias")
-h_DPImean<-KernSmooth::dpill(x=donnees_bern_biaismoyen$Size,y=donnees_bern_biaismoyen$Mean_Bias)
-estimation_ymoy<-KernSmooth::locpoly(x=donnees_bern_biaismoyen$Size,y=donnees_bern_biaismoyen$Mean_Bias,bandwidth=h_DPImean,degree=3,gridsize = N)$y
-plot(donnees_bern_biaismoyen,main="The mean bias according to the size with Bernoulli")
-lines(x=donnees_bern_biaismoyen$Size,y=estimation_ymoy,col="blue")
+
