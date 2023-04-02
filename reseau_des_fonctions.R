@@ -87,6 +87,7 @@ edges<-rbind(edges, edges_Generation_un_ech)
 # edges<-rbind(edges, edges_fonction_Bern)
 edges_fonction_KM <- data.frame(from = c(18), to = c(10))
 edges<-rbind(edges, edges_fonction_KM)
+<<<<<<< HEAD
 # edges_fonction_cure <- data.frame(from = c(21), to = c())
 
 
@@ -94,6 +95,13 @@ edges<-rbind(edges, edges_fonction_KM)
 
 visNetwork(nodes, edges, height = "500px", width = "100%") %>%
   visEdges(arrows = "to")
+=======
+
+
+visNetwork(nodes, edges, height = "500px", width = "100%") %>%
+  visEdges(arrows = "to")
+
+>>>>>>> main
 
 
 
