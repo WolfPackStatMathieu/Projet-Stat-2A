@@ -36,6 +36,26 @@ noms_fonction_surv.R <-c("simul_exp",
                          ,"fonction_KM"
                          ,"fonction_cure"
                          ,"simul_weibull"
+                         ,"simul_tps_hht" # simul_delai.R
+                         ,"fonction_find_lambda"
+                         ,"temps_simul1"
+                         ,"temps_simul2"
+                         ,"estimateur_cure_mult" #estimateurs/estimateur_cure
+                         ,"fonction_simul_doses_mean" #generation_doses.R
+                         ,"fonction_generation_eqm"
+                         ,"function_estim_doses"
+                         ,"fonction_estim_doses_sizen"
+                         ,"Realisations_estim_cas_mult"
+                         ,"fonction_simul_doses_eqm"
+                         ,"get_alpha" #generation_echantillon/fonctions_simulations_competition.R
+                         ,"get_expo"
+                         ,"hx"
+                         ,"one_weibull_comp"
+                         ,"get_weibull"
+                         ,"get_dataset0"
+                         ,"fonction_generation_taille_differente" # generation_taille_differente.R
+                         ,"fonction_graph_fonc_size"
+                         ,"flexsurvcure"
                          )
 as.data.frame(noms_fonction_surv.R)
 nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
