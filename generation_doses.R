@@ -57,6 +57,13 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[k,"p"]<-sous_liste[["p"]]
   }
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
+  indice_cens<-which(df$is_observed==0)
+  if(length(indice_cens)==0){
+    estimateur_cure<-rep(1,nb_doses)
+    estimateur_surv<-rep(1,nb_doses)
+    data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
+  }
+  else{
   fit_surv <- survfit(fonction_surv ~dose, data = df)
   fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose, data = df, link="logistic", dist="weibullPH", mixture=T) 
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
@@ -66,6 +73,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     indice<-which(Predicted_survival_prob$dose==j)
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
     estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+  }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
@@ -85,6 +93,20 @@ fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
     ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
     matrice[j,c("moyenne_estimateur_guerison","moyenne_estimateur_survie","p")]<-colMeans(ensemble_obs_dosek)
   }
+  return(matrice)
+}
+Realisations_estim_cas_mult<-function(K,n,liste_params,nb_doses,t_star){
+  ### G?n?re la moyenne des estimateurs pour la taille n
+  result<-lapply(rep(n,K),function_estim_doses,liste_params=liste_params,nb_doses=nb_doses,t_star=t_star)
+  matrice<-list(rep(NA,nb_doses))
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    matrice[[j]]<-ensemble_obs_dosek}
   return(matrice)
 }
 fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
