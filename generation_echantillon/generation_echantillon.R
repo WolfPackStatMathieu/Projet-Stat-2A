@@ -1,13 +1,9 @@
 library(survival)
-
-
-?flexsurvcure()
-
 require(flexsurvcure)
-source("surv.R")
+source("weibull.R")
 Generation_un_ech<-function(n,lambda,t_star,p,k){
   vecteur_censure<-rbinom(n,1,p)
-  vecteur_temp<-rep(NA,n) # cree un vecteur des temps associés
+  vecteur_temp<-rep(NA,n) # cree un vecteur des temps associ?s
   # l'estimateur du modele de Bernoulli est la moyenne des 1 du vecteur_censure
   # on cree un dataframe qui acolle la DLT au vecteur_temps
   df<-cbind.data.frame(vecteur_censure,vecteur_temp)
@@ -36,5 +32,5 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
 
 
 ############# TEST #####
-generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
+# generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
 
