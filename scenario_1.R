@@ -49,7 +49,10 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
 }
 
+
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
+  require(ggplot2)
+  require(gridExtra)
   # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
   debut <- 10
   fin <- 100
@@ -67,18 +70,61 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
 
-  gg <- ggplot(data = result_final, aes(x = taille_echantillon))+
-    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
-    geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
-    geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1)+
+# 
+#   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon))+
+#     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
+#     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
+#     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+#     xlab("Taille echantillon") + ylab("Biais moyen") +
+#     theme_classic() +
+#     theme(legend.title=element_blank(),
+#           axis.text=element_text(size=10),
+#           axis.title=element_text(size=12),
+#           plot.title = element_text(size = 10))+
+#     ylim(borne_min, borne_max)+
+#     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
+#                            as.character(K),
+#                            as.character(lambda),
+#                            as.character(k),
+#                            as.character(debut),
+#                            as.character(fin),
+#                            as.character(pas)))
+# 
+#   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon))+
+#     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
+#     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1)+
+#     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+#     xlab("Taille echantillon") + ylab("Biais moyen") +
+#     theme_classic() +
+#     theme(legend.title=element_blank(),
+#           axis.text=element_text(size=10),
+#           axis.title=element_text(size=12),
+#           plot.title = element_text(size = 10))+
+#     ylim(borne_min, borne_max)+
+#     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
+#                            as.character(K),
+#                            as.character(lambda),
+#                            as.character(k),
+#                            as.character(debut),
+#                            as.character(fin),
+#                            as.character(pas)))
+#   gg <- grid.arrange(gg1, gg2, ncol = 2)
+
+  # define color palette
+  palette <- c("#0072B2", "#D55E00", "#E69F00")
+  
+  gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+    geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = palette) +
     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(size=12),
-          axis.title=element_text(size=14),
-          plot.title = element_text(size = 12))+
-    ylim(borne_min, borne_max)+
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max) +
     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
                            as.character(K),
                            as.character(lambda),
@@ -86,18 +132,29 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
                            as.character(debut),
                            as.character(fin),
                            as.character(pas)))
-
-  return(gg)
+  
+  gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+    geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = palette) +
+    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    xlab("Taille echantillon") + ylab("Biais moyen") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)
+  
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 
 }
 
 
 
-plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
-
-
+biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 
