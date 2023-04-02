@@ -69,7 +69,6 @@ nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
                            title = paste0("<p><b>", 1:5,"</b><br>", noms_fonction_surv.R,
                                           "</p>")
                            )
-nodes_surv.R
 nodes <- nodes_surv.R
 head(nodes)
 edges_simul_exp <-data.frame(from= c(1), to = c(53))
@@ -105,7 +104,7 @@ edges <- rbind(edges_simul_exp, edges_simuler_biais_un_n_ech
                #,edges_simul_temps_exp
                #,edges_simul_temp_weibull
                ,edges_simul_temps_alt
-               ,edges_simul_weibull
+               #,edges_simul_weibull
                ,edges_Generation_un_ech
                #,edges_fonction_Bern
                ,edges_fonction_KM
