@@ -13,10 +13,10 @@ t_star<-6
 valeurs_dose_toxicite<-cbind.data.frame(vecteur_dose,vecteur_reponse)
 prior_probabilities<-c(0.05,0.1,0.15,0.33,0.5)
 p <- 0.33
-crm(prior = prior_probabilities,target = p, tox = vecteur_reponse, level = vecteur_dose, n = 18)
-
+element<-crm(prior = prior_probabilities,target = p, tox = vecteur_reponse, level = vecteur_dose, n = 18)
 # modèle logistique
 infos<-crm(prior=prior_probabilities,target=p, tox = vecteur_reponse, level = vecteur_dose,18, model="logistic")
+print(infos)
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
 
