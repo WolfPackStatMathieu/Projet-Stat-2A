@@ -42,12 +42,13 @@ test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parame
 ##############################################################
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){
+  require(dfcrm)
   df<-matrix(NA,n,4)
   df<-as.data.frame(df)
   data_returns<-as.data.frame(matrix(NA,nb_doses,4))
   colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
   colnames(df)<-c("dose","sensible","tox_time","is_observed")
-  df$dose<-as.factor(sample(c(1:nb_doses)))
+  df$dose<-sample(c(1:nb_doses),n,replace=TRUE)
   for (k in c(1:nb_doses)){
     index_dosek<-which(df$dose==k)
     sous_liste<-liste_params[[k]]
@@ -56,6 +57,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
     data_returns[k,"p"]<-sous_liste[["p"]]
   }
+  dose_recalibree<-crm(prior=data_returns$p,target=0.50, tox =df$is_observed, level =df$dose,n=n, model="logistic")$dosescaled
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
@@ -64,13 +66,15 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
-  fit_surv <- survfit(fonction_surv ~dose, data = df)
-  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose, data = df, link="logistic", dist="weibullPH", mixture=T) 
+  fit_surv <- survfit(fonction_surv ~dose_recalibree[], data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_recalibree[], data = df, link="logistic", dist="weibullPH", mixture=T) 
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
   for (j in c(1:nb_doses)){
-    indice<-which(Predicted_survival_prob$dose==j)
+    print(Predicted_survival_prob)
+    indice<-which(Predicted_survival_prob$dose_recalibree[df$dose]==dose_recalibree[j])
+    print(indice)
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
     estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
   }
@@ -135,13 +139,18 @@ liste1<-list(lambda,k,p)
 names(liste1)<-c("lambda","k","p")
 liste2<-list(lambda2,k2,p2)
 names(liste2)<-c("lambda","k","p")
-liste_whole<-list(liste1,liste2)
 t_star<-6
 nb_doses<-2
-test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+p3<-0.7
+k3<-3
+lambda3<-0.6
+liste3<-list(lambda3,k3,p3)
+names(liste3)<-c("lambda","k","p")
+liste_whole<-list(liste1,liste2,liste3)
+test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
 
 K<-10
-test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=nb_doses,t_star=t_star)
+test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
 
 
 ########## TEST surv####
