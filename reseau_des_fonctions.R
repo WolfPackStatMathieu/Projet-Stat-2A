@@ -16,7 +16,7 @@ require(visNetwork, quietly = TRUE)
 # shiny::runApp(system.file("shiny", package = "visNetwork"))
 
 #creation des nodes pour les fonctions du fichier surv.R
-noms_fonction_surv.R <-c("simul_exp",
+noms_fonction_surv.R <-c("simul_exp", #surv.R
                          "Simuler_biais_un_n_ech",
                          "Calcul_estim_depuis_df",
                          "Simuler_biais_taillen",
@@ -55,7 +55,12 @@ noms_fonction_surv.R <-c("simul_exp",
                          ,"fonction_generation_taille_differente" # generation_taille_differente.R
                          ,"fonction_graph_fonc_size"
                          ,"flexsurvcure"
-                         ,"tps_simul"
+                         ,"biais_pi"
+                         ,"fonction_biais_survie"
+                         ,"simul_bernoulli"
+                         ,"eqm.selon.taille_echantillon"
+                         ,"fonction_generation_taille_eqm"
+                         ,"fonction_sapply"
                          )
 fonctions <-as.data.frame(noms_fonction_surv.R)
 fonctions
@@ -114,7 +119,7 @@ edges_simul_tps_hht <- data.frame(from = c(20),
 edges_temps_simul1 <- data.frame(from = c(22),
                       to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull")))) #
 edges_temps_simul2 <- data.frame(from = c(23),
-                                 to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull","tps_simul")))) #
+                                 to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull")))) #
 # edges_estimateur_cure_mult <- data.frame(from = c(24), 
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #rien
 edges_fonction_simul_doses_mean <- data.frame(from = c(25),
@@ -142,20 +147,28 @@ edges_get_weibull <- data.frame(from = c(35),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("one_weibull_comp")))) # one_weibull_comp
 edges_get_dataset0 <- data.frame(from = c(36),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("get_expo", "get_weibull")))) #get_expo, get_weibull
-# edges_ <- data.frame(from = c(37), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(38), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(39), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(40), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(41), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(42), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+edges_fonction_generation_taille_differente <- data.frame(from = c(37),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("biais_pi", "fonction_biais_survie")))) #biais_pi, fonction_biais_survie
+edges_fonction_graph_fonc_size <- data.frame(from = c(38),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_taille_differente")))) #fonction_generation_taille_differente
+# edges_flexsurvcure <- data.frame(from = c(39), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+edges_biais_pi <- data.frame(from = c(40),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_bernoulli")))) #simul_bernoulli
+# edges_fonction_biais_survie <- data.frame(from = c(41), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #  n'existe plus
+
+# edges_simul_bernoulli <- data.frame(from = c(42),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+edges_eqm.selon.taille_echantillon <- data.frame(from = c(43),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_taille_eqm")))) # fonction_generation_taille_eqm
+edges_fonction_generation_taille_eqm <- data.frame(from = c(44),
+                                                 to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # Simuler_biais_taillen
+# edges_fonction_sapply <- data.frame(from = c(45),
+#                                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien 
 
 
+which(fonctions$noms_fonction_surv.R %in% c("fonction_sapply"))
 edges <- rbind(#edges_simul_exp, 
                edges_simuler_biais_un_n_ech
                ,edges_Simuler_biais_taillen
@@ -191,7 +204,15 @@ edges <- rbind(#edges_simul_exp,
                #,edges_one_weibull_comp
                ,edges_get_weibull
                ,edges_get_dataset0
-               
+               ,edges_fonction_generation_taille_differente
+               ,edges_fonction_graph_fonc_size
+               # ,edges_flexsurvcure
+               ,edges_biais_pi
+               #,edges_fonction_biais_survie
+               # ,edges_simul_bernoulli
+               ,edges_eqm.selon.taille_echantillon
+               ,edges_fonction_generation_taille_eqm
+               # ,edges_fonction_sapply
                
                )
 
@@ -202,8 +223,4 @@ visNetwork(nodes, edges, height = "500px", width = "100%") %>%
   visEdges(arrows = "to")
 
 
-
-
-
-noms_fonction_surv.R
 
