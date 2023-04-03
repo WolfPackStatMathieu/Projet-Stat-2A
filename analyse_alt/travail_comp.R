@@ -50,6 +50,8 @@ biais.selon.lambda_alt <-function(p_cause1,K,t_star, k,type1,type2){
   }
   return(results)
 }
+
+
 fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type2) {
   library(gridExtra)
   library(ggplot2)

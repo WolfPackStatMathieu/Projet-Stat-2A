@@ -67,15 +67,16 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   }
   else{
   df$factdose<-as.factor(df$dose)
-  fit_surv <- survfit(fonction_surv ~as.factor(dose_recalibree[dose]), data = df)
-  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~as.factor(dose_recalibree[dose]), data = df, link="logistic", dist="weibullPH", mixture=T,
-                         anc=list(scale=~as.factor(dose_recalibree[dose]))) 
+  fit_surv <- survfit(fonction_surv ~dose_recalibree[dose], data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_recalibree[dose], data = df, link="logistic", dist="weibullPH", mixture=T,
+                         anc=list(scale=~dose_recalibree[dose]))
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
   colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
   print(plot(fit_cure))
   for (j in c(1:nb_doses)){
+    print(Predicted_survival_prob)
     indice<-which(Predicted_survival_prob$categorie==dose_recalibree[j])
     print(indice)
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
