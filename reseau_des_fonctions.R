@@ -35,7 +35,6 @@ noms_fonction_surv.R <-c("simul_exp",
                          ,"fonction_Bern"
                          ,"fonction_KM"
                          ,"fonction_cure"
-                         ,"simul_weibull"
                          ,"simul_tps_hht" # simul_delai.R
                          ,"fonction_find_lambda"
                          ,"temps_simul1"
@@ -56,8 +55,10 @@ noms_fonction_surv.R <-c("simul_exp",
                          ,"fonction_generation_taille_differente" # generation_taille_differente.R
                          ,"fonction_graph_fonc_size"
                          ,"flexsurvcure"
+                         ,"tps_simul"
                          )
-as.data.frame(noms_fonction_surv.R)
+fonctions <-as.data.frame(noms_fonction_surv.R)
+fonctions
 nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
                            #add labels on nodes
                            label = noms_fonction_surv.R,
@@ -71,28 +72,92 @@ nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
                            )
 nodes <- nodes_surv.R
 head(nodes)
-edges_simul_exp <-data.frame(from= c(1), to = c(53))
-edges_simuler_biais_un_n_ech<-data.frame(from= c(2), to = c(15,16,17,18,19))
-# edges_Calcul_estim_depuis_df<-data.frame(from= c(3), to = c())
-edges_Simuler_biais_taillen<-data.frame(from= c(4), to = c(2))
-edges_Calcul_biais_moyen_taillen <- data.frame(from = c(5), to = c(4))
-edges_plots_scenario_1 <- data.frame(from = c(6), to = c(4))
-edges_biais.selon.taille_echantillon <- data.frame(from = c(7), to = c(8))
-edges_fonction_generation_taille_mean <- data.frame(from = c(8), to = c(4))
-edges_tp.surv <- data.frame(from = c(9), to = c(10))
-edges_tps.surv <- data.frame(from = c(10), to = c(11))
-# edges_clep <- data.frame(from = c(11), to = c())
-# edges_simul_temps_exp <- data.frame(from = c(12), to = c())
-# edges_simul_temp_weibull <- data.frame(from = c(13), to = c())
-edges_simul_temps_alt <- data.frame(from = c(14), to = c(12))
+# edges_simul_exp <-data.frame(from= c(1), to = c())#rien
+
+edges_simuler_biais_un_n_ech<-data.frame(from= c(2), 
+                                         to = c(which(fonctions$noms_fonction_surv.R %in% c("Generation_un_ech", "fonction_Bern" ,"fonction_KM", "fonction_cure")))) 
+# edges_Calcul_estim_depuis_df<-data.frame(from= c(3), to = c())#rien
+which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_un_n_ech"))
+edges_Simuler_biais_taillen<-data.frame(from= c(4), 
+                                        to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_un_n_ech")))) 
+which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen"))
+edges_Calcul_biais_moyen_taillen <- data.frame(from = c(5),
+                                               to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen"))))
+edges_plots_scenario_1 <- data.frame(from = c(6), 
+                                     to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen"))))
+
+edges_biais.selon.taille_echantillon <- data.frame(from = c(7),
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_taille_mean"))))
+edges_fonction_generation_taille_mean <- data.frame(from = c(8), 
+                                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) #Simuler_biais_taillen
+edges_tp.surv <- data.frame(from = c(9),
+                            to = c(which(fonctions$noms_fonction_surv.R %in% c("tps.surv")))) #tps.surv
+edges_tps.surv <- data.frame(from = c(10),
+                             to = c(which(fonctions$noms_fonction_surv.R %in% c("clep")))) #clep
+# edges_clep <- data.frame(from = c(11), to = c())#rien
+# edges_simul_temps_exp <- data.frame(from = c(12), to = c())#rien
+# edges_simul_temp_weibull <- data.frame(from = c(13), to = c())#rien
+
+edges_simul_temps_alt <- data.frame(from = c(14), 
+                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_temps_exp")))) #simul_temps_exp
 # edges_simul_weibull <- data.frame(from = c(15), to = )
-edges_Generation_un_ech <- data.frame(from = c(16), to = c(15))
-# edges_fonction_Bern <- data.frame(from = c(17), to = c())
-edges_fonction_KM <- data.frame(from = c(18), to = c(10))
-# edges_fonction_cure <- data.frame(from = c(21), to = c())
+edges_Generation_un_ech <- data.frame(from = c(16), 
+                                      to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull")))) #simul_weibull
+# edges_fonction_Bern <- data.frame(from = c(17), to = c()) #rien
+edges_fonction_KM <- data.frame(from = c(18), 
+                                to = c(which(fonctions$noms_fonction_surv.R %in% c("tp.surv")))) #tp.surv
+# edges_fonction_cure <- data.frame(from = c(19), to = c())
+edges_simul_tps_hht <- data.frame(from = c(20), 
+                    to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_find_lambda", "temps_simul1" ,"temps_simul2")))) #
+# edges_fonction_find_lambda <- data.frame(from = c(21), 
+#                                          to = c()) # rien
+edges_temps_simul1 <- data.frame(from = c(22),
+                      to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull")))) #
+edges_temps_simul2 <- data.frame(from = c(23),
+                                 to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull","tps_simul")))) #
+# edges_estimateur_cure_mult <- data.frame(from = c(24), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #rien
+edges_fonction_simul_doses_mean <- data.frame(from = c(25),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_taille_mean")))) #fonction_generation_taille_mean
+edges_fonction_generation_eqm <- data.frame(from = c(26),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) #Simuler_biais_taillen
+edges_function_estim_doses <- data.frame(from = c(27),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("Generation_un_ech", "fonction_Bern", "flexsurvcure", "tp.surv"
+                                                                        )))) #Generation_un_ech, fonction_Bern, flexsurvcure, tp.surv
+edges_fonction_estim_doses_sizen <- data.frame(from = c(28),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses")))) #function_estim_doses
+edges_Realisations_estim_cas_mult <- data.frame(from = c(29),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses")))) #function_estim_doses
+edges_fonction_simul_doses_eqm <- data.frame(from = c(30),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_eqm")))) #fonction_generation_eqm
+# edges_get_alpha <- data.frame(from = c(31),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #rien
+edges_get_expo <- data.frame(from = c(32),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(33), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(34), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(35), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c36(), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(37), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(38), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(39), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(40), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(41), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_ <- data.frame(from = c(42), 
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
 
 
-edges <- rbind(edges_simul_exp, edges_simuler_biais_un_n_ech
+edges <- rbind(#edges_simul_exp, 
+               edges_simuler_biais_un_n_ech
                ,edges_Simuler_biais_taillen
                ,edges_Calcul_biais_moyen_taillen
                ,edges_plots_scenario_1
@@ -109,9 +174,21 @@ edges <- rbind(edges_simul_exp, edges_simuler_biais_un_n_ech
                #,edges_fonction_Bern
                ,edges_fonction_KM
                # ,edges_fonction_cure
+               ,edges_simul_tps_hht
+               #,edges_fonction_find_lambda
+               ,edges_temps_simul1
+               ,edges_temps_simul2
+               #,edges_estimateur_cure_mult
+               ,edges_fonction_simul_doses_mean
+               ,edges_fonction_generation_eqm
+               ,edges_function_estim_doses
+               ,edges_fonction_estim_doses_sizen
+               ,edges_Realisations_estim_cas_mult
+               ,edges_fonction_simul_doses_eqm
+               #,edges_get_alpha
                )
 
-
+edges
 
 
 visNetwork(nodes, edges, height = "500px", width = "100%") %>%
