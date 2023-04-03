@@ -132,16 +132,16 @@ edges_fonction_simul_doses_eqm <- data.frame(from = c(30),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_eqm")))) #fonction_generation_eqm
 # edges_get_alpha <- data.frame(from = c(31),
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #rien
-edges_get_expo <- data.frame(from = c(32),
-                     to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(33), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(34), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c(35), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
-# edges_ <- data.frame(from = c36(), 
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
+# edges_get_expo <- data.frame(from = c(32),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+# edges_hx <- data.frame(from = c(33),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+# edges_one_weibull_comp <- data.frame(from = c(34),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+edges_get_weibull <- data.frame(from = c(35),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("one_weibull_comp")))) # one_weibull_comp
+edges_get_dataset0 <- data.frame(from = c(36),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("get_expo", "get_weibull")))) #get_expo, get_weibull
 # edges_ <- data.frame(from = c(37), 
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #
 # edges_ <- data.frame(from = c(38), 
@@ -186,6 +186,13 @@ edges <- rbind(#edges_simul_exp,
                ,edges_Realisations_estim_cas_mult
                ,edges_fonction_simul_doses_eqm
                #,edges_get_alpha
+               #,edges_get_expo
+               #,edges_hx
+               #,edges_one_weibull_comp
+               ,edges_get_weibull
+               ,edges_get_dataset0
+               
+               
                )
 
 edges
