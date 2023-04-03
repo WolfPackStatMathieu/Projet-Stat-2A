@@ -67,12 +67,12 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star, k,type1,type2)
   RES0.7.3 <- data.frame(RES)
   colnames(RES0.7.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
+  print(RES0.7.3)
   # Get the min and max bounds of each variable to be used in the plots
   borne_min <- min(
     min(RES0.3.3$mean.surv),
     min(RES0.5.3$mean.surv),
-    min(RES0.3.3$mean.surv)
+    min(RES0.7.3$mean.surv)
   )
   
   borne_max <- max(
@@ -139,7 +139,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
-      title = "Modèle de bernoulli",
+      title = "Modèle de Bernoulli",
       x = "n",
       y = "biais moyen",
       color = "n" +
@@ -152,3 +152,4 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   
 }
 test_alt<-fonction_compar_plotsn_lambda_alt(N=20, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
+
