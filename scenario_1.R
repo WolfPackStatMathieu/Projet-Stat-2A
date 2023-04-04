@@ -42,9 +42,9 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
                             as.character(lambda), 
                            as.character(k), 
                            as.character(n))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+    theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12, face = "bold"))
+          axis.title = element_text(size = 12))
   
 }
 
@@ -116,8 +116,6 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     ylim(borne_min, borne_max)
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
-  # 
-  return(gg1)
 
 }
 
@@ -127,9 +125,9 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
-plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
-biais.selon.taille_echantillon1(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+
 
 ?grid.arrange()
