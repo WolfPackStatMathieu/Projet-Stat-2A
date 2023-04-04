@@ -109,45 +109,43 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   
   # Plot the data
   gg1 <-  ggplot(RES0.3.3, aes(n, mean.surv)) +
-    geom_line(aes(color = "0.3")) +
-    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.5")) +
-    geom_line(data = RES0.7.3, aes(n, mean.surv, color = "0.7")) +
+    geom_line(aes(color = "0.3"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.7.3, aes(n, mean.surv, color = "0.7"), size = 0.6) +
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min -0.1, borne_max+0.1)+
     labs(
       title = "Modèle de survie",
       x = "n",
       y = "biais moyen",
-      color = "n"+
-        theme_minimal())
+      color = "n")+
+    theme_bw()
   
   gg2 <-  ggplot(RES0.3.3, aes(n, mean.cure)) +
-    geom_line(aes(color = "0.3")) +
-    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.5")) +
-    geom_line(data = RES0.7.3, aes(n, mean.cure, color = "0.7")) +
+    geom_line(aes(color = "0.3"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.7.3, aes(n, mean.cure, color = "0.7"), size = 0.6) +
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.c -0.1, borne_max.c+0.1)+
     labs(
       title = "Modèle de guérison",
       x = "n",
       y = "biais moyen",
-      color = "n"+
-        theme_minimal())
+      color = "n")+
+    theme_bw()
   
   gg3 <-  ggplot(RES0.3.3, aes(n, mean.bernoulli)) +
-    geom_line(aes(color = "0.3")) +
-    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.5")) +
-    geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.7")) +
-    scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
+    geom_line(aes(color = "0.3"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.7"), size = 0.6) +
+    scale_color_manual(name = "p1", values = c("red", "black", "blue"), size = 0.6) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
       title = "Modèle de Bernoulli",
       x = "n",
       y = "biais moyen",
-      color = "n" +
-        theme_minimal(),caption = sprintf("K = %s, t_star=%s" ,
-                                          as.character(N),
-                                          as.character(t_star)))
+      color = "n")+
+    theme_bw()
   
   g <- grid.arrange(gg1, gg2, gg3, top = "influence de n et de p1")
   return(g)
