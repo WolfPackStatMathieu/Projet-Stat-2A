@@ -110,21 +110,19 @@ function_estim_doses_coxph<-function(n,liste_params,nb_doses,t_star){
     coeff<-fit_surv$coef[[1]]
     Predicted_survival<-exp(-exp(coeff*dose_recalibree)*t_star)
     estimateur_cox<-1-Predicted_survival
-    fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_recalibree[dose], data = df, link="logistic", dist="weibullPH", mixture=T,
-                           anc=list(scale=~dose_recalibree[dose]))
-    
-    Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
-    colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
+    print(estimateur_cox)
+    data_returns$estimateur_survie<-estimateur_cox
+    fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_rec, data = df, link="logistic", dist="weibullPH", mixture=T,
+                           anc=list(scale~dose_rec))
     estimation_cure<-rep(NA,nb_doses)
-    estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
-      print(Predicted_survival_prob)
-      indice<-which(Predicted_survival_prob$categorie==dose_recalibree[j])
-      print(indice)
-      estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
-      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+      indice<-which(df$dose==j)[1]
+      print(df[indice,])
+      estimation_cure[j]<-1-predict(fit_cure,newdata=df[indice,],
+                           type="survival",times=c(t_star))[2]
+    }
+    data_returns$estimateur_guerison<-estimation_cure
   }
-  data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
 ###########################################
@@ -174,7 +172,7 @@ fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K
 }
 
 ######## Partie TEST#####
-n<-18
+n<-25
 k<-1
 lambda<-0.1
 p<-0.33
@@ -194,7 +192,7 @@ liste3<-list(lambda3,k3,p3)
 names(liste3)<-c("lambda","k","p")
 liste_whole<-list(liste1,liste2,liste3)
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
-
+test_multiple_variant<-function_estim_doses_coxph(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
 K<-10
 test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
 
