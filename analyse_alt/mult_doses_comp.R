@@ -47,7 +47,7 @@ p<-0.25
 p2<-0.50
 p3<-0.7
 prob_priori<-c(p,p2,p3)
-test_mult_doses<-function_estim_doses_comp(n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
@@ -67,7 +67,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depa
   }
   return(matrice)
 }
-
+test<-generation_comp_mean(K=20,n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
 evol_n_par_dose<-function(results,n,i,K=K){
   longueur_resultats<-c(1:length(n))
   function_intermed<-function(x,results,i){
@@ -121,4 +121,3 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   return(ensemble_ggplots_par_dose)
 }
 test_evol_biais<-evol_biais_comp(K=2,probabilite_a_priori=prob_priori,t_star=6,type1="decreasing",graine_depart=133)
-plot(test_evol_biais[[3]])
