@@ -43,7 +43,7 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,graine=1
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
-p<-0.25
+p<-0.3
 p2<-0.50
 p3<-0.7
 prob_priori<-c(p,p2,p3)
@@ -67,7 +67,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depa
   }
   return(matrice)
 }
-test<-generation_comp_mean(K=20,n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+test<-generation_comp_mean(K=50,n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
 evol_n_par_dose<-function(results,n,i,K=K){
   longueur_resultats<-c(1:length(n))
   function_intermed<-function(x,results,i){
@@ -78,6 +78,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
   result_final$modele_guerison<-result_final$modele_guerison-result_final$p
   result_final$modele_bernoulli<-result_final$modele_bernoulli-result_final$p
   result_final$modele_survie<-result_final$modele_survie-result_final$p
+  print(result_final)
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   palette <- c("#0072B2", "#D55E00", "#E69F00")
@@ -112,7 +113,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
   return(gg)
 }
 evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
-  debut <- 10
+  debut <- 12
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
@@ -120,4 +121,4 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=2,probabilite_a_priori=prob_priori,t_star=6,type1="decreasing",graine_depart=133)
+test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
