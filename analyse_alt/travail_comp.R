@@ -151,5 +151,5 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   return(g)
   
 }
-test_alt<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
+test_alt<-fonction_compar_plotsn_lambda_alt(N=1000, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
 
