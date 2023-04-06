@@ -138,7 +138,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
     geom_line(aes(color = "0.3"), size = 0.6) +
     geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.5"), size = 0.6) +
     geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.7"), size = 0.6) +
-    scale_color_manual(name = "p1", values = c("red", "black", "blue"), size = 0.6) +
+    scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
       title = "Modèle de Bernoulli",
@@ -151,5 +151,5 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   return(g)
   
 }
-test_alt<-fonction_compar_plotsn_lambda_alt(N=20, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
+test_alt<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
 
