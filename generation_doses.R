@@ -57,45 +57,6 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
     data_returns[k,"p"]<-sous_liste[["p"]]
   }
-  fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
-  indice_cens<-which(df$is_observed==0)
-  if(length(indice_cens)==0){
-    estimateur_cure<-rep(1,nb_doses)
-    estimateur_surv<-rep(1,nb_doses)
-    data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
-  }
-  else{
-  df$factdose<-as.factor(df$dose)
-  fit_surv <- survfit(fonction_surv ~dose, data = df)
-  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~factdose, data = df, link="logistic", dist="weibullPH", mixture=T)
-  Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
-  colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
-  estimation_cure<-rep(NA,nb_doses)
-  estimation_surv<-rep(NA,nb_doses)
-  for (j in c(1:nb_doses)){
-    indice<-which(Predicted_survival_prob$categorie==j)
-    estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
-    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
-  }
-  data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
-  return(data_returns)
-}
-function_estim_doses_coxph<-function(n,liste_params,nb_doses,t_star){
-  require(dfcrm)
-  df<-matrix(NA,n,4)
-  df<-as.data.frame(df)
-  data_returns<-as.data.frame(matrix(NA,nb_doses,4))
-  colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
-  colnames(df)<-c("dose","sensible","tox_time","is_observed")
-  df$dose<-sample(c(1:nb_doses),n,replace=TRUE)
-  for (k in c(1:nb_doses)){
-    index_dosek<-which(df$dose==k)
-    sous_liste<-liste_params[[k]]
-    n_k<-length(index_dosek)
-    df[index_dosek,]<-cbind(rep(k,n_k),Generation_un_ech(n=n_k,lambda=sous_liste[["lambda"]],t_star=t_star,p=sous_liste[["p"]],k=sous_liste[["k"]]))
-    data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
-    data_returns[k,"p"]<-sous_liste[["p"]]
-  }
   dose_recalibree<-crm(prior=data_returns$p,target=0.50, tox =df$is_observed, level =df$dose,n=n, model="logistic")$dosescaled
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
@@ -105,26 +66,22 @@ function_estim_doses_coxph<-function(n,liste_params,nb_doses,t_star){
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
-    df$dose_rec<-dose_recalibree[df$dose]
-    fit_surv <- coxph(fonction_surv ~dose_rec, data = df)
-    coeff<-fit_surv$coef[[1]]
-    Predicted_survival<-exp(-exp(coeff*dose_recalibree)*t_star)
-    estimateur_cox<-1-Predicted_survival
-    print(estimateur_cox)
-    data_returns$estimateur_survie<-estimateur_cox
-    fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_rec, data = df, link="logistic", dist="weibullPH", mixture=T,
-                           anc=list(scale~dose_rec))
-    estimation_cure<-rep(NA,nb_doses)
-    for (j in c(1:nb_doses)){
-      indice<-which(df$dose==j)[1]
-      print(df[indice,])
-      estimation_cure[j]<-1-predict(fit_cure,newdata=df[indice,],
-                           type="survival",times=c(t_star))[2]
-    }
-    data_returns$estimateur_guerison<-estimation_cure
+  df$factdose<-as.factor(dose_recalibree[df$dose])
+  fit_surv <- survfit(fonction_surv ~factdose, data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~factdose, data = df, link="logistic", dist="weibullPH", mixture=T)
+  Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
+  colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
+  estimation_cure<-rep(NA,nb_doses)
+  estimation_surv<-rep(NA,nb_doses)
+  for (j in c(1:nb_doses)){
+    indice<-which(Predicted_survival_prob$categorie==dose_recalibree[j])
+    estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
+    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
   }
+  data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
+
 ###########################################
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   ### G?n?re la moyenne des estimateurs pour la taille n
@@ -192,7 +149,6 @@ liste3<-list(lambda3,k3,p3)
 names(liste3)<-c("lambda","k","p")
 liste_whole<-list(liste1,liste2,liste3)
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
-test_multiple_variant<-function_estim_doses_coxph(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
 K<-10
 test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
 
