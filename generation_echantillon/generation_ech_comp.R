@@ -22,10 +22,10 @@ library(cmprsk)
 
 #### type1 correspondra ? "decreasing", "constant" et "increasing". 
 #### m?me chose pour le type2. 
-generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,type1,type2,graine){
+generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,graine,type1,type2){
   alpha1<-get_alpha(p_cause1,obswin=t_star,typ="weibull",typ_wb=type1)
   alpha2<-get_alpha(p_cause2,obswin=t_star,typ="weibull",typ_wb=type2)
-  liste_dataset<-get_dataset0(n=nombre_obs,alpha1,alpha2,tstar=t_star,graine=graine,K=1,type="weibull")
+  liste_dataset<-get_dataset0(n=nombre_obs,alpha1,alpha2,tstar=t_star,graine=133,K=1,type="weibull")
   data<-liste_dataset$data_complete
   data<-as.data.frame(data)
   data$is_observed<-ifelse(data$status==0,0,1)
