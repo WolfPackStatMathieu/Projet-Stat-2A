@@ -66,28 +66,9 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
   colnames(result_final) <- c("modele_bernoulli","modele_survie", "modele_guerison", "taille_echantillon")
   # plot
-  borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
-  borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  borne_min <- min(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
+  borne_max <- max(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
 
-# 
-#   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon))+
-#     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
-#     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
-#     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
-#     xlab("Taille echantillon") + ylab("Biais moyen") +
-#     theme_classic() +
-#     theme(legend.title=element_blank(),
-#           axis.text=element_text(size=10),
-#           axis.title=element_text(size=12),
-#           plot.title = element_text(size = 10))+
-#     ylim(borne_min, borne_max)+
-#     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
-#                            as.character(K),
-#                            as.character(lambda),
-#                            as.character(k),
-#                            as.character(debut),
-#                            as.character(fin),
-#                            as.character(pas)))
 
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
@@ -127,7 +108,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 ?grid.arrange()

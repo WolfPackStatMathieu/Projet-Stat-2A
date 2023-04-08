@@ -167,7 +167,7 @@ gg1 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
       x = expression(alpha),
       y = "biais moyen",
       color = expression(alpha))+
-    theme_bw()
+    # theme_bw()
 gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
     geom_line(aes(color = "0.2"), size = 0.6) +
     geom_line(data = RES0.5.3, aes(k, mean.surv, color = "0.5"), size = 0.6) +
@@ -179,7 +179,7 @@ gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
       x = expression(alpha),
       y = "biais moyen",
       color = expression(alpha))+
-    theme_bw()
+    # theme_bw()
 
 gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
   geom_line(aes(color = "0.2"), size = 0.6) +
@@ -192,7 +192,7 @@ gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
     x = expression(alpha),
     y = "biais moyen",
     color = expression(alpha))+
-  theme_bw()
+  # theme_bw()
 
       
 g <- grid.arrange(gg1, gg2, gg3, top = paste("influence de", expression(alpha)))
