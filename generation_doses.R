@@ -129,8 +129,9 @@ fonction_simul_doses_eqm<-function(vector_size,vecteur_parametres,K,t_star){
   liste_gg<-list(rep(NA,nb_doses))
   resultat_all_sizes<-lapply(vector_size,calcul_eqm_size_Ktimes,nb_doses=nb_doses,K=K,vecteur_param=vecteur_parametres,t_star=t_star)
   for (d in c(1:nb_doses)){
-    ensemble_eqm_dosek<-t(cbind.data.frame(sapply(resultat_all_sizes,function(x,indice){return(x[indice,])},indice=d)))
-    gg1<-{ggplot(data=ensemble_obs_dosek,aes(x=ensemble_eqm_dosek$n,y=ensemble_eqm_dosek$eqm_guerison))}
+    ensemble_eqm_dosek<-as.data.frame(t(cbind(sapply(resultat_all_sizes,function(x,indice){return(x[indice,])},indice=d))))
+    print(ensemble_eqm_dosek)
+    gg1<-{ggplot(data=ensemble_eqm_dosek,aes(x=n,y=eqm_guerison))}
     liste_gg[[d]]<-gg1
   }
   return(liste_gg)
