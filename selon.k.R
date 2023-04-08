@@ -166,7 +166,11 @@ gg1 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
       title = "Modèle de Bernoulli",
       x = expression(alpha),
       y = "biais moyen",
+<<<<<<< HEAD
       color = expression(alpha))+
+=======
+      color = expression(alpha))
+>>>>>>> main
     # theme_bw()
 gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
     geom_line(aes(color = "0.2"), size = 0.6) +
@@ -178,7 +182,11 @@ gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
       title = "Modèle de Survie",
       x = expression(alpha),
       y = "biais moyen",
+<<<<<<< HEAD
       color = expression(alpha))+
+=======
+      color = expression(alpha))
+>>>>>>> main
     # theme_bw()
 
 gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
@@ -191,7 +199,11 @@ gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
     title = "Modèle de Guérison",
     x = expression(alpha),
     y = "biais moyen",
+<<<<<<< HEAD
     color = expression(alpha))+
+=======
+    color = expression(alpha))
+>>>>>>> main
   # theme_bw()
 
       
@@ -282,7 +294,11 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 
 
+<<<<<<< HEAD
 fnct_compar_plt_biais.selon.k1(N=1, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+=======
+fnct_compar_plt_biais.selon.k1(N=5, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+>>>>>>> main
 fonction_compar_plotsn_lambda1(N=10, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
 

@@ -65,40 +65,35 @@ temps_simul2<-function(lambda,alpha,t_star){
 test<-simul_tps_hht("constant",t_star=6,probabilite_a_priori =c(0.05,0.1,0.15,0.33,0.5))
 ######### calcul des estimateurs.#####
 library(survival)
-fonction_estim_hht<-function(modele,t_star){
+fonction_estim_hht<-function(modele,t_star,target){
+  require(dfcrm)
   probabilite_a_priori<-c(0.05,0.1,0.15,0.33,0.5)
   nb_doses<-length(probabilite_a_priori)
   donnees<-simul_tps_hht(modele,t_star,probabilite_a_priori)
-  donnees$Dose<-as.factor(donnees$Dose)
+  print(donnees)
   data_returns<-as.data.frame(matrix(NA,nb_doses,4))
   colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
   vecteur<-c(1:nb_doses)
   fonction_MEAN<-function(vecteur,donnees){
     return(mean(donnees[which(donnees$Dose==vecteur),"observe"]))
   }
+  dose_scaled<-crm(prior =probabilite_a_priori,target = target, tox = donnees$observe, level = donnees$Dose, n =nrow(donnees),model="logistic")$dosescaled
   estimateur_bern<-sapply(vecteur,fonction_MEAN,donnees=donnees)
   data_returns[,"estimateur_bernoulli"]<-estimateur_bern
+  donnees$factdose<-as.factor(dose_scaled[donnees$Dose])
   fonction_surv<-Surv(as.numeric(donnees$temps),event=donnees$observe)
-  fit_surv <- survfit(fonction_surv ~Dose, data = donnees)
-  print("chien")
-  fit_cure<-flexsurvcure(Surv(temps,event=observe)~Dose, data = donnees, link="logistic", dist="weibullPH", mixture=T) 
+  fit_surv <- survfit(fonction_surv ~factdose, data = donnees)
+  fit_cure<-flexsurvcure(Surv(temps,event=observe)~factdose, data = donnees, link="logistic", dist="weibullPH", mixture=T)
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
+  colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
   for (j in c(1:nb_doses)){
-    indice<-which(Predicted_survival_prob$Dose==j)
-    indice_censure_dosej<-which(donnees$observe==1 & donnees$Dose==j)
-    print(indice_censure_dosej)
-    if(length(indice_censure_dosej)==0){
-      estimation_cure[j]<-1
-      estimation_surv[j]<-1
-    }
-    else{
+    indice<-which(Predicted_survival_prob$categorie==dose_scaled[j])
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
     estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
-  }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
 
-test_estim<-fonction_estim_hht(modele="constant",t_star=6)
+test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)

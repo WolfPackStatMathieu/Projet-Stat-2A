@@ -4,30 +4,7 @@ source("weibull.R")
 source("bernoulli.R")
 #####  (I) Fonctions calculer la variance pour une taille d'échantillon.#####
 
-###### 1) fonction variance survie_exp. #####
-variance_exp_Ntimes_sizen<-function(N,n,lambda,t_star){
-  vecteur_biais<-rep(NA,N)
-  vecteur_taille<-rep(n,N)
-  vecteur_resultat<-sapply(vecteur_taille,simul_survie,t_star=t_star,lambda=lambda)
-  return(var(vecteur_resultat))
-}
-#####2) fonction variance weibull.#####
-variance_weib_Ntimes_sizen<-function(N,n,lambda,k,t_star){
-  vecteur_biais<-rep(NA,N)
-  vecteur_taille<-rep(n,N)
-  vecteur_resultat<-sapply(vecteur_taille,simul_survie_weibull,lambda=lambda,k=k,t_star=t_star)
-  return(var(vecteur_resultat))
-}
-#####3) fonction variance bernoulli.#####
-variance_bern_Ntimes_sizen<-function(N,n,p){
-  vecteur_biais<-rep(NA,N)
-  vecteur_taille<-rep(n,N)
-  vecteur_resultat<-lapply(vecteur_taille,simul_bernoulli,p=p)
-  ## on calcule la moyenne pour chaque échantillon de taille n.
-  vecteur_mean_by_sample<-sapply(vecteur_resultat,mean)
-  ## on calcule la variance pour les échantillons de même taille n.
-  return(var(vecteur_mean_by_sample))
-}
+
 
 ########test######
 ####test surv#####
