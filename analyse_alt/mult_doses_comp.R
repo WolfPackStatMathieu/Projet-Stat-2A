@@ -122,3 +122,6 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   return(ensemble_ggplots_par_dose)
 }
 test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
+evol_eqm_comp<-function(K,p,t_star,type1,graine_depart){
+  
+}
