@@ -169,74 +169,25 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   
-  # 
-  #   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon))+
-  #     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
-  #     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1)+
-  #     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
-  #     xlab("Taille echantillon") + ylab("Biais moyen") +
-  #     theme_classic() +
-  #     theme(legend.title=element_blank(),
-  #           axis.text=element_text(size=10),
-  #           axis.title=element_text(size=12),
-  #           plot.title = element_text(size = 10))+
-  #     ylim(borne_min, borne_max)+
-  #     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
-  #                            as.character(K),
-  #                            as.character(lambda),
-  #                            as.character(k),
-  #                            as.character(debut),
-  #                            as.character(fin),
-  #                            as.character(pas)))
-  # 
-  #   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon))+
-  #     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1)+
-  #     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1)+
-  #     ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
-  #     xlab("Taille echantillon") + ylab("Biais moyen") +
-  #     theme_classic() +
-  #     theme(legend.title=element_blank(),
-  #           axis.text=element_text(size=10),
-  #           axis.title=element_text(size=12),
-  #           plot.title = element_text(size = 10))+
-  #     ylim(borne_min, borne_max)+
-  #     labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
-  #                            as.character(K),
-  #                            as.character(lambda),
-  #                            as.character(k),
-  #                            as.character(debut),
-  #                            as.character(fin),
-  #                            as.character(pas)))
-  #   gg <- grid.arrange(gg1, gg2, ncol = 2)
-  
-  # define color palette
-  palette <- c("#0072B2", "#D55E00", "#E69F00")
   
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = modele_survie, col = "survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution de l'eqm en fonction de la taille d'échantillon") +
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+    ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(family = "Helvetica", size=10),
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
-    ylim(borne_min, borne_max) +
-    labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
-                           as.character(K),
-                           as.character(lambda),
-                           as.character(k),
-                           as.character(debut),
-                           as.character(fin),
-                           as.character(pas)))
+    ylim(borne_min, borne_max)
   
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution de l'eqm en fonction de la taille d'échantillon") +
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = "guerison" = "red1", "survie" = "blue1") +
+    ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
     theme(legend.title=element_blank(),

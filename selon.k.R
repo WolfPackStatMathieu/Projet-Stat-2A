@@ -155,44 +155,45 @@ fnct_compar_plt_biais.selon.k1 <- function(N, n, window_lambda, t_star, p) {
   )
   
   # Plot the data
-gg1 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
-    geom_line(aes(color = "0.2")) +
-    geom_line(data = RES0.5.3, aes(k, mean.surv, color = "0.5")) +
-    geom_line(data = RES0.1.3, aes(k, mean.surv, color = "0.1")) +
+  
+gg1 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(k, mean.bernoulli, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.1.3, aes(k, mean.bernoulli, color = "0.1"), size = 0.6) +
+    scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
+    ylim(borne_min.b -0.1, borne_max.b+0.1)+
+    labs(
+      title = "Modèle de Bernoulli",
+      x = expression(alpha),
+      y = "biais moyen",
+      color = expression(alpha))
+    # theme_bw()
+gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(k, mean.surv, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.1.3, aes(k, mean.surv, color = "0.1"), size = 0.6) +
     scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
     ylim(borne_min -0.1, borne_max+0.1)+
     labs(
-      title = "Modèle de survie",
+      title = "Modèle de Survie",
       x = expression(alpha),
       y = "biais moyen",
-      color = expression(alpha)+
-        theme_minimal())
+      color = expression(alpha))
+    # theme_bw()
 
-gg2 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
-  geom_line(aes(color = "0.2")) +
-  geom_line(data = RES0.5.3, aes(k, mean.cure, color = "0.5")) +
-  geom_line(data = RES0.1.3, aes(k, mean.cure, color = "0.1")) +
+gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
+  geom_line(aes(color = "0.2"), size = 0.6) +
+  geom_line(data = RES0.5.3, aes(k, mean.cure, color = "0.5"), size = 0.6) +
+  geom_line(data = RES0.1.3, aes(k, mean.cure, color = "0.1"), size = 0.6) +
   scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
   ylim(borne_min.c -0.1, borne_max.c+0.1)+
   labs(
-    title = "Modèle de guérison",
+    title = "Modèle de Guérison",
     x = expression(alpha),
     y = "biais moyen",
-    color = expression(alpha)+
-      theme_minimal())
+    color = expression(alpha))
+  # theme_bw()
 
-gg3 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
-  geom_line(aes(color = "0.2")) +
-  geom_line(data = RES0.5.3, aes(k, mean.bernoulli, color = "0.5")) +
-  geom_line(data = RES0.1.3, aes(k, mean.bernoulli, color = "0.1")) +
-  scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
-  ylim(borne_min.b -0.1, borne_max.b+0.1)+
-  labs(
-    title = "Modèle de bernoulli",
-    x = expression(alpha),
-    y = "biais moyen",
-    color = expression(alpha)+
-      theme_minimal())
       
 g <- grid.arrange(gg1, gg2, gg3, top = paste("influence de", expression(alpha)))
 return(g)
@@ -281,7 +282,7 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 
 
-fnct_compar_plt_biais.selon.k1(N=10, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+fnct_compar_plt_biais.selon.k1(N=5, 10, c(0.1, 0.2, 0.5), 6, 0.33)
 fonction_compar_plotsn_lambda1(N=10, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
 
