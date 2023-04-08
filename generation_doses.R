@@ -30,13 +30,13 @@ fonction_generation_eqm<-function(vector_size,liste_parameter,K){
   # on calcule la valeur du biais pour chaque echantillon de chaque taille
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                      p=liste_parameter[["p"]],k=liste_parameter[["k"]])
+  function_eqm<-function(data,p){
+    return(colMeans((data-p)^2))
+  }
   # on calcule la valeur moyenne du biais pour chaque taille d echantillon
-  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
-  # on calcule la variance du biais pour chaque taille d echantillon
-  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
-  # on calcule l erreur quadratique moyenne
-  value_eqm<-(value_means-p)^(2)+value_variance
+  value_eqm<-as.data.frame(t(sapply(Value_bias,function_eqm,p=liste_parameter[["p"]])))
   return(value_eqm)
+  # on calcule la variance du biais pour chaque taille d echantillon
 }
 N<-10
 vecteur_size<-sample(c(1:100),N)
