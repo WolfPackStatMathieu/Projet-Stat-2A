@@ -5,6 +5,8 @@ source("surv.R")
 source("generation_mean.R")
 
 
+
+
 plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(ggplot2)
   require(dplyr)
@@ -68,7 +70,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   # plot
   borne_min <- min(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
   borne_max <- max(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
-
+  
 
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
@@ -104,11 +106,11 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
-
-
-plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
-?grid.arrange()
+
+
+
