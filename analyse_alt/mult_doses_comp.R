@@ -78,7 +78,6 @@ evol_n_par_dose<-function(results,n,i,K=K){
   result_final$modele_guerison<-result_final$modele_guerison-result_final$p
   result_final$modele_bernoulli<-result_final$modele_bernoulli-result_final$p
   result_final$modele_survie<-result_final$modele_survie-result_final$p
-  print(result_final)
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   palette <- c("#0072B2", "#D55E00", "#E69F00")
@@ -106,14 +105,15 @@ evol_n_par_dose<-function(results,n,i,K=K){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s" ,
-                            as.character(result_final$p)))}
+      labs(caption = sprintf("p=%s" ,"K=%s",
+                            as.character(result_final$p),
+                            as.character(K)))}
   
   gg <- {grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))}
   return(gg)
 }
 evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
-  debut <- 12
+  debut <- 15
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
