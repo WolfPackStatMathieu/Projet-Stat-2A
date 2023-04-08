@@ -66,21 +66,22 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
-  fit_surv <- survfit(fonction_surv ~dose_recalibree[], data = df)
-  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~dose_recalibree[], data = df, link="logistic", dist="weibullPH", mixture=T) 
+  df$factdose<-as.factor(dose_recalibree[df$dose])
+  fit_surv <- survfit(fonction_surv ~factdose, data = df)
+  fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~factdose, data = df, link="logistic", dist="weibullPH", mixture=T)
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
+  colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
   for (j in c(1:nb_doses)){
-    print(Predicted_survival_prob)
-    indice<-which(Predicted_survival_prob$dose_recalibree[df$dose]==dose_recalibree[j])
-    print(indice)
+    indice<-which(Predicted_survival_prob$categorie==dose_recalibree[j])
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
     estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
+
 ###########################################
 fonction_estim_doses_sizen<-function(K,n,liste_params,nb_doses,t_star){
   ### G?n?re la moyenne des estimateurs pour la taille n
@@ -128,7 +129,7 @@ fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K
 }
 
 ######## Partie TEST#####
-n<-10
+n<-25
 k<-1
 lambda<-0.1
 p<-0.33
@@ -148,7 +149,6 @@ liste3<-list(lambda3,k3,p3)
 names(liste3)<-c("lambda","k","p")
 liste_whole<-list(liste1,liste2,liste3)
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
-
 K<-10
 test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
 
