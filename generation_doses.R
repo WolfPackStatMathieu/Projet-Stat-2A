@@ -3,8 +3,9 @@ source("surv.R")
 source("estimateurs/estimateur_cure.R")
 source("utils.R")
 set.seed(133)
-#### Ne doit plus d?pendre de l'argument modele.######
+#### Ne doit plus dependre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
+  # vector_size :
   vector_size<-vector_size[order(vector_size)]
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
@@ -19,13 +20,21 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
 }
 ####### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
+  #vector_size: un vecteur de N tailles d echantillons chacun de taille n_i
+  # liste_parameter: la liste des parametres du modele
+  # K: le nombre d echantillons (pour chaque taille n_i, il y aura K echantillons)
+  
   ### renvoie la generation avec des tailles differentes avec un lambda,k,t_star,p. 
+  # on classe les échantillons par ordre croissant
   vector_size<-vector_size[order(vector_size)]
-  ##### idee. 
+  # on calcule la valeur du biais pour chaque echantillon de chaque taille
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                      p=liste_parameter[["p"]],k=liste_parameter[["k"]])
+  # on calcule la valeur moyenne du biais pour chaque taille d echantillon
   value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
+  # on calcule la variance du biais pour chaque taille d echantillon
   value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
+  # on calcule l erreur quadratique moyenne
   value_eqm<-(value_means-p)^(2)+value_variance
   return(value_eqm)
 }
