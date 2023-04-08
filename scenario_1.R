@@ -121,8 +121,19 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   
-  
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = "guerison" = "red1", "survie" = "blue1") +
+    ggtitle("Evolution de l'eqm en \nfonction de n") +
+    xlab("Taille echantillon") + ylab("EQM") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)
+  gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
@@ -135,27 +146,13 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)
   
-  gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
-    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = "guerison" = "red1", "survie" = "blue1") +
-    ggtitle("Evolution de l'eqm en \nfonction de n") +
-    xlab("Taille echantillon") + ylab("EQM") +
-    theme_classic() +
-    theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
-    ylim(borne_min, borne_max)
-  
-  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
   
 }
 
 
 
 
-<<<<<<< HEAD
 
 plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
@@ -163,9 +160,9 @@ biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 
-=======
+
 biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 eqm.selon.taille_echantillon(K =20, lambda = 0.5, t_star = 6, p = 0.3, k=1)
->>>>>>> main
+
 
 
