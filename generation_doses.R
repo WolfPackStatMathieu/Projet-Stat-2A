@@ -17,11 +17,11 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
   names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
-#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
+####### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
-  ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
+  ### renvoie la generation avec des tailles differentes avec un lambda,k,t_star,p. 
   vector_size<-vector_size[order(vector_size)]
-  ##### id?e. 
+  ##### idee. 
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                      p=liste_parameter[["p"]],k=liste_parameter[["k"]])
   value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
@@ -31,7 +31,7 @@ fonction_generation_eqm<-function(vector_size,liste_parameter,K){
 }
 N<-10
 vecteur_size<-sample(c(1:100),N)
-lamdba_test<-3
+lambda_test<-3
 t_star<-6
 p<-0.33
 k<-1
