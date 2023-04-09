@@ -124,49 +124,51 @@ fonction_compar_plotsn_lambda1 <- function(N, window_lambda, t_star, p, k) {
   )
   
   # Plot the data
-  gg1 <-  ggplot(RES0.2.3, aes(n, mean.surv)) +
-    geom_line(aes(color = "0.2")) +
-    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.5")) +
-    geom_line(data = RES0.1.3, aes(n, mean.surv, color = "0.1")) +
-    scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
-    ylim(borne_min -0.1, borne_max+0.1)+
-    labs(
-      title = "Modèle de survie",
-      x = "n",
-      y = "biais moyen",
-      color = "n"+
-        theme_minimal())
   
-  gg2 <-  ggplot(RES0.2.3, aes(n, mean.cure)) +
-    geom_line(aes(color = "0.2")) +
-    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.5")) +
-    geom_line(data = RES0.1.3, aes(n, mean.cure, color = "0.1")) +
-    scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
-    ylim(borne_min.c -0.1, borne_max.c+0.1)+
-    labs(
-      title = "Modèle de guérison",
-      x = "n",
-      y = "biais moyen",
-      color = "n"+
-        theme_minimal())
-  
-  gg3 <-  ggplot(RES0.2.3, aes(n, mean.bernoulli)) +
-    geom_line(aes(color = "0.2")) +
-    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.5")) +
-    geom_line(data = RES0.1.3, aes(n, mean.bernoulli, color = "0.1")) +
+  gg1 <-  ggplot(RES0.2.3, aes(n, mean.bernoulli)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.1.3, aes(n, mean.bernoulli, color = "0.1"), size = 0.6) +
     scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
-      title = "Modèle de bernoulli",
+      title = "Modèle de Bernoulli",
       x = "n",
       y = "biais moyen",
-      color = "n" +
-        theme_minimal())
+      color = "n" )+
+    theme_bw()
+  gg2 <-  ggplot(RES0.2.3, aes(n, mean.surv)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.1.3, aes(n, mean.surv, color = "0.1"), size = 0.6) +
+    scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
+    ylim(borne_min -0.1, borne_max+0.1)+
+    labs(
+      title = "Modèle de Survie",
+      x = "n",
+      y = "biais moyen",
+      color = "n")+
+    theme_bw()
   
-  g <- grid.arrange(gg1, gg2, gg3, top = "influence de n et lambda")
+  gg3 <-  ggplot(RES0.2.3, aes(n, mean.cure)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.1.3, aes(n, mean.cure, color = "0.1"), size = 0.6) +
+    scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
+    ylim(borne_min.c -0.1, borne_max.c+0.1)+
+    labs(
+      title = "Modèle de Guérison",
+      x = "n",
+      y = "biais moyen",
+      color = "n")+
+    theme_bw()
+
+  
+  g <- grid.arrange(gg1, gg2, gg3, top = "influence de n et lambda" )
   return(g)
   
 }
 
-fonction_compar_plotsn_lambda1(15, c(0.1, 0.2, 0.5), 6, 0.33, 1)
+fonction_compar_plotsn_lambda1(1, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
+?grid.arrange
