@@ -66,12 +66,18 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
     data_returns[k,"p"]<-sous_liste[["p"]]
   }
+  # print(df)
   dose_recalibree<-crm(prior=data_returns$p,target=0.50, tox =df$is_observed, level =df$dose,n=n, model="logistic")$dosescaled
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
     estimateur_cure<-rep(1,nb_doses)
     estimateur_surv<-rep(1,nb_doses)
+    data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
+  }
+  if(length(indice_cens)==nrow(df)){
+    estimateur_cure<-rep(0,nb_doses)
+    estimateur_surv<-rep(0,nb_doses)
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
