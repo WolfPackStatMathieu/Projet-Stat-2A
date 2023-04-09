@@ -50,8 +50,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
           axis.title = element_text(size = 12))
   
 }
-<<<<<<< HEAD
-=======
+
 plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   require(ggplot2)
   require(dplyr)
