@@ -58,7 +58,24 @@ biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   }
   return(results)
 }
-
+eqm.selon.alpha<-function(p_cause1,K,t_star,type1,type2,graine){
+  results <- NULL
+  n <- 20
+  graine_inf <- graine
+  graine_sup <- graine + K
+  ensemble_graine<-c(graine_inf:graine_sup)
+  while(n<200){
+    liste_global<-as.data.frame(t(cbind.data.frame(sapply(ensemble_graine,fonction_estim_comp_once,
+                                          p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))))
+    liste_global$Guerison<-as.numeric(liste_global$Guerison)
+    liste_global$Survie<-as.numeric(liste_global$Survie)
+    liste_global$Bernoulli<-as.numeric(liste_global$Bernoulli)
+    valeurs<-colMeans((liste_global-p_cause1)^2)
+    results<-rbind(results,c(n,valeurs[1],valeurs[3],valeurs[2]))
+    n <- n+20
+  }
+  return(results)
+}
 
 fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,graine) {
   library(gridExtra)
@@ -344,4 +361,6 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="decreasing",type2="decreasing", graine=139)
+
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
+
