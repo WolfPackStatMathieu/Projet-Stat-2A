@@ -31,8 +31,8 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   # boxplot
   boxplot <- ggplot(df, aes(x = modele, y = valeurs, fill = modele)) + 
     geom_violin(alpha = 0.8) +
-    scale_fill_manual(values = c("#0072B2", "#E69F00","Sky blue")) +
-    theme_classic()+
+    scale_fill_manual(values = c("#0072B2", "#E69F00","purple")) +
+    # theme_classic()+
     ylim(borne_min, borne_max)
   
   # Add labels and title
@@ -101,6 +101,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
 
 }
+
 eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   require(ggplot2)
   require(gridExtra)
@@ -124,7 +125,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = "guerison" = "red1", "survie" = "blue1") +
+    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
@@ -133,6 +134,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)
+
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
@@ -145,16 +147,15 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)
-  
+
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
-  
 }
 
 
 
 
 
-plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
@@ -162,7 +163,7 @@ biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
-eqm.selon.taille_echantillon(K =20, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 
