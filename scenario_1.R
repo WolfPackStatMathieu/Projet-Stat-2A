@@ -3,14 +3,9 @@
 rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
-<<<<<<< HEAD
 source("analyse_alt/mult_doses_comp.R")
 
 library(ggplot2)
-=======
-
-
->>>>>>> cyrille
 
 
 plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
@@ -81,8 +76,8 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   # boxplot
   boxplot <- ggplot(df, aes(x = modele, y = valeurs, fill = modele)) + 
     geom_violin(alpha = 0.8) +
-    scale_fill_manual(values = c("#0072B2", "#E69F00","Sky blue")) +
-    theme_classic()+
+    scale_fill_manual(values = c("#0072B2", "#E69F00","purple")) +
+    # theme_classic()+
     ylim(borne_min, borne_max)
   
   # Add labels and title
