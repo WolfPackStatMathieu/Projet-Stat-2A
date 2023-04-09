@@ -31,42 +31,40 @@ type2<-"decreasing"
 t_star<-6
 test_estim_comp<-fonction_estim_comp_once(p_cause1,n=n,type1,type2,t_star=t_star,graine=145)
 set.seed(133)
-Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star){
-  result<-as.data.frame(t(cbind(sapply(rep(n,K),fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
+Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
+  ensemble_graine<-c(graine+1:graine+K)
+  result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
+  result<-as.data.frame(t(result))
   colnames(result)<-c("Survie","Bernoulli","Guerison")
   return(colMeans(sapply(result,as.numeric)))
 }
 #test<-Simuler_estim_mult_times(K=10,p_cause1=p_cause1,p_cause2=p_cause2,n=n,type1=type1,type2=type2,t_star=6)
-biais.selon.lambda_alt <-function(p_cause1,K,t_star, k,type1,type2){
+biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
   n <- 20
   while(n<200){
-    vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star)
+    vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star,graine=graine)
     biais_surv<-vec.biais[[1]]-p_cause1
-    biais.cure<-vec.biais[[2]]-p_cause1
-    biais.km<-vec.biais[[3]]-p_cause1
-    results<-rbind(results,c(n,biais_surv,biais.cure,biais.km))
+    biais.bern<-vec.biais[[2]]-p_cause1
+    biais.cure<-vec.biais[[3]]-p_cause1
+    results<-rbind(results,c(n,biais_surv,biais.cure,biais.bern))
     n <- n+20
   }
   return(results)
 }
 
 
-fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type2) {
+fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,graine) {
   library(gridExtra)
   library(ggplot2)
   # Generate the data
-  set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[1]],K=N, t_star=t_star, k,type1,type2)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[1]],K=N, t_star=t_star, type1,type2,graine=graine)
   RES0.3.3 <- data.frame(RES)
   colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star, k,type1,type2)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star, type1,type2,graine=graine)
   RES0.5.3 <- data.frame(RES)
   colnames(RES0.5.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
-  set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star, k,type1,type2)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7.3 <- data.frame(RES)
   colnames(RES0.7.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   # Get the min and max bounds of each variable to be used in the plots
@@ -150,6 +148,6 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,k,type1,type
   return(g)
   
 }
-test_alt<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="decreasing",type2="decreasing")
-test_alt2<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="increasing",type2="increasing")
-test_alt3<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7), k=1,type1="constant",type2="constant")
+test_alt<-fonction_compar_plotsn_lambda_alt(N=500, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="decreasing",type2="decreasing",graine=133)
+test_alt2<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="increasing",type2="increasing",graine=133)
+test_alt3<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="constant",type2="constant",graine=133)
