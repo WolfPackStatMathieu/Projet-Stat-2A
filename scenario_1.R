@@ -4,7 +4,7 @@ rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
 source("analyse_alt/mult_doses_comp.R")
-
+source("analyse_alt/travail_comp.R")
 library(ggplot2)
 
 
@@ -318,4 +318,53 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
   
 }
-plots_scenario_1_alt(K=1900,n=100,p,type="constant",t_star=6)
+eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
+  require(ggplot2)
+  require(gridExtra)
+  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
+  # On calcule le biais pour K simulations et n-échantillons
+  result_final<-as.data.frame(eqm.selon.alpha(K=K, type1=type1, p_cause1=p,graine=graine,type2=type1,t_star=t_star))
+  print(result_final)
+  colnames(result_final) <- c("taille_echantillon","modele_survie","modele_guerison", "modele_bernoulli")
+  # plot
+  borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  
+  # define color palette
+  palette <- c("#0072B2", "#D55E00", "#E69F00")
+  
+  gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
+    ggtitle("Evolution de l'eqm en \nfonction de n") +
+    xlab("Taille echantillon") + ylab("EQM") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)
+  
+  gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+    ggtitle("Evolution de l'eqm en \nfonction de n") +
+    xlab("Taille echantillon") + ylab("EQM") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("K = %s, p=%s,type=%s" ,
+                           as.character(K),
+                           as.character(p_cause1),
+                           as.character(type1)))
+  
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
+}
+test_eqm<-eqm.selon.taille_echantillon_alt(K=100, type1="constant", p=0.33,graine=133,t_star=6)
+test_eqm2<-eqm.selon.taille_echantillon_alt(K=100, type1="decreasing", p=0.33,graine=133,t_star=6)
+test_eqm<-eqm.selon.taille_echantillon_alt(K=100, type1="increasing", p=0.33,graine=133,t_star=6)
