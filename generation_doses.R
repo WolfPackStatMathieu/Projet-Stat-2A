@@ -3,8 +3,9 @@ source("surv.R")
 source("estimateurs/estimateur_cure.R")
 source("utils.R")
 set.seed(133)
-#### Ne doit plus d?pendre de l'argument modele.######
+#### Ne doit plus dependre de l'argument modele.######
 fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
+  # vector_size :
   vector_size<-vector_size[order(vector_size)]
   matrix_bias_doses<-list(rep(NA,nombre_doses))
   for(indice in c(1:nombre_doses)){
@@ -17,21 +18,29 @@ fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,
   names(matrix_bias_doses)<-c(1:nombre_doses)
   return(matrix_bias_doses)
 }
-#################################################################### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
+####### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
-  ### renvoie la g?n?ration avec des tailles diff?rentes avec un lambda,k,t_star,p. 
+  #vector_size: un vecteur de N tailles d echantillons chacun de taille n_i
+  # liste_parameter: la liste des parametres du modele
+  # K: le nombre d echantillons (pour chaque taille n_i, il y aura K echantillons)
+  
+  ### renvoie la generation avec des tailles differentes avec un lambda,k,t_star,p. 
+  # on classe les échantillons par ordre croissant
   vector_size<-vector_size[order(vector_size)]
-  ##### id?e. 
+  # on calcule la valeur du biais pour chaque echantillon de chaque taille
   Value_bias<-lapply(vector_size,Simuler_biais_taillen,K=K,lambda=liste_parameter[['lambda']],t_star=liste_parameter[["t_star"]],
                      p=liste_parameter[["p"]],k=liste_parameter[["k"]])
-  value_means<-as.data.frame(t(sapply(Value_bias,colMeans)))
-  value_variance<-as.data.frame(t(sapply(Value_bias,fonction_sapply)))
-  value_eqm<-(value_means-p)^(2)+value_variance
+  function_eqm<-function(data,p){
+    return(colMeans((data-p)^2))
+  }
+  # on calcule la valeur moyenne du biais pour chaque taille d echantillon
+  value_eqm<-as.data.frame(t(sapply(Value_bias,function_eqm,p=liste_parameter[["p"]])))
   return(value_eqm)
+  # on calcule la variance du biais pour chaque taille d echantillon
 }
 N<-10
 vecteur_size<-sample(c(1:100),N)
-lamdba_test<-3
+lambda_test<-3
 t_star<-6
 p<-0.33
 k<-1
@@ -114,20 +123,43 @@ Realisations_estim_cas_mult<-function(K,n,liste_params,nb_doses,t_star){
     matrice[[j]]<-ensemble_obs_dosek}
   return(matrice)
 }
-fonction_simul_doses_eqm<-function(vector_size,nombre_doses,vecteur_parametres,K){
+fonction_simul_doses_eqm<-function(vector_size,vecteur_parametres,K,t_star){
   vector_size<-vector_size[order(vector_size)]
-  matrix_bias_doses<-list(rep(NA,nombre_doses))
-  for(indice in c(1:nombre_doses)){
-    liste_param<-vecteur_parametres[[indice]]
-    ### besoin de modifier la fonction fonction_generation_taille_mean.
-    moyenne_taille_dose<-fonction_generation_eqm(vector_size = vector_size,
-                                                         liste_parameter = liste_param,K)
-    matrix_bias_doses[[indice]]=moyenne_taille_dose
+  nb_doses<-length(vecteur_parametres)
+  liste_gg<-list(rep(NA,nb_doses))
+  resultat_all_sizes<-lapply(vector_size,calcul_eqm_size_Ktimes,nb_doses=nb_doses,K=K,vecteur_param=vecteur_parametres,t_star=t_star)
+  for (d in c(1:nb_doses)){
+    ensemble_eqm_dosek<-as.data.frame(t(cbind(sapply(resultat_all_sizes,function(x,indice){return(x[indice,])},indice=d))))
+    print(ensemble_eqm_dosek)
+    gg1<-{ggplot(data=ensemble_eqm_dosek,aes(x=n,y=eqm_guerison))}
+    liste_gg[[d]]<-gg1
   }
-  names(matrix_bias_doses)<-c(1:nombre_doses)
-  return(matrix_bias_doses)
+  return(liste_gg)
 }
-
+calcul_eqm_size_Ktimes<-function(size,vecteur_param,nb_doses,K,t_star){
+  
+  matrice_eqm_doses<-as.data.frame(matrix(NA,nb_doses,5))
+  colnames(matrice_eqm_doses)<-c("eqm_Bernoulli","eqm_guerison","eqm_survie","p","n")
+  result<-lapply(rep(n,K),function_estim_doses,liste_params=vecteur_param,nb_doses=nb_doses,t_star=t_star)
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    p<-vecteur_param[[j]][["p"]]
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    eqm_bern<-mean((ensemble_obs_dosek$estimateur_bernoulli-p)^(2))
+    eqm_surv<-mean((ensemble_obs_dosek$estimateur_modele_survie-p)^(2))
+    eqm_cure<-mean((ensemble_obs_dosek$estimateur_guerison-p)^(2))
+    matrice_eqm_doses[j,c("eqm_Bernoulli","eqm_guerison","eqm_survie","p","n")]<-c(eqm_bern,
+                                                                               eqm_cure,
+                                                                               eqm_surv,
+                                                                               ensemble_obs_dosek$p,
+                                                                               size)
+  }
+  return(matrice_eqm_doses)
+}
 ######## Partie TEST#####
 n<-25
 k<-1
@@ -151,7 +183,9 @@ liste_whole<-list(liste1,liste2,liste3)
 test_multiple_doses<-function_estim_doses(n,liste_params = liste_whole,nb_doses=3,t_star=t_star)
 K<-10
 test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
-
+vect_size<-sample(c(20:100),10)
+liste_alt<-list(liste1,liste2)
+test<-fonction_simul_doses_eqm(vector_size=vect_size,vecteur_parametres = liste_alt,K=1,t_star=t_star)
 
 ########## TEST surv####
 # N<-20

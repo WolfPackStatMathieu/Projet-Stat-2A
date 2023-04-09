@@ -75,25 +75,60 @@ fonction_estim_hht<-function(modele,t_star,target){
   colnames(data_returns)<-c("estimateur_bernoulli","estimateur_survie","estimateur_guerison","p")
   vecteur<-c(1:nb_doses)
   fonction_MEAN<-function(vecteur,donnees){
-    return(mean(donnees[which(donnees$Dose==vecteur),"observe"]))
+    indice_admin_dose<-which(donnees$Dose==vecteur)
+    if(length(indice_admin_dose)!=0){
+    return(mean(donnees[indice_admin_dose,"observe"]))}
+    else{
+      return(0)
+    }
   }
   dose_scaled<-crm(prior =probabilite_a_priori,target = target, tox = donnees$observe, level = donnees$Dose, n =nrow(donnees),model="logistic")$dosescaled
   estimateur_bern<-sapply(vecteur,fonction_MEAN,donnees=donnees)
   data_returns[,"estimateur_bernoulli"]<-estimateur_bern
-  donnees$factdose<-as.factor(dose_scaled[donnees$Dose])
-  fonction_surv<-Surv(as.numeric(donnees$temps),event=donnees$observe)
-  fit_surv <- survfit(fonction_surv ~factdose, data = donnees)
-  fit_cure<-flexsurvcure(Surv(temps,event=observe)~factdose, data = donnees, link="logistic", dist="weibullPH", mixture=T)
+  dose_all_missed<-fonction_miss(donnees,nb_doses=length(dose_scaled))
+  donnees_tronq<-donnees[-which(donnees$Dose %in% dose_all_missed),]
+  donnees_tronq$factdose<-as.factor(dose_scaled[donnees_tronq$Dose])
+  fonction_surv<-Surv(as.numeric(donnees_tronq$temps),event=donnees_tronq$observe)
+  fit_surv <- survfit(fonction_surv ~factdose, data = donnees_tronq)
+  fit_cure<-flexsurvcure(Surv(temps,event=observe)~factdose, data = donnees_tronq, link="logistic", dist="weibullPH", mixture=T)
   Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
   colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
+  rang_dose<-1
   for (j in c(1:nb_doses)){
+    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-0
+                                estimation_surv[j]<-0}
+    else{
     indice<-which(Predicted_survival_prob$categorie==dose_scaled[j])
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
-    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[rang_dose]][1,][["surv"]]
+    rang_dose<-rang_dose+1
+    }
+    data_returns[j,"p"]<-probabilite_a_priori[j]
+  }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
 
 test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
+fonction_miss<-function(data,nb_doses){
+  vecteur_doses_NA<-c()
+  for (j in c(1:nb_doses)){
+    nb_num_doses<-which(data$Dose==j)
+    nb_num_miss_dose<-which(data$Dose==j & data$observe==0)
+    if(length(nb_num_doses)==length(nb_num_miss_dose) && length(nb_num_miss_dose)!=0){
+      if (nb_num_doses==nb_num_miss_dose){vecteur_doses_NA<-append(vecteur_doses_NA,j)}
+      }
+    }
+  return(vecteur_doses_NA)
+}
+require(ggplot2)
+ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_guerison,col="Guérison"))+
+  geom_point()+
+  geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
+  labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
+ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Survie"))+
+  geom_point()+
+  geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
+  labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")

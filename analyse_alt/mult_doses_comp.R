@@ -78,7 +78,6 @@ evol_n_par_dose<-function(results,n,i,K=K){
   result_final$modele_guerison<-result_final$modele_guerison-result_final$p
   result_final$modele_bernoulli<-result_final$modele_bernoulli-result_final$p
   result_final$modele_survie<-result_final$modele_survie-result_final$p
-  print(result_final)
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   palette <- c("#0072B2", "#D55E00", "#E69F00")
@@ -86,7 +85,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
     scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    ggtitle("Evolution du biais en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -98,7 +97,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
     geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
     scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    ggtitle("Evolution du biais en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -106,14 +105,15 @@ evol_n_par_dose<-function(results,n,i,K=K){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s" ,
-                            as.character(result_final$p)))}
+      labs(caption = sprintf("p=%s" ,"K=%s",
+                            as.character(result_final$p),
+                            as.character(K)))}
   
   gg <- {grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))}
   return(gg)
 }
 evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
-  debut <- 12
+  debut <- 15
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
@@ -122,3 +122,76 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   return(ensemble_ggplots_par_dose)
 }
 test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
+
+################### EQM ##################"
+evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
+  debut <- 15
+  fin <- 100
+  pas <- 5
+  n <- seq(debut,fin , pas)
+  results<-lapply(n,generation_comp_eqm,K=K,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,graine_depart=graine_depart)
+  ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose_eqm,results=results,n=n,K=K)
+  return(ensemble_ggplots_par_dose)
+}
+evol_n_par_dose_eqm<-function(results,n,i,K=K){
+  longueur_resultats<-c(1:length(n))
+  function_intermed<-function(x,results,i){
+    return(unlist(results[[x]][i,]))
+  }
+  result_final<-as.data.frame(t(cbind(sapply(longueur_resultats,function_intermed,results=results,i=i))))
+  result_final$taille_echantillon<-n
+  result_final$modele_guerison<-result_final$modele_guerison-result_final$p
+  result_final$modele_bernoulli<-result_final$modele_bernoulli-result_final$p
+  result_final$modele_survie<-result_final$modele_survie-result_final$p
+  borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
+  palette <- c("#0072B2", "#D55E00", "#E69F00")
+  gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
+      geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modèles", values = palette) +
+      ggtitle("Evolution de l'eqm en fonction de la taille d'échantillon") +
+      xlab("Taille echantillon") + ylab("Biais moyen") +
+      theme_classic() +
+      theme(legend.title=element_blank(),
+            axis.text=element_text(family = "Helvetica", size=10),
+            axis.title=element_text(family = "Helvetica", size=12),
+            plot.title = element_text(family = "Helvetica", size = 10)) +
+      ylim(borne_min, borne_max) }
+  gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
+      geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modèles", values = palette) +
+      ggtitle("Evolution de l'EQM en fonction de la taille d'échantillon") +
+      xlab("Taille echantillon") + ylab("Biais moyen") +
+      theme_classic() +
+      theme(legend.title=element_blank(),
+            axis.text=element_text(family = "Helvetica", size=10),
+            axis.title=element_text(family = "Helvetica", size=12),
+            plot.title = element_text(family = "Helvetica", size = 10)) +
+      ylim(borne_min, borne_max)+
+      labs(caption = sprintf("p=%s" ,"K=%s",
+                             as.character(result_final$p),
+                             as.character(K)))}
+  
+  gg <- {grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))}
+  return(gg)
+}
+generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
+  result<-lapply(rep(n,K),function_estim_doses_comp,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,graine=graine_depart)
+  nb_doses<-length(prob_priori)
+  matrice<-as.data.frame(matrix(NA,nb_doses,5))
+  colnames(matrice)<-c("numero_dose","modele_bernoulli","modele_survie","modele_guerison","p")
+  matrice$numero_dose<-c(1:nb_doses)
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_survie<-as.numeric(unlist(ensemble_obs_dosek$estimateur_survie))
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    matrice[j,c("modele_bernoulli","modele_survie","modele_guerison","p")]<-colMeans((ensemble_obs_dosek-ensemble_obs_dosek$p)^2)
+  }
+  return(matrice)
+}
+test<-evol_eqm_comp(K=6,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)

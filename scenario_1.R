@@ -3,6 +3,8 @@
 rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
+source("analyse_alt/mult_doses_comp.R")
+
 library(ggplot2)
 
 
@@ -43,6 +45,46 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
                             as.character(lambda), 
                            as.character(k), 
                            as.character(n))) +
+    theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+          axis.text = element_text(size = 12),
+          axis.title = element_text(size = 12, face = "bold"))
+  
+}
+plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
+  require(ggplot2)
+  require(dplyr)
+  require(tidyr)
+  # df à 3 colones (modèle de guérison, modèle de survie, modèle de bernouilli)
+  graine_liste<-graine+c(1:K)
+  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
+  res$Survie<-as.numeric(res$Survie)
+  res$Bernoulli<-as.numeric(res$Bernoulli)
+  res$Guerison<-as.numeric(res$Guerison)
+  res <- res - p
+  print(res)
+  # on renomme les colonnes
+  
+  # bornes
+  borne_min <- min(res)
+  borne_max <- max(res) 
+  print(typeof(res))
+  # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
+  # ensuite ajouter une nouvelle colonne modele qui servira a 
+  # distinguer les 2 modèles
+  df <- res %>% gather(key = "modele", value = "valeurs")
+  
+  # boxplot
+  boxplot <- ggplot(df, aes(x = modele, y = valeurs, fill = modele)) + 
+    geom_violin(alpha = 0.8) +
+    scale_fill_manual(values = c("#0072B2", "#E69F00","Sky blue")) +
+    theme_classic()+
+    ylim(borne_min, borne_max)
+  
+  # Add labels and title
+  boxplot + 
+    labs(x = "Modèles", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
+         caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12, face = "bold"))
@@ -203,7 +245,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-
+plots_scenario_1_alt(K=1900,n=100,p,type="constant",t_star=6)
 biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 eqm.selon.taille_echantillon(K =20, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 

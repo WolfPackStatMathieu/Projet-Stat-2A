@@ -15,7 +15,7 @@ require(visNetwork, quietly = TRUE)
 # # shiny example
 # shiny::runApp(system.file("shiny", package = "visNetwork"))
 
-#creation des nodes pour les fonctions du fichier surv.R
+############creation des nodes pour les fonctions du fichier surv.R #####
 noms_fonction_surv.R <-c("simul_exp", #surv.R
                          "Simuler_biais_un_n_ech",
                          "Calcul_estim_depuis_df",
@@ -42,7 +42,7 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"estimateur_cure_mult" #estimateurs/estimateur_cure
                          ,"fonction_simul_doses_mean" #generation_doses.R
                          ,"fonction_generation_eqm"
-                         ,"function_estim_doses"
+                         ,"function_estim_doses"# "Generation_un_ech" "fonction_Bern" "tp.surv" "tps.surv"
                          ,"fonction_estim_doses_sizen"
                          ,"Realisations_estim_cas_mult"
                          ,"fonction_simul_doses_eqm"
@@ -61,6 +61,11 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"eqm.selon.taille_echantillon"
                          ,"fonction_generation_taille_eqm"
                          ,"fonction_sapply"
+                         ,"function_estim_doses_comp" #generation_comp fonction_Bern
+                         ,"generation_comp" #get_alpha
+                         ,"generation_comp_mean"  #function_estim_doses_comp
+                         ,"evol_biais_comp" #generation_comp_mean evol_n_par_dose
+                         
                          )
 fonctions <-as.data.frame(noms_fonction_surv.R)
 fonctions
@@ -69,14 +74,28 @@ nodes_surv.R <- data.frame(id=1:length(noms_fonction_surv.R),
                            label = noms_fonction_surv.R,
                            # control shape of nodes
                            shape = "square",
+                           group = c("GrA"), 
                            # color
                            color = "darkred",
                            # tooltip (html or character), when the mouse is above
                            title = paste0("<p><b>", 1:5,"</b><br>", noms_fonction_surv.R,
                                           "</p>")
+                           ,# smooth
+                           smooth = c(TRUE)
                            )
 nodes <- nodes_surv.R
 head(nodes)
+
+########### Gestion de l'affichage des nodes #########
+nodes$shape[nodes$label == "plots_scenario_1"] <-"triangle"
+nodes$color[nodes$label == "plots_scenario_1"] <-"blue"
+nodes$color[nodes$label == "flexsurvcure"] <-"black"
+nodes$shape[nodes$label == "Simuler_biais_taillen"] <-"star"
+
+
+head(nodes)
+
+####### Edges #######
 # edges_simul_exp <-data.frame(from= c(1), to = c())#rien
 
 edges_simuler_biais_un_n_ech<-data.frame(from= c(2), 
@@ -125,7 +144,7 @@ edges_temps_simul2 <- data.frame(from = c(23),
 edges_fonction_simul_doses_mean <- data.frame(from = c(25),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_taille_mean")))) #fonction_generation_taille_mean
 edges_fonction_generation_eqm <- data.frame(from = c(26),
-                     to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) #Simuler_biais_taillen
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen", "fonction_sapply")))) #Simuler_biais_taillen fonction_sapply
 edges_function_estim_doses <- data.frame(from = c(27),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("Generation_un_ech", "fonction_Bern", "flexsurvcure", "tp.surv"
                                                                         )))) #Generation_un_ech, fonction_Bern, flexsurvcure, tp.surv
@@ -141,8 +160,8 @@ edges_fonction_simul_doses_eqm <- data.frame(from = c(30),
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
 # edges_hx <- data.frame(from = c(33),
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
-# edges_one_weibull_comp <- data.frame(from = c(34),
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
+edges_one_weibull_comp <- data.frame(from = c(34),
+                     to = c(which(fonctions$noms_fonction_surv.R %in% c("hx")))) # hx
 edges_get_weibull <- data.frame(from = c(35),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("one_weibull_comp")))) # one_weibull_comp
 edges_get_dataset0 <- data.frame(from = c(36),
@@ -166,9 +185,22 @@ edges_fonction_generation_taille_eqm <- data.frame(from = c(44),
                                                  to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # Simuler_biais_taillen
 # edges_fonction_sapply <- data.frame(from = c(45),
 #                                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien 
+edges_function_estim_doses_comp <- data.frame(from = c(46),
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # # Simuler_biais_taillen
+edges_generation_comp <- data.frame(from = c(47),
+                                              to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # # Simuler_biais_taillen
+
+edges_generation_comp_mean <- data.frame(from = c(48),
+                                    to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                   c("function_estim_doses_comp")))) # function_estim_doses_comp
+
+edges_evol_biais_comp <- data.frame(from = c(49),
+                                         to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                        c("generation_comp_mean")))) #  #generation_comp_mean evol_n_par_dose
 
 
-which(fonctions$noms_fonction_surv.R %in% c("fonction_sapply"))
+###### Liens #########
+which(fonctions$noms_fonction_surv.R %in% c("evol_n_par_dose"))
 edges <- rbind(#edges_simul_exp, 
                edges_simuler_biais_un_n_ech
                ,edges_Simuler_biais_taillen
@@ -201,7 +233,7 @@ edges <- rbind(#edges_simul_exp,
                #,edges_get_alpha
                #,edges_get_expo
                #,edges_hx
-               #,edges_one_weibull_comp
+               ,edges_one_weibull_comp
                ,edges_get_weibull
                ,edges_get_dataset0
                ,edges_fonction_generation_taille_differente
@@ -213,14 +245,16 @@ edges <- rbind(#edges_simul_exp,
                ,edges_eqm.selon.taille_echantillon
                ,edges_fonction_generation_taille_eqm
                # ,edges_fonction_sapply
-               
+               ,edges_function_estim_doses_comp
+               ,edges_generation_comp
+               ,edges_generation_comp_mean
+               ,edges_evol_biais_comp
                )
 
 edges
 
 
 visNetwork(nodes, edges, height = "500px", width = "100%") %>%
-  visEdges(arrows = "to")
-
-
-
+  visEdges(arrows = "to") %>% 
+  # visHierarchicalLayout(direction = "LR") #%>%
+  visEvents(click = "function(nodes){ Shiny.onInputChange('click', nodes.nodes[0]); if(nodes.nodes[0]){ no_of_edges = this.getConnectedEdges(nodes.nodes[0]); alert('No. of Edges connected to the selected node are :  ' + no_of_edges); } Shiny.onInputChange('edge_connections', no_of_edges); ;}", selectEdge = "function(edges) { Shiny.onInputChange('edge_data', this.body.data.edges._data[edges.edges[0]]); ;}", selectNode = "function(nodes) { no_of_nodes = this.getConnectedNodes(nodes.nodes[0]); no_of_edges_2 = this.getConnectedEdges(no_of_nodes); Shiny.onInputChange('node_data', no_of_edges_2); ;}" )
