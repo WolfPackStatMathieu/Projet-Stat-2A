@@ -206,7 +206,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   # Add labels and title
   boxplot + 
     labs(x = "Modèles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
+         title = "Comparaison du biais moyen pour K n-échantillons",
          caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
           axis.text = element_text(size = 12),
