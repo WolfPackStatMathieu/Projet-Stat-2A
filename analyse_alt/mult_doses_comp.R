@@ -47,7 +47,7 @@ p<-0.3
 p2<-0.50
 p3<-0.7
 prob_priori<-c(p,p2,p3)
-test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+# test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
