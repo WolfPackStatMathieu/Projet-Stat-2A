@@ -45,8 +45,14 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,graine=1
 }
 p<-0.3
 p2<-0.50
+<<<<<<< HEAD
 prob_priori<-c(p,p2)
 test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+=======
+p3<-0.7
+prob_priori<-c(p,p2,p3)
+# test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+>>>>>>> 1613ad73b01f1bbe4adadb503e6292b3acf1b524
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
@@ -66,7 +72,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depa
   }
   return(matrice)
 }
-test<-generation_comp_mean(K=50,n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+# test<-generation_comp_mean(K=50,n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
 evol_n_par_dose<-function(results,n,i,K=K){
   longueur_resultats<-c(1:length(n))
   function_intermed<-function(x,results,i){
@@ -120,7 +126,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
+# test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
@@ -197,5 +203,9 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
   }
   return(matrice)
 }
+<<<<<<< HEAD
 test<-evol_eqm_comp(K=4,probabilite_a_priori=prob_priori,t_star=6,type1="decreasing",graine_depart=145)
 
+=======
+# test<-evol_eqm_comp(K=6,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
+>>>>>>> 1613ad73b01f1bbe4adadb503e6292b3acf1b524

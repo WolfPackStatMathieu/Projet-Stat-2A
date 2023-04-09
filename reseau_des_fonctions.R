@@ -87,8 +87,17 @@ nodes <- nodes_surv.R
 head(nodes)
 
 ########### Gestion de l'affichage des nodes #########
+#fonction generant les graphiques du scenario 1
 nodes$shape[nodes$label == "plots_scenario_1"] <-"triangle"
 nodes$color[nodes$label == "plots_scenario_1"] <-"blue"
+nodes$shape[nodes$label == "biais.selon.taille_echantillon"] <-"triangle"
+nodes$color[nodes$label == "biais.selon.taille_echantillon"] <-"blue"
+nodes$shape[nodes$label == "eqm.selon.taille_echantillon"] <-"triangle"
+nodes$color[nodes$label == "eqm.selon.taille_echantillon"] <-"blue"
+
+
+
+# fonctions relevant du package flexsurvcure
 nodes$color[nodes$label == "flexsurvcure"] <-"black"
 nodes$shape[nodes$label == "Simuler_biais_taillen"] <-"star"
 
@@ -98,8 +107,10 @@ head(nodes)
 ####### Edges #######
 # edges_simul_exp <-data.frame(from= c(1), to = c())#rien
 
-edges_simuler_biais_un_n_ech<-data.frame(from= c(2), 
+
+edges_Simuler_biais_un_n_ech<-data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_un_n_ech"))), 
                                          to = c(which(fonctions$noms_fonction_surv.R %in% c("Generation_un_ech", "fonction_Bern" ,"fonction_KM", "fonction_cure")))) 
+
 # edges_Calcul_estim_depuis_df<-data.frame(from= c(3), to = c())#rien
 which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_un_n_ech"))
 edges_Simuler_biais_taillen<-data.frame(from= c(4), 
@@ -185,10 +196,10 @@ edges_fonction_generation_taille_eqm <- data.frame(from = c(44),
                                                  to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # Simuler_biais_taillen
 # edges_fonction_sapply <- data.frame(from = c(45),
 #                                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien 
-edges_function_estim_doses_comp <- data.frame(from = c(46),
-                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # # Simuler_biais_taillen
-edges_generation_comp <- data.frame(from = c(47),
-                                              to = c(which(fonctions$noms_fonction_surv.R %in% c("Simuler_biais_taillen")))) # # Simuler_biais_taillen
+edges_function_estim_doses_comp <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses_comp"))),
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses_comp", "fonction_Bern")))) 
+edges_generation_comp <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("generation_comp"))),
+                                              to = c(which(fonctions$noms_fonction_surv.R %in% c("get_alpha")))) # # get_alpha
 
 edges_generation_comp_mean <- data.frame(from = c(48),
                                     to = c(which(fonctions$noms_fonction_surv.R %in% 
@@ -200,9 +211,9 @@ edges_evol_biais_comp <- data.frame(from = c(49),
 
 
 ###### Liens #########
-which(fonctions$noms_fonction_surv.R %in% c("evol_n_par_dose"))
+which(fonctions$noms_fonction_surv.R %in% c(""))
 edges <- rbind(#edges_simul_exp, 
-               edges_simuler_biais_un_n_ech
+               edges_Simuler_biais_un_n_ech
                ,edges_Simuler_biais_taillen
                ,edges_Calcul_biais_moyen_taillen
                ,edges_plots_scenario_1
@@ -254,7 +265,11 @@ edges <- rbind(#edges_simul_exp,
 edges
 
 
-visNetwork(nodes, edges, height = "500px", width = "100%") %>%
+visNetwork(nodes, edges, height = "500px", width = "100%",
+           main = "Réseau des fonctions utilisées", 
+           submain = list(text = "",
+                          style = "font-family:Comic Sans MS;color:#ff0000;font-size:15px;text-align:center;"), 
+           footer = "Fig. réseau des fonctions") %>%
   visEdges(arrows = "to") %>% 
   # visHierarchicalLayout(direction = "LR") #%>%
   visEvents(click = "function(nodes){ Shiny.onInputChange('click', nodes.nodes[0]); if(nodes.nodes[0]){ no_of_edges = this.getConnectedEdges(nodes.nodes[0]); alert('No. of Edges connected to the selected node are :  ' + no_of_edges); } Shiny.onInputChange('edge_connections', no_of_edges); ;}", selectEdge = "function(edges) { Shiny.onInputChange('edge_data', this.body.data.edges._data[edges.edges[0]]); ;}", selectNode = "function(nodes) { no_of_nodes = this.getConnectedNodes(nodes.nodes[0]); no_of_edges_2 = this.getConnectedEdges(no_of_nodes); Shiny.onInputChange('node_data', no_of_edges_2); ;}" )
