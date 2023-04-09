@@ -85,9 +85,9 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
          caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+    theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12, face = "bold"))
+          axis.title = element_text(size = 12))
   
 }
 
