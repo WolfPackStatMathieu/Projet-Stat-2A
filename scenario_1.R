@@ -3,14 +3,10 @@
 rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
-<<<<<<< HEAD
 source("analyse_alt/mult_doses_comp.R")
 
 library(ggplot2)
-=======
 
-
->>>>>>> cyrille
 
 
 plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
