@@ -85,9 +85,9 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
          caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12, face = "bold"),
+    theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12, face = "bold"))
+          axis.title = element_text(size = 12))
   
 }
 
@@ -195,7 +195,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
-plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 plots_scenario_1_alt(K=1900,n=100,p,type="constant",t_star=6)
 
 
@@ -209,6 +209,5 @@ biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
-
 
 
