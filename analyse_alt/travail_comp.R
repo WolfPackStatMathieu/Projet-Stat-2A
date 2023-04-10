@@ -353,11 +353,14 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
       color = "n")+
     theme_bw()
   # on remet tout dans un seul graphique
-  g <- grid.arrange(gg1, gg2, gg3, top = "influence de n et de p1")
+  g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
+                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N))
   return(g)
   
 }
 
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="decreasing",type2="decreasing", graine=139)
+
+test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
 
