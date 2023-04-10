@@ -126,7 +126,7 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
     geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
     ylim(minimum,maximum)+
     xlab("Taille echantillon") + ylab("EQM")+
-    labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,K=%s" , 
+    labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,N=%s" , 
                       as.character(lambda), 
                       as.character(k),
                       as.character(p),
@@ -157,11 +157,11 @@ print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dos
       geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
       ylim(minimum,maximum)+
       xlab("Taille echantillon") + ylab("Moyenne du biais")+
-      labs(caption = sprintf("lambda = %s, alpha= %s, p=%s,K=%s" , 
+      labs(caption = sprintf("lambda = %s, alpha= %s, p=%s,N=%s" , 
                              as.character(lambda), 
                              as.character(k),
                              as.character(p),
-                             as.character(N)),title = "Evolution de la moyenne")
+                             as.character(N)),title = paste("Evolution de la moyenne, dose",as.character(j)))
     result[[j]]<-essai
   }
   return(result)

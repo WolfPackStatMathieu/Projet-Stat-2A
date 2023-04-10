@@ -40,7 +40,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   boxplot + 
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",
-         caption = sprintf("K = %s, lambda = %s, k = %s, n = %s" , 
+         caption = sprintf("N = %s, lambda = %s, k = %s, n = %s" , 
                            as.character(K), 
                             as.character(lambda), 
                            as.character(k), 
@@ -85,7 +85,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   boxplot + 
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
-         caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
+         caption = sprintf("N= %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
@@ -251,7 +251,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   boxplot + 
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",
-         caption = sprintf("K = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
+         caption = sprintf("N = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
@@ -294,7 +294,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max) +
-    labs(caption = sprintf("K = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
+    labs(caption = sprintf("N = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
                            as.character(K),
                            as.character(lambda),
                            as.character(k),
@@ -358,7 +358,7 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-    labs(caption = sprintf("K = %s, p=%s,type=%s" ,
+    labs(caption = sprintf("N = %s, p=%s,type=%s" ,
                            as.character(K),
                            as.character(p_cause1),
                            as.character(type1)))

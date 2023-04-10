@@ -110,7 +110,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s" ,"K=%s",
+      labs(caption = sprintf("p=%s" ,"N=%s",
                             as.character(result_final$p),
                             as.character(K)))}
   
@@ -176,7 +176,7 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K){
             axis.title=element_text(family = "Helvetica", size=12),
             plot.title = element_text(family = "Helvetica", size = 10)) +
       ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s,K=%s",
+      labs(caption = sprintf("p=%s,N=%s",
                              as.character(result_final$p),
                              as.character(K)))}
   
