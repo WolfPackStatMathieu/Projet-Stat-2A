@@ -89,8 +89,8 @@ evol_n_par_dose<-function(results,n,i,K=K){
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais en fonction de la taille d'échantillon") +
+    scale_color_manual(name = "ModÃ¨les", values = palette) +
+    ggtitle("Evolution du biais en fonction de la taille d'?chantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -101,8 +101,8 @@ evol_n_par_dose<-function(results,n,i,K=K){
   gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais en fonction de la taille d'échantillon") +
+    scale_color_manual(name = "Mod?les", values = palette) +
+    ggtitle("Evolution du biais en fonction de la taille d'?chantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -155,8 +155,8 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K){
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
       geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
       geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Modèles", values = palette) +
-      ggtitle("Evolution de l'eqm en fonction de la taille d'échantillon") +
+      scale_color_manual(name = "Mod?les", values = palette) +
+      ggtitle("Evolution de l'eqm en fonction de la taille d'?chantillon") +
       xlab("Taille echantillon") + ylab("Biais moyen") +
       theme_classic() +
       theme(legend.title=element_blank(),
@@ -167,8 +167,8 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K){
   gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
       geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
       geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Modèles", values = palette) +
-      ggtitle("Evolution de l'EQM en fonction de la taille d'échantillon") +
+      scale_color_manual(name = "Mod?les", values = palette) +
+      ggtitle("Evolution de l'EQM en fonction de la taille d'?chantillon") +
       xlab("Taille echantillon") + ylab("Biais moyen") +
       theme_classic() +
       theme(legend.title=element_blank(),
