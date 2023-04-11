@@ -315,3 +315,11 @@ visNetwork(nodes, edges, height = "500px", width = "100%",
   # visHierarchicalLayout(direction = "LR") #%>%
   visEvents(click = "function(nodes){ Shiny.onInputChange('click', nodes.nodes[0]); if(nodes.nodes[0]){ no_of_edges = this.getConnectedEdges(nodes.nodes[0]); alert('No. of Edges connected to the selected node are :  ' + no_of_edges); } Shiny.onInputChange('edge_connections', no_of_edges); ;}", selectEdge = "function(edges) { Shiny.onInputChange('edge_data', this.body.data.edges._data[edges.edges[0]]); ;}", selectNode = "function(nodes) { no_of_nodes = this.getConnectedNodes(nodes.nodes[0]); no_of_edges_2 = this.getConnectedEdges(no_of_nodes); Shiny.onInputChange('node_data', no_of_edges_2); ;}" ) #%>%
   # visLegend()
+
+
+######### Influence des paramètres de la loi de Weibull  #####
+# fnct_compar_plt_biais
+
+
+
+
