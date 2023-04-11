@@ -135,12 +135,13 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
   }
   return(result)
 }
-print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_doses)
+print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup)
 {
   require(gridExtra)
   vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
   vector_size<-vector_size[order(vector_size)]
-  MEAN<-fonction_simul_doses_mean(vector_size=vector_size,nombre_doses=nombre_doses,
+  nombre_doses<- length(liste_parameter)
+  MEAN<-fonction_simul_doses_mean(vector_size=vector_size,
                                 vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-list(rep(NA,nombre_doses))
@@ -208,9 +209,12 @@ vecteur_param<-list(liste_parameter,liste_2)
 nb_doses<-2
 lmoins<-1
 l_plus<-100
-test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,
+                                            limit_inf =lmoins,limit_sup =l_plus,
+                                            nombre_doses = nb_doses)
 test_print_mult_doses[[1]]
 test_print_mult_doses[[2]]
-test_mean_doses<-print_mean_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+test_mean_doses<-print_mean_mult_doses(N=N,liste_parameter=vecteur_param,
+                                       limit_inf =lmoins,limit_sup =l_plus)
 test_mean_doses[[1]]
 test_mean_doses[[2]]

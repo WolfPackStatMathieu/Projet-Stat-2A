@@ -1,4 +1,4 @@
-################################ Scénario 1 ################################################
+################################ Sc?nario 1 ################################################
 
 rm(list = ls())
 source("surv.R")
@@ -12,21 +12,21 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
-  # df à 3 colones (modèle de guérison, modèle de survie, modèle de bernouilli)
+  # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
   res <- res - p
   
   # on renomme les colonnes
-  colnames(res) <- c("Bernoulli", "Survie", "Guérison")
+  colnames(res) <- c("Bernoulli", "Survie", "Gu?rison")
   
   # bornes
   borne_min <- min(res)
   borne_max <- max(res) 
   
   
-  # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
+  # On tranforme les colonnes d?j? pr?sentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
-  # distinguer les 2 modèles
+  # distinguer les 2 mod?les
   df <- res %>% gather(key = "modele", value = "valeurs")
   
   # boxplot
@@ -38,8 +38,8 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modèles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour K n-échantillons",
+    labs(x = "Mod?les", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-?chantillons",
          caption = sprintf("N = %s, lambda = %s, k = %s, n = %s" , 
                            as.character(K), 
                             as.character(lambda), 
@@ -55,7 +55,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
-  # df à 3 colones (modèle de guérison, modèle de survie, modèle de bernouilli)
+  # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
   res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
@@ -69,9 +69,9 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   borne_min <- min(res)
   borne_max <- max(res) 
   print(typeof(res))
-  # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
+  # On tranforme les colonnes d?j? pr?sentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
-  # distinguer les 2 modèles
+  # distinguer les 2 mod?les
   df <- res %>% gather(key = "modele", value = "valeurs")
   
   # boxplot
@@ -83,8 +83,8 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modèles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour K n-échantillons",subtitle = "Deuxième méthode",
+    labs(x = "Mod?les", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-?chantillons",subtitle = "Deuxi?me m?thode",
          caption = sprintf("N= %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
@@ -95,13 +95,13 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   require(ggplot2)
   require(gridExtra)
-  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
+  # On fixe un n de d?part ? 10 individus et on incr?ment par 5 jusqu'a 100
   debut <- 10
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
   
-  # On calcule le biais pour K simulations et n-échantillons
+  # On calcule le biais pour K simulations et n-?chantillons
   liste_parameter <- list(lambda, t_star, p, k)
   names(liste_parameter)<-c("lambda","t_star","p","k")
   result_final <- fonction_generation_taille_mean(vector_size = n, liste_parameter = liste_parameter, K=K)
@@ -119,9 +119,9 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   borne_max <- max(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
 
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_guerison, col = "gu?rison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guérison" = "red1", "bernoulli" = "blue")) +
+    scale_color_manual(name = "Mod?les", values = c("gu?rison" = "red1", "bernoulli" = "blue")) +
     ggtitle("Evolution du biais moyen en \nfonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -132,9 +132,9 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     ylim(borne_min, borne_max)
 
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_guerison, col = "gu?rison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guérison" = "red1", "survie" = "darkgreen")) +
+    scale_color_manual(name = "Mod?les", values = c("gu?rison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution du biais moyen en \nfonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -151,13 +151,13 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   require(ggplot2)
   require(gridExtra)
-  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
+  # On fixe un n de d?part ? 10 individus et on incr?ment par 5 jusqu'a 100
   debut <- 10
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
   
-  # On calcule le biais pour K simulations et n-échantillons
+  # On calcule le biais pour K simulations et n-?chantillons
   liste_parameter <- list(lambda, t_star, p, k)
   names(liste_parameter)<-c("lambda","t_star","p","k")
   result_final <- fonction_generation_taille_eqm(vector_size = n, liste_parameter = liste_parameter, K=K)
@@ -174,7 +174,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
+    scale_color_manual(name = "Mod?les", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
@@ -187,7 +187,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+    scale_color_manual(name = "Mod?les", values = c("guerison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
@@ -221,7 +221,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
-  # df à 3 colones (modèle de guérison, modèle de survie, modèle de bernouilli)
+  # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
   res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
@@ -235,9 +235,9 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   borne_min <- min(res)
   borne_max <- max(res) 
   print(typeof(res))
-  # On tranforme les colonnes déjà présentes en une seule colonne (valeurs)
+  # On tranforme les colonnes d?j? pr?sentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
-  # distinguer les 2 modèles
+  # distinguer les 2 mod?les
   df <- res %>% gather(key = "modele", value = "valeurs")
   
   # boxplot
@@ -249,8 +249,8 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modèles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour K n-échantillons",
+    labs(x = "Mod?les", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-?chantillons",
          caption = sprintf("N = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
@@ -263,13 +263,13 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   require(ggplot2)
   require(gridExtra)
-  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
+  # On fixe un n de d?part ? 10 individus et on incr?ment par 5 jusqu'a 100
   debut <- 10
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
   
-  # On calcule le biais pour K simulations et n-échantillons
+  # On calcule le biais pour K simulations et n-?chantillons
   liste_parameter <- list(lambda, t_star, p, k)
   names(liste_parameter)<-c("lambda","t_star","p","k")
   result_final <- fonction_generation_taille_mean(vector_size = n, liste_parameter = liste_parameter, K=K)
@@ -285,8 +285,8 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    scale_color_manual(name = "Mod?les", values = palette) +
+    ggtitle("Evolution du biais moyen en fonction de la taille d'?chantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -294,7 +294,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max) +
-    labs(caption = sprintf("N = %s, lambda = %s, k = %s, n variant de %s à %s par pas de %s" ,
+    labs(caption = sprintf("N = %s, lambda = %s, k = %s, n variant de %s ? %s par pas de %s" ,
                            as.character(K),
                            as.character(lambda),
                            as.character(k),
@@ -305,8 +305,8 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais moyen en fonction de la taille d'échantillon") +
+    scale_color_manual(name = "Mod?les", values = palette) +
+    ggtitle("Evolution du biais moyen en fonction de la taille d'?chantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -321,8 +321,8 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   require(ggplot2)
   require(gridExtra)
-  # On fixe un n de départ à 10 individus et on incrément par 5 jusqu'a 100
-  # On calcule le biais pour K simulations et n-échantillons
+  # On fixe un n de d?part ? 10 individus et on incr?ment par 5 jusqu'a 100
+  # On calcule le biais pour K simulations et n-?chantillons
   result_final<-as.data.frame(eqm.selon.alpha(K=K, type1=type1, p_cause1=p,graine=graine,type2=type1,t_star=t_star))
   colnames(result_final) <- c("taille_echantillon","modele_survie","modele_guerison", "modele_bernoulli")
   # plot
@@ -335,7 +335,7 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
+    scale_color_manual(name = "Mod?les", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
@@ -343,12 +343,13 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
           axis.text=element_text(family = "Helvetica", size=10),
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
-    ylim(borne_min, borne_max)
+    # ylim(borne_min, borne_max)
+    ylim(0.01, 0.03)
   
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+    scale_color_manual(name = "Mod?les", values = c("guerison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
@@ -356,10 +357,11 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
           axis.text=element_text(family = "Helvetica", size=10),
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
-    ylim(borne_min, borne_max)+
+    # ylim(borne_min, borne_max)+
+    ylim(0.01, 0.03)+
     labs(caption = sprintf("N = %s, p=%s,type=%s" ,
                            as.character(K),
-                           as.character(p_cause1),
+                           as.character(p),
                            as.character(type1)))
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))

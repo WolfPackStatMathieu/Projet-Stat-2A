@@ -3,21 +3,22 @@ source("surv.R")
 source("estimateurs/estimateur_cure.R")
 source("utils.R")
 set.seed(133)
-#### Ne doit plus dependre de l'argument modele.######
-fonction_simul_doses_mean<-function(vector_size,nombre_doses,vecteur_parametres,K){
-  # vector_size :
+
+fonction_simul_doses_mean<-function(vector_size,vecteur_parametres,K,t_star){
   vector_size<-vector_size[order(vector_size)]
-  matrix_bias_doses<-list(rep(NA,nombre_doses))
-  for(indice in c(1:nombre_doses)){
-    liste_param<-vecteur_parametres[[indice]]
-    ### besoin de modifier la fonction fonction_generation_taille_mean.
-    moyenne_taille_dose<-fonction_generation_taille_mean(vector_size = vector_size,
-                                                         liste_parameter = liste_param,K)
-    matrix_bias_doses[[indice]]=moyenne_taille_dose
+  nb_doses<-length(vecteur_parametres)
+  liste_gg<-list(rep(NA,nb_doses))
+  resultat_all_sizes<-lapply(vector_size,calcul_mean_size_Ktimes,nb_doses=nb_doses,K=K,vecteur_param=vecteur_parametres,t_star=t_star)
+  for (d in c(1:nb_doses)){
+    ensemble_mean_dosek<-as.data.frame(t(cbind(sapply(resultat_all_sizes,function(x,indice){return(x[indice,])},indice=d))))
+    print(ensemble_mean_dosek)
+    gg1<-{ggplot(data=ensemble_mean_dosek,aes(x=n,y=mean_guerison))}
+    liste_gg[[d]]<-gg1
   }
-  names(matrix_bias_doses)<-c(1:nombre_doses)
-  return(matrix_bias_doses)
+  return(liste_gg)
 }
+
+
 ####### Calculer l'EQM des deux estimateurs pour plusieurs tailles. #####################
 fonction_generation_eqm<-function(vector_size,liste_parameter,K){
   #vector_size: un vecteur de N tailles d echantillons chacun de taille n_i
@@ -45,9 +46,12 @@ t_star<-6
 p<-0.33
 k<-1
 liste_parameter<-list(lambda_test,t_star,p=p,k)
+vecteur_param<-list(lambda_test,t_star,p=p,k)
 names(liste_parameter)<-c("lambda","t_star","p","k")
 K2<-20
 test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
+test_mean <- fonction_simul_doses_mean(vector_size=vecteur_size,vecteur_parametres = liste_parameter,K=K2 , t_star=6)
+
 ##############################################################
 
 function_estim_doses<-function(n,liste_params,nb_doses,t_star){
@@ -61,6 +65,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   for (k in c(1:nb_doses)){
     index_dosek<-which(df$dose==k)
     sous_liste<-liste_params[[k]]
+    print(sous_liste)
     n_k<-length(index_dosek)
     df[index_dosek,]<-cbind(rep(k,n_k),Generation_un_ech(n=n_k,lambda=sous_liste[["lambda"]],t_star=t_star,p=sous_liste[["p"]],k=sous_liste[["k"]]))
     data_returns[k,"estimateur_bernoulli"]<-fonction_Bern(df[index_dosek,])
@@ -142,6 +147,9 @@ fonction_simul_doses_eqm<-function(vector_size,vecteur_parametres,K,t_star){
   }
   return(liste_gg)
 }
+
+
+
 calcul_eqm_size_Ktimes<-function(size,vecteur_param,nb_doses,K,t_star){
   
   matrice_eqm_doses<-as.data.frame(matrix(NA,nb_doses,5))
@@ -166,6 +174,38 @@ calcul_eqm_size_Ktimes<-function(size,vecteur_param,nb_doses,K,t_star){
   }
   return(matrice_eqm_doses)
 }
+
+
+calcul_mean_size_Ktimes<-function(size,vecteur_param,nb_doses,K,t_star){
+  
+  matrice_mean_doses<-as.data.frame(matrix(NA,nb_doses,5))
+  colnames(matrice_mean_doses)<-c("mean_Bernoulli","mean_guerison","mean_survie","p","n")
+  result<-lapply(rep(n,K),function_estim_doses,liste_params=vecteur_param,nb_doses=nb_doses,t_star=t_star)
+  for(j in c(1:nb_doses)){
+    ensemble_obs_dosek<-t(cbind.data.frame(sapply(result,function(x,indice){return(x[indice,])},indice=j)))
+    ensemble_obs_dosek<-as.data.frame(ensemble_obs_dosek)
+    p<-vecteur_param[[j]][["p"]]
+    ensemble_obs_dosek$estimateur_bernoulli<-as.numeric(ensemble_obs_dosek$estimateur_bernoulli)
+    ensemble_obs_dosek$estimateur_guerison<-as.numeric(ensemble_obs_dosek$estimateur_guerison)
+    ensemble_obs_dosek$estimateur_modele_survie<-as.numeric(ensemble_obs_dosek$estimateur_survie)
+    ensemble_obs_dosek$p<-as.numeric(ensemble_obs_dosek$p)
+    mean_bern<-mean(ensemble_obs_dosek$estimateur_bernoulli)-p
+    mean_surv<-mean(ensemble_obs_dosek$estimateur_modele_survie)-p
+    mean_cure<-mean(ensemble_obs_dosek$estimateur_guerison)-p
+    matrice_mean_doses[j,c("mean_Bernoulli","mean_guerison","mean_survie","p","n")]<-c(mean_bern,
+                                                                                   mean_cure,
+                                                                                   mean_surv,
+                                                                                   ensemble_obs_dosek$p,
+                                                                                   size)
+  }
+  return(matrice_mean_doses)
+}
+
+
+
+
+
+
 ######## Partie TEST#####
 n<-25
 k<-1
