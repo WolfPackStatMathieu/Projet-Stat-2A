@@ -28,26 +28,26 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   names(sous_liste)<-c("Survie","Bernoulli","Guerison")
   return(sous_liste)
 }
-fonction_estim_depuis_df<-function(data){
-  data$tox_time<-ifelse(data$status==2,t_star+1,data$tox_time)
-  data$is_observed<-ifelse(data$tox_time>t_star,0,1)
-  indices_non_obs<-which(data$is_observed==0)
-  if(length(indices_non_obs)==n){
+#fonction_estim_depuis_df<-function(data){
+ # data$tox_time<-ifelse(data$status==2,t_star+1,data$tox_time)
+  #data$is_observed<-ifelse(data$tox_time>t_star,0,1)
+  #indices_non_obs<-which(data$is_observed==0)
+  #if(length(indices_non_obs)==n){
     # tous pas observés donc censures
-    estimateursurv<-0
-    estimateurbern<-0
-    estimateurcure<-0
-    sous_liste<-list(estimateursurv, estimateurbern, estimateurcure) 
-    names(sous_liste)<-c("Survie","Bernoulli","Guerison")
-    return(sous_liste)
-  }
-  estimateursurv<-fonction_KM(df=data,t_star)
-  estimateurbern<-fonction_Bern(df=data)
-  estimateurcure<-fonction_cure(df=data,t_star)
-  sous_liste<-list(estimateursurv,estimateurbern,estimateurcure)
-  names(sous_liste)<-c("Survie","Bernoulli","Guerison")
-  return(sous_liste)
-}
+   # estimateursurv<-0
+    #estimateurbern<-0
+    #estimateurcure<-0
+  #  sous_liste<-list(estimateursurv, estimateurbern, estimateurcure) 
+   # names(sous_liste)<-c("Survie","Bernoulli","Guerison")
+    #return(sous_liste)
+  #}
+  #estimateursurv<-fonction_KM(df=data,t_star)
+  #estimateurbern<-fonction_Bern(df=data)
+  #estimateurcure<-fonction_cure(df=data,t_star)
+  #sous_liste<-list(estimateursurv,estimateurbern,estimateurcure)
+  #names(sous_liste)<-c("Survie","Bernoulli","Guerison")
+  #return(sous_liste)
+#}
 
 p_cause1<-0.35
 n<-10
@@ -65,16 +65,16 @@ Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   colnames(result)<-c("Survie","Bernoulli","Guerison")
   return(colMeans(sapply(result,as.numeric)))
 }
-Simuler_estim_mult_test<<-function(K,p_cause1,n,type1,type2,t_star,graine){
-  ensemble_liste<-generation_comp_Ktimes(p_cause1=p_cause1,p_cause2=1-p_cause1,t_star=t_star,nombre_obs=n,graine=graine,type1=type1
-                                         ,type2=type2,N=K)
-  result<-as.data.frame(t(cbind.data.frame(sapply(ensemble_liste,fonction_estim_depuis_df))))
-  result$Survie<-as.numeric(result$Survie)
-  result$Bernoulli<-as.numeric(result$Bernoulli)
-  result$Guerison<-as.numeric(result$Guerison)
-  return(colMeans(result))
-}
-test<-Simuler_estim_mult_test(K=5,p_cause1 = 0.33,type1='constant',type2="constant",t_star=6,graine=133,n=10)
+#Simuler_estim_mult_test<<-function(K,p_cause1,n,type1,type2,t_star,graine){
+ # ensemble_liste<-generation_comp_Ktimes(p_cause1=p_cause1,p_cause2=1-p_cause1,t_star=t_star,nombre_obs=n,graine=graine,type1=type1
+  #                                       ,type2=type2,N=K)
+  #result<-as.data.frame(t(cbind.data.frame(sapply(ensemble_liste,fonction_estim_depuis_df))))
+  #result$Survie<-as.numeric(result$Survie)
+  #result$Bernoulli<-as.numeric(result$Bernoulli)
+  #result$Guerison<-as.numeric(result$Guerison)
+  #return(colMeans(result))
+#}
+#test<-Simuler_estim_mult_times(K=5,p_cause1 = 0.33,type1='constant',type2="constant",t_star=6,graine=133,n=10)
 #test<-Simuler_estim_mult_times(K=10,p_cause1=p_cause1,p_cause2=p_cause2,n=n,type1=type1,type2=type2,t_star=6)
 biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL

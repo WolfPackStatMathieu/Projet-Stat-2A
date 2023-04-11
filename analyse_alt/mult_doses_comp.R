@@ -56,7 +56,10 @@ prob_priori<-c(p,p2,p3)
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
-  result<-lapply(rep(n,K),function_estim_doses_comp,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,graine=graine_depart)
+  graine_debut<-graine_depart+1
+  graine_fin<-graine_depart+K
+  ensemble_graine<-c(graine_depart,graine_fin)
+  result<-lapply(ensemble_graine,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1)
   nb_doses<-length(prob_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
   colnames(matrice)<-c("numero_dose","modele_bernoulli","modele_survie","modele_guerison","p")
