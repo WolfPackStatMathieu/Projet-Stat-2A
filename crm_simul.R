@@ -20,6 +20,7 @@ print(infos)
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
 
+?crm()
 
 # modèle puissance
 mod_puissance <- crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="empiric")

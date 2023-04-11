@@ -132,3 +132,4 @@ ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Surv
   geom_point()+
   geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
   labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
+
