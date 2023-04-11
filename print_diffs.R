@@ -115,15 +115,17 @@ print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_dose
   result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
     data<-as.data.frame(EQM[[j]])
-    minimum<-min(data)
-    maximum<-max(data)
+    print(data)
+    print(str(data))
+    minimum<-min(min(data$eqm_guerison),min(data$eqm_Bernoulli),min(data$eqm_survie))
+    maximum<-max(max(data$eqm_guerison),max(data$eqm_Bernoulli),max(data$eqm_survie))
     k<-liste_parameter[[j]][["k"]]
     lambda<-liste_parameter[[j]][["lambda"]]
     p<-liste_parameter[[j]][["p"]]
-    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+    essai<-ggplot(data=data,aes(x=n,y=eqm_guerison,col="Cure"))+
     geom_line()+
-    geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
-    geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
+    geom_line(data=data,aes(x=n,y=eqm_Bernoulli,col="Bernoulli"))+
+    geom_line(data=data,aes(x=n,y=eqm_survie,col="Survival"))+
     ylim(minimum,maximum)+
     xlab("Taille echantillon") + ylab("EQM")+
     labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,N=%s" , 
@@ -148,16 +150,16 @@ print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup)
   result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
     data<-MEAN[[j]]
-    print(str(data))
-    minimum<-min(data$mean_guerison,data$mean_Bernoulli,data$mean_survie)
-    maximum<-max(data$mean_guerison,data$mean_Bernoulli,data$mean_survie)
+    data <- as.data.frame(lapply(data, unlist))
+    minimum<-min(min(data$mean_guerison),min(data$mean_Bernoulli),min(data$mean_survie))
+    maximum<-max(max(data$mean_guerison),max(data$mean_Bernoulli),max(data$mean_survie))
     k<-liste_parameter[[j]][["k"]]
     lambda<-liste_parameter[[j]][["lambda"]]
     p<-liste_parameter[[j]][["p"]]
-    essai<-ggplot(data=data,aes(x=vector_size,y=mean_guerison,col="Cure"))+
+    essai<-ggplot(data=data,aes(x=n,y=mean_guerison,col="Cure"))+
       geom_line()+
-      geom_line(data=data,aes(x=vector_size,y=mean_Bernoulli,col="Bernoulli"))+
-      geom_line(data=data,aes(x=vector_size,y=mean_survie,col="Survival"))+
+      geom_line(data=data,aes(x=n,y=mean_Bernoulli,col="Bernoulli"))+
+      geom_line(data=data,aes(x=n,y=mean_survie,col="Survival"))+
       ylim(minimum,maximum)+
       xlab("Taille echantillon") + ylab("Moyenne du biais")+
       labs(caption = sprintf("lambda = %s, alpha= %s, p=%s,N=%s" , 
