@@ -97,7 +97,7 @@ vecteur_param<-list(lambda_test,t_star,p=p,k)
 names(liste_parameter)<-c("lambda","t_star","p","k")
 K2<-20
 test_exp_eqm<-fonction_generation_eqm(vector_size=vecteur_size,K=K2,liste_parameter = liste_parameter)
-test_mean <- fonction_simul_doses_mean(vector_size=vecteur_size,vecteur_parametres = liste_parameter,K=K2)
+#test_mean <- fonction_simul_doses_mean(vector_size=vecteur_size,vecteur_parametres = liste_parameter,K=K2)
 
 ##############################################################
 
@@ -228,7 +228,7 @@ K<-10
 test_K_sizen<-fonction_estim_doses_sizen(K=K,n=n,liste_params = liste_whole,nb_doses=length(liste_whole),t_star=t_star)
 vect_size<-sample(c(20:100),10)
 liste_alt<-list(liste1,liste2)
-test<-fonction_simul_doses_eqm(vector_size=vect_size,vecteur_parametres = liste_alt,K=2)
+#test<-fonction_simul_doses_eqm(vector_size=vect_size,vecteur_parametres = liste_alt,K=2)
 
 ########## TEST surv####
 # N<-20
