@@ -111,18 +111,19 @@ fonction_estim_hht<-function(modele,t_star,target){
   return(data_returns)
 }
 
-test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
 fonction_miss<-function(data,nb_doses){
   vecteur_doses_NA<-c()
   for (j in c(1:nb_doses)){
     nb_num_doses<-which(data$Dose==j)
     nb_num_miss_dose<-which(data$Dose==j & data$observe==0)
     if(length(nb_num_doses)==length(nb_num_miss_dose) && length(nb_num_miss_dose)!=0){
-      if (nb_num_doses==nb_num_miss_dose){vecteur_doses_NA<-append(vecteur_doses_NA,j)}
+      if (length(nb_num_doses)==length(nb_num_miss_dose)){vecteur_doses_NA<-append(vecteur_doses_NA,j)}
       }
     }
   return(vecteur_doses_NA)
 }
+test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
+
 require(ggplot2)
 ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_guerison,col="Guérison"))+
   geom_point()+
