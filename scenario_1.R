@@ -324,7 +324,6 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   # On fixe un n de d?part ? 10 individus et on incr?ment par 5 jusqu'a 100
   # On calcule le biais pour K simulations et n-?chantillons
   result_final<-as.data.frame(eqm.selon.alpha(K=K, type1=type1, p_cause1=p,graine=graine,type2=type1,t_star=t_star))
-  print(result_final)
   colnames(result_final) <- c("taille_echantillon","modele_survie","modele_guerison", "modele_bernoulli")
   # plot
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)

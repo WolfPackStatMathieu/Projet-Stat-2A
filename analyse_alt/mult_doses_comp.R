@@ -1,5 +1,6 @@
 source("generation_echantillon/generation_ech_comp.R")
 source("estimateurs/mod_bernoulli.R")
+source("utils.R")
 function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,graine=133){
   nb_doses<-length(probabilite_a_priori)
   require(dfcrm)
@@ -56,7 +57,10 @@ prob_priori<-c(p,p2,p3)
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart){
-  result<-lapply(rep(n,K),function_estim_doses_comp,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,graine=graine_depart)
+  graine_debut<-graine_depart+1
+  graine_fin<-graine_depart+K
+  ensemble_graine<-c(graine_depart,graine_fin)
+  result<-lapply(ensemble_graine,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1)
   nb_doses<-length(prob_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
   colnames(matrice)<-c("numero_dose","modele_bernoulli","modele_survie","modele_guerison","p")
@@ -89,8 +93,8 @@ evol_n_par_dose<-function(results,n,i,K=K){
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "ModÃ¨les", values = palette) +
-    ggtitle("Evolution du biais en fonction de la taille d'?chantillon") +
+    scale_color_manual(name = "Modèles", values = palette) +
+    ggtitle("Evolution du biais  \n  en fonction de la taille d'échantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -101,8 +105,10 @@ evol_n_par_dose<-function(results,n,i,K=K){
   gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Mod?les", values = palette) +
-    ggtitle("Evolution du biais en fonction de la taille d'?chantillon") +
+
+    scale_color_manual(name = "Modèles", values = palette) +
+    ggtitle("Evolution du biais \n en fonction de la taille") +
+
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -110,7 +116,7 @@ evol_n_par_dose<-function(results,n,i,K=K){
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s" ,"N=%s",
+      labs(caption = sprintf("p=%s,N=%s",
                             as.character(result_final$p),
                             as.character(K)))}
   
@@ -126,7 +132,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K)
   return(ensemble_ggplots_par_dose)
 }
-# test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
+test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart){
