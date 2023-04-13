@@ -210,7 +210,7 @@ plots_scenario_1_alt(K=1900,n=100,p,type="constant",t_star=6)
 
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
-biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 100, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 
@@ -224,7 +224,7 @@ plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 biais.selon.taille_echantillon(K = 10, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
-eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+eqm.selon.taille_echantillon(K = 19, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 

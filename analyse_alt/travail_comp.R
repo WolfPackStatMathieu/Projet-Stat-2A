@@ -329,14 +329,15 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   # le modèle de survie
   gg1 <-  ggplot(RES0.3.3, aes(n, mean.surv)) +
     geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.1"), size = 0.6) +
-    geom_line(data = RES0.7.3, aes(n, mean.surv, color = "0.2"), size = 0.6) +
-    geom_line(data = RES0.4, aes(n, mean.surv, color = "0.3"), size = 0.6) +
-    geom_line(data = RES0.5, aes(n, mean.surv, color = "0.4"), size = 0.6) +
-    geom_line(data = RES0.6, aes(n, mean.surv, color = "0.5"), size = 0.6) +
-    geom_line(data = RES0.7, aes(n, mean.surv, color = "0.6"), size = 0.6) +
-    geom_line(data = RES0.8, aes(n, mean.surv, color = "0.7"), size = 0.6) +
-    scale_color_manual(name = "p1", values = c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "red")) +
+    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.1"), size = 1) +
+    geom_line(data = RES0.7.3, aes(n, mean.surv, color = "0.2"), size = 1) +
+    geom_line(data = RES0.4, aes(n, mean.surv, color = "0.3"), size = 1) +
+    geom_line(data = RES0.5, aes(n, mean.surv, color = "0.4"), size = 1) +
+    geom_line(data = RES0.6, aes(n, mean.surv, color = "0.5"), size = 1) +
+    geom_line(data = RES0.7, aes(n, mean.surv, color = "0.6"), size = 1) +
+    geom_line(data = RES0.8, aes(n, mean.surv, color = "0.7"), size = 1) +
+    scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
+                                               "purple", "#D55E00", "blue1", "#000000")) +
     # scale_colour_colorblind() +
     ylim(borne_min -0.1, borne_max+0.1)+
     labs(
@@ -348,14 +349,15 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   # le modele de guerison
   gg2 <-  ggplot(RES0.3.3, aes(n, mean.cure)) +
     geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.1"), size = 0.6) +
-    geom_line(data = RES0.7.3, aes(n, mean.cure, color = "0.2"), size = 0.6) +
-    geom_line(data = RES0.4, aes(n, mean.cure, color = "0.3"), size = 0.6) +
-    geom_line(data = RES0.5, aes(n, mean.cure, color = "0.4"), size = 0.6) +
-    geom_line(data = RES0.6, aes(n, mean.cure, color = "0.5"), size = 0.6) +
-    geom_line(data = RES0.7, aes(n, mean.cure, color = "0.6"), size = 0.6) +
-    geom_line(data = RES0.8, aes(n, mean.cure, color = "0.7"), size = 0.6) +
-    scale_color_manual(name = "p1", values = c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "red")) +
+    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.1"), size = 1) +
+    geom_line(data = RES0.7.3, aes(n, mean.cure, color = "0.2"), size = 1) +
+    geom_line(data = RES0.4, aes(n, mean.cure, color = "0.3"), size = 1) +
+    geom_line(data = RES0.5, aes(n, mean.cure, color = "0.4"), size = 1) +
+    geom_line(data = RES0.6, aes(n, mean.cure, color = "0.5"), size = 1) +
+    geom_line(data = RES0.7, aes(n, mean.cure, color = "0.6"), size = 1) +
+    geom_line(data = RES0.8, aes(n, mean.cure, color = "0.7"), size = 1) +
+    scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
+                                               "purple", "#D55E00", "blue1", "#000000")) +
     # scale_colour_colorblind() +
     ylim(borne_min.c -0.1, borne_max.c+0.1)+
     labs(
@@ -367,14 +369,15 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   #le modele de Bernoulli
   gg3 <-  ggplot(RES0.3.3, aes(n, mean.bernoulli)) +
     geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.1"), size = 0.6) +
-    geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.2"), size = 0.6) +
-    geom_line(data = RES0.4, aes(n, mean.bernoulli, color = "0.3"), size = 0.6) +
-    geom_line(data = RES0.5, aes(n, mean.bernoulli, color = "0.4"), size = 0.6) +
-    geom_line(data = RES0.6, aes(n, mean.bernoulli, color = "0.5"), size = 0.6) +
-    geom_line(data = RES0.7, aes(n, mean.bernoulli, color = "0.6"), size = 0.6) +
-    geom_line(data = RES0.8, aes(n, mean.bernoulli, color = "0.7"), size = 0.6) +
-    scale_color_manual(name = "p1", values = c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "red")) +
+    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.1"), size = 1) +
+    geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.2"), size = 1) +
+    geom_line(data = RES0.4, aes(n, mean.bernoulli, color = "0.3"), size = 1) +
+    geom_line(data = RES0.5, aes(n, mean.bernoulli, color = "0.4"), size = 1) +
+    geom_line(data = RES0.6, aes(n, mean.bernoulli, color = "0.5"), size = 1) +
+    geom_line(data = RES0.7, aes(n, mean.bernoulli, color = "0.6"), size = 1) +
+    geom_line(data = RES0.8, aes(n, mean.bernoulli, color = "0.7"), size = 1) +
+    scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
+                                               "purple", "#D55E00", "blue1", "#000000")) +
     # scale_colour_colorblind() +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
@@ -385,7 +388,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
     theme_bw()
   # on remet tout dans un seul graphique
   g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
-                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N))
+                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N), widths = c(10,10,10))
   return(g)
   
 }
