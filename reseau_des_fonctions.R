@@ -16,9 +16,9 @@ require(visNetwork, quietly = TRUE)
 # shiny::runApp(system.file("shiny", package = "visNetwork"))
 
 ############creation des nodes pour les fonctions du fichier surv.R #####
-noms_fonction_surv.R <-c("simul_exp", #surv.R
+noms_fonction_surv.R <-c(#"simul_exp", #surv.R
                          "Simuler_biais_un_n_ech",
-                         "Calcul_estim_depuis_df",
+                         # "Calcul_estim_depuis_df",
                          "Simuler_biais_taillen",
                          "Calcul_biais_moyen_taillen"
                          ,"plots_scenario_1"
@@ -27,9 +27,9 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"tp.surv"
                          , "tps.surv"
                          ,"clep"
-                         ,"simul_temps_exp"
-                         ,"simul_temp_weibull"
-                         ,"simul_temps_alt"
+                         # ,"simul_temps_exp"
+                         #,"simul_temp_weibull"
+                         #,"simul_temps_alt"
                          ,"simul_weibull"
                          ,"Generation_un_ech"
                          ,"fonction_Bern"
@@ -39,7 +39,7 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"fonction_find_lambda"
                          ,"temps_simul1"
                          ,"temps_simul2"
-                         ,"estimateur_cure_mult" #estimateurs/estimateur_cure
+                         # ,"estimateur_cure_mult" #estimateurs/estimateur_cure
                          ,"fonction_simul_doses_mean" #generation_doses.R
                          ,"fonction_generation_eqm"
                          ,"function_estim_doses"# "Generation_un_ech" "fonction_Bern" "tp.surv" "tps.surv"
@@ -52,16 +52,16 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"one_weibull_comp"
                          ,"get_weibull"
                          ,"get_dataset0"
-                         ,"fonction_generation_taille_differente" # generation_taille_differente.R
-                         ,"fonction_graph_fonc_size"
+                         # ,"fonction_generation_taille_differente" # generation_taille_differente.R
+                         # ,"fonction_graph_fonc_size"
                          ,"flexsurvcure"
-                         ,"biais_pi"
-                         ,"fonction_biais_survie"
-                         ,"simul_bernoulli"
+                         # ,"biais_pi"
+                         # ,"fonction_biais_survie"
+                         # ,"simul_bernoulli"
                          ,"eqm.selon.taille_echantillon"
                          ,"fonction_generation_taille_eqm"
                          ,"fonction_sapply"
-                         ,"function_estim_doses_comp" #generation_comp fonction_Bern
+                         ,"function_estim_doses_comp" #generation_comp fonction_Bern tp.surv
                          ,"generation_comp" #get_alpha get_dataset0
                          ,"generation_comp_mean"  #function_estim_doses_comp
                          ,"evol_biais_comp" #generation_comp_mean evol_n_par_dose
@@ -70,6 +70,7 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"Simuler_estim_mult_times" #fonction_estim_comp_once
                          ,"fonction_estim_comp_once" #generation_comp
                          ,"fnct_compar_plt_biais.selon.k1" #biais.selon.k
+                         ,"biais.selon.k" #Simuler_biais_taillen
                          
                          )
 fonctions <-as.data.frame(noms_fonction_surv.R)
@@ -100,7 +101,13 @@ nodes$color[nodes$label == "biais.selon.taille_echantillon"] <-"blue"
 nodes$shape[nodes$label == "eqm.selon.taille_echantillon"] <-"triangle"
 nodes$color[nodes$label == "eqm.selon.taille_echantillon"] <-"blue"
 
+# graphique scénario 1 influence des parametres alpha et lambda de la loi de Weibull
+nodes$shape[nodes$label == "fnct_compar_plt_biais.selon.k1"] <-"triangle"
+nodes$color[nodes$label == "fnct_compar_plt_biais.selon.k1"] <-"blue"
 
+#graphique influence de n et de lambda (scénario 1)
+nodes$shape[nodes$label == "fonction_compar_plotsn_lambda1"] <-"triangle"
+nodes$color[nodes$label == "fonction_compar_plotsn_lambda1"] <-"blue"
 
 # fonctions relevant du package flexsurvcure
 nodes$color[nodes$label == "flexsurvcure"] <-"black"
@@ -139,8 +146,8 @@ edges_tps.surv <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% 
 # edges_simul_temps_exp <- data.frame(from = c(12), to = c())#rien
 # edges_simul_temp_weibull <- data.frame(from = c(13), to = c())#rien
 
-edges_simul_temps_alt <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("simul_temps_alt"))), 
-                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_temps_exp")))) #simul_temps_exp
+# edges_simul_temps_alt <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("simul_temps_alt"))), 
+#                                     to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_temps_exp")))) #simul_temps_exp
 # edges_simul_weibull <- data.frame(from = c(15), to = )
 edges_Generation_un_ech <- data.frame(from =  c(which(fonctions$noms_fonction_surv.R %in% c("Generation_un_ech"))), 
                                       to = c(which(fonctions$noms_fonction_surv.R %in% c("simul_weibull")))) #simul_weibull
@@ -218,7 +225,7 @@ edges_fonction_generation_taille_eqm <- data.frame(from = c(which(fonctions$noms
 #                                                    to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien 
 
 edges_function_estim_doses_comp <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses_comp"))),
-                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("function_estim_doses_comp", "fonction_Bern")))) 
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% c("generation_comp", "fonction_Bern", "tp.surv")))) 
 
 edges_generation_comp <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("generation_comp"))),
                                               to = c(which(fonctions$noms_fonction_surv.R %in% c("get_alpha" , "get_dataset0")))) # # get_alpha
@@ -246,6 +253,17 @@ edges_Simuler_estim_mult_times <- data.frame(from= c(which(fonctions$noms_foncti
 edges_fonction_estim_comp_once <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fonction_estim_comp_once"))),
                                              to = c(which(fonctions$noms_fonction_surv.R %in% 
                                                             c("generation_comp"))))
+edges_edges_fonction_estim_comp_once <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fonction_estim_comp_once"))),
+                                             to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                            c("generation_comp"))))
+edges_fnct_compar_plt_biais.selon.k1 <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fnct_compar_plt_biais.selon.k1"))),
+                                             to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                            c("biais.selon.k"))))
+
+edges_biais.selon.k <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("biais.selon.k"))),
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                                  c("Simuler_biais_taillen"))))
+
 
 
 ###### Liens #########
@@ -262,7 +280,7 @@ edges <- rbind(#edges_simul_exp,
                #,edges_clep
                #,edges_simul_temps_exp
                #,edges_simul_temp_weibull
-               ,edges_simul_temps_alt
+               # ,edges_simul_temps_alt
                #,edges_simul_weibull
                ,edges_Generation_un_ech
                #,edges_fonction_Bern
@@ -285,10 +303,10 @@ edges <- rbind(#edges_simul_exp,
                ,edges_one_weibull_comp
                ,edges_get_weibull
                ,edges_get_dataset0
-               ,edges_fonction_generation_taille_differente
-               ,edges_fonction_graph_fonc_size
+               # ,edges_fonction_generation_taille_differente
+               # ,edges_fonction_graph_fonc_size
                # ,edges_flexsurvcure
-               ,edges_biais_pi
+               # ,edges_biais_pi
                #,edges_fonction_biais_survie
                # ,edges_simul_bernoulli
                ,edges_eqm.selon.taille_echantillon
@@ -302,6 +320,8 @@ edges <- rbind(#edges_simul_exp,
                ,edges_biais.selon.lambda_alt
                ,edges_Simuler_estim_mult_times
                ,edges_fonction_estim_comp_once
+               ,edges_fnct_compar_plt_biais.selon.k1
+               ,edges_biais.selon.k
                )
 
 edges
@@ -319,16 +339,18 @@ visNetwork(nodes, edges, height = "500px", width = "100%",
 
 
 ######### Influence des param?tres de la loi de Weibull  #####
-# fnct_compar_plt_biais
-# install.packages("NCmisc")
-# library(NCmisc)
-# rfile <- file.choose("selon.k.R") # choose an R script file with functions
-# list.functions.in.file(rfile)
 
-fnct_compar_plt_biais.selon.k1(N=1, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+# On veut le réseau de cette fonction
+# fnct_compar_plt_biais.selon.k1(N=1, 10, c(0.1, 0.2, 0.5), 6, 0.33)
 fonctions_fnct_compar_plt_biais<-c(
   "fnct_compar_plt_biais.selon.k1" #biais.selon.k
   ,"biais.selon.k" #Simuler_biais_taillen
-  ,"Simuler_biais_taillen"
+  ,"Simuler_biais_taillen" #Simuler_biais_un_n_ech
+  , "Simuler_biais_un_n_ech" #Generation_un_ech
+  ,"Generation_un_ech" # simul_weibull
+  , "simul_weibull" # rien
 )
+edges_fnct_compar_plt_biais.selon.k1 <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fnct_compar_plt_biais.selon.k1"))),
+                                                   to = c(which(fonctions$noms_fonction_surv.R %in% 
+                                                                  c("biais.selon.k"))))
 
