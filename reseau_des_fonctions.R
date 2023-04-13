@@ -1,9 +1,11 @@
 # install.packages("visNetwork")
+# install.packages("fontawesome")
 
 # can have new features in development version 
 # devtools::install_github("datastorm-open/visNetwork")
 rm(list=ls())
 require(visNetwork, quietly = TRUE)
+library(fontawesome)
 # minimal example
 # nodes <- data.frame(id = 1:3)
 # edges <- data.frame(from = c(1), to = c(1,2,3))
@@ -46,7 +48,7 @@ noms_fonction_surv.R <-c(#"simul_exp", #surv.R
                          ,"fonction_estim_doses_sizen"
                          ,"Realisations_estim_cas_mult"
                          ,"fonction_simul_doses_eqm"
-                         ,"get_alpha" #generation_echantillon/fonctions_simulations_competition.R
+                         ,"get_alpha" # dans generation_echantillon/fonctions_simulations_competition.R
                          ,"get_expo"
                          ,"hx"
                          ,"one_weibull_comp"
@@ -72,6 +74,7 @@ noms_fonction_surv.R <-c(#"simul_exp", #surv.R
                          ,"fnct_compar_plt_biais.selon.k1" #biais.selon.k
                          ,"biais.selon.k" #Simuler_biais_taillen
                          
+                         
                          )
 fonctions <-as.data.frame(noms_fonction_surv.R)
 fonctions
@@ -96,23 +99,39 @@ head(nodes)
 #fonction generant les graphiques du scenario 1
 nodes$shape[nodes$label == "plots_scenario_1"] <-"triangle"
 nodes$color[nodes$label == "plots_scenario_1"] <-"blue"
+nodes$group[nodes$label == "plots_scenario_1"] <-"Scenario 1"
+
 nodes$shape[nodes$label == "biais.selon.taille_echantillon"] <-"triangle"
 nodes$color[nodes$label == "biais.selon.taille_echantillon"] <-"blue"
+nodes$group[nodes$label == "biais.selon.taille_echantillon"] <-"Scenario 1"
+
 nodes$shape[nodes$label == "eqm.selon.taille_echantillon"] <-"triangle"
 nodes$color[nodes$label == "eqm.selon.taille_echantillon"] <-"blue"
+nodes$group[nodes$label == "eqm.selon.taille_echantillon"] <-"Scenario 1"
 
 # graphique scénario 1 influence des parametres alpha et lambda de la loi de Weibull
 nodes$shape[nodes$label == "fnct_compar_plt_biais.selon.k1"] <-"triangle"
 nodes$color[nodes$label == "fnct_compar_plt_biais.selon.k1"] <-"blue"
+nodes$group[nodes$label == "fnct_compar_plt_biais.selon.k1"] <-"Scenario 1"
 
 #graphique influence de n et de lambda (scénario 1)
 nodes$shape[nodes$label == "fonction_compar_plotsn_lambda1"] <-"triangle"
 nodes$color[nodes$label == "fonction_compar_plotsn_lambda1"] <-"blue"
+nodes$group[nodes$label == "fonction_compar_plotsn_lambda1"] <-"Scenario 1"
+
+# Simulation dans un modèle à risques compétitifs : Influence de la probabilité
+# de toxicité $p_1$ et la taille de l'échantillon $n$ sur le biais moyen
+nodes$shape[nodes$label == "fonction_compar_plotsn_lambda_alt_8p"] <-"triangle"
+nodes$color[nodes$label == "fonction_compar_plotsn_lambda_alt_8p"] <-"blue"
+nodes$group[nodes$label == "fonction_compar_plotsn_lambda_alt_8p"] <-"Scenario 1"
+
+
+
 
 # fonctions relevant du package flexsurvcure
 nodes$color[nodes$label == "flexsurvcure"] <-"black"
+nodes$group[nodes$label == "flexsurvcure"] <-"package flexsurvcure"
 nodes$shape[nodes$label == "Simuler_biais_taillen"] <-"star"
-
 
 head(nodes)
 
@@ -184,8 +203,8 @@ edges_Realisations_estim_cas_mult <- data.frame(from = c(which(fonctions$noms_fo
 
 edges_fonction_simul_doses_eqm <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_simul_doses_eqm"))),
                      to = c(which(fonctions$noms_fonction_surv.R %in% c("fonction_generation_eqm")))) #fonction_generation_eqm
-# edges_get_alpha <- data.frame(from = c(31),
-#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) #rien
+# edges_get_alpha <- data.frame(from = c(which(fonctions$noms_fonction_surv.R %in% c("get_alpha"))),
+#                      to = c(which(fonctions$noms_fonction_surv.R %in% c("fonctions_simulations_competition")))) # fichier fonctions_simulations_competition.R
 # edges_get_expo <- data.frame(from = c(32),
 #                      to = c(which(fonctions$noms_fonction_surv.R %in% c("")))) # rien
 # edges_hx <- data.frame(from = c(33),
@@ -251,9 +270,6 @@ edges_Simuler_estim_mult_times <- data.frame(from= c(which(fonctions$noms_foncti
                                                           c("fonction_estim_comp_once"))))
 
 edges_fonction_estim_comp_once <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fonction_estim_comp_once"))),
-                                             to = c(which(fonctions$noms_fonction_surv.R %in% 
-                                                            c("generation_comp"))))
-edges_edges_fonction_estim_comp_once <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fonction_estim_comp_once"))),
                                              to = c(which(fonctions$noms_fonction_surv.R %in% 
                                                             c("generation_comp"))))
 edges_fnct_compar_plt_biais.selon.k1 <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fnct_compar_plt_biais.selon.k1"))),
@@ -328,21 +344,28 @@ edges
 
 
 visNetwork(nodes, edges, height = "500px", width = "100%",
-           main = "R?seau des fonctions utilis?es", 
+           main = "Reseau des fonctions utilisees", 
            submain = list(text = "",
                           style = "font-family:Comic Sans MS;color:#ff0000;font-size:15px;text-align:center;"), 
-           footer = "Fig. r?seau des fonctions") %>%
+           footer = "Fig. reseau des fonctions") %>%
   visEdges(arrows = "to") %>% 
+  addFontAwesome() %>%
   # visHierarchicalLayout(direction = "LR") #%>%
-  visEvents(click = "function(nodes){ Shiny.onInputChange('click', nodes.nodes[0]); if(nodes.nodes[0]){ no_of_edges = this.getConnectedEdges(nodes.nodes[0]); alert('No. of Edges connected to the selected node are :  ' + no_of_edges); } Shiny.onInputChange('edge_connections', no_of_edges); ;}", selectEdge = "function(edges) { Shiny.onInputChange('edge_data', this.body.data.edges._data[edges.edges[0]]); ;}", selectNode = "function(nodes) { no_of_nodes = this.getConnectedNodes(nodes.nodes[0]); no_of_edges_2 = this.getConnectedEdges(no_of_nodes); Shiny.onInputChange('node_data', no_of_edges_2); ;}" ) #%>%
-  # visLegend()
+  visGroups(groupname = "Scenario 1", color = "blue", shape = "triangle") %>%
+  visGroups(groupname = "package flexsurvcure", color = "black", shape = "square") %>%
+  visLegend(position = "right", main = "Légende"
+            # ,addNodes = list(
+            #   list(label = "Scenario 1", shape = "triangle"
+            #        )
+            # )
+        )
 
 
 ######### Influence des param?tres de la loi de Weibull  #####
 
 # On veut le réseau de cette fonction
 # fnct_compar_plt_biais.selon.k1(N=1, 10, c(0.1, 0.2, 0.5), 6, 0.33)
-fonctions_fnct_compar_plt_biais<-c(
+fnct_compar_plt_biais.selon.k1<-c(
   "fnct_compar_plt_biais.selon.k1" #biais.selon.k
   ,"biais.selon.k" #Simuler_biais_taillen
   ,"Simuler_biais_taillen" #Simuler_biais_un_n_ech
@@ -350,7 +373,59 @@ fonctions_fnct_compar_plt_biais<-c(
   ,"Generation_un_ech" # simul_weibull
   , "simul_weibull" # rien
 )
-edges_fnct_compar_plt_biais.selon.k1 <- data.frame(from= c(which(fonctions$noms_fonction_surv.R %in% c("fnct_compar_plt_biais.selon.k1"))),
-                                                   to = c(which(fonctions$noms_fonction_surv.R %in% 
-                                                                  c("biais.selon.k"))))
+fonctions <-as.data.frame(fnct_compar_plt_biais.selon.k1)
+fonctions
+nodes_fonctions_fnct_compar_plt_biais <- data.frame(id=1:length(fnct_compar_plt_biais.selon.k1),
+                           #add labels on nodes
+                           label = fnct_compar_plt_biais.selon.k1,
+                           # control shape of nodes
+                           shape = "square",
+                           group = c("fonctions_fnct_compar_plt_biais"), 
+                           # color
+                           color = "darkred",
+                           # tooltip (html or character), when the mouse is above
+                           title = paste0("<p><b>", 1:6,"</b><br>", fonctions,
+                                          "</p>")
+                           ,# smooth
+                           smooth = c(TRUE)
+)
+nodes <- nodes_fonctions_fnct_compar_plt_biais
+nodes
 
+fonctions$fonction <- fonctions$fnct_compar_plt_biais.selon.k1
+edges_fnct_compar_plt_biais.selon.k1 <- data.frame(from= c(which(fonctions$fonction %in% c("fnct_compar_plt_biais.selon.k1"))),
+                                                   to = c(which(fonctions$fonction %in% 
+                                                                  c("biais.selon.k"))))
+edges_biais.selon.k <- data.frame(from= c(which(fonctions$fonction %in% c("biais.selon.k"))),
+                                                   to = c(which(fonctions$fonction %in% 
+                                                                  c("Simuler_biais_taillen"))))
+edges_Simuler_biais_taillen<-data.frame(from= c(which(fonctions$fonction %in% c("Simuler_biais_taillen"))), 
+                                         to = c(which(fonctions$fonction %in% c("Simuler_biais_un_n_ech")))) 
+edges_Simuler_biais_un_n_ech<-data.frame(from= c(which(fonctions$fonction %in% c("Simuler_biais_un_n_ech"))), 
+                                        to = c(which(fonctions$fonction %in% c("Generation_un_ech")))) 
+edges_Generation_un_ech<-data.frame(from= c(which(fonctions$fonction %in% c("Generation_un_ech"))), 
+                                         to = c(which(fonctions$fonction %in% c("simul_weibull")))) 
+# edges_simul_weibull<-data.frame(from= c(which(fonctions$fonction %in% c("simul_weibull"))), 
+#                                     to = c(which(fonctions$fonction %in% c("")))) 
+edges <- rbind(edges_fnct_compar_plt_biais.selon.k1, edges_biais.selon.k
+               ,edges_Simuler_biais_taillen, edges_Simuler_biais_un_n_ech
+               ,edges_Generation_un_ech)
+edges
+
+
+visNetwork(nodes, edges, height = "500px", width = "100%",
+           main = "Reseau des fonctions du graphique \nInfluence des parametres de la loi de Weibull", 
+           submain = list(text = "",
+                          style = "font-family:Comic Sans MS;color:#ff0000;font-size:15px;text-align:center;"), 
+           footer = "Fig. reseau des fonctions") %>%
+  visEdges(arrows = "to") %>% 
+  addFontAwesome() %>%
+  # visHierarchicalLayout(direction = "LR") #%>%
+  visGroups(groupname = "Scenario 1", color = "blue", shape = "triangle") %>%
+  visGroups(groupname = "package flexsurvcure", color = "black", shape = "square") %>%
+  visLegend(position = "right", main = "Légende"
+            # ,addNodes = list(
+            #   list(label = "Scenario 1", shape = "triangle"
+            #        )
+            # )
+  )
