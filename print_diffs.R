@@ -2,6 +2,7 @@
 rm(list=ls())
 source("generation_mean.R")
 source("generation_doses.R")
+
 set.seed(133)
 ######Ne doit plus dependre de modele, tout mettre dans une unique liste. gg1 avec une colonne de biais pour survie et une autre pour bern.#####???
 
@@ -107,62 +108,86 @@ fonction_compar_plotsn_lambda<-function(N,window_lambda,t_star,p,k){
 print_eqm_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_doses)
 {
   require(gridExtra)
-  vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
+  vector_size<-seq.int(limit_inf,limit_sup,10)
   vector_size<-vector_size[order(vector_size)]
-  EQM<-fonction_simul_doses_eqm(vector_size=vector_size,nombre_doses=nombre_doses,
+  EQM<-fonction_simul_doses_eqm(vector_size=vector_size,
                                 vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
-    data<-EQM[[j]]
-    minimum<-min(data)
-    maximum<-max(data)
+    data<-as.data.frame(EQM[[j]])
+    data <- as.data.frame(lapply(data, unlist))
+    minimum<-min(min(data$eqm_guerison),min(data$eqm_Bernoulli),min(data$eqm_survie))
+    maximum<-max(max(data$eqm_guerison),max(data$eqm_Bernoulli),max(data$eqm_survie))
     k<-liste_parameter[[j]][["k"]]
     lambda<-liste_parameter[[j]][["lambda"]]
     p<-liste_parameter[[j]][["p"]]
-    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+    gg1<-ggplot(data=data,aes(x=n,y=eqm_guerison,col="guerison"))+
     geom_line()+
-    geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
-    geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
+      ggtitle(paste("Evolution de l'EQM, dose",as.character(j)))+
+    geom_line(data=data,aes(x=n,y=eqm_Bernoulli,col="Bernoulli"))+
+    scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "Bernoulli" = "blue")) +
     ylim(minimum,maximum)+
-    xlab("Taille echantillon") + ylab("EQM")+
-    labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,N=%s" , 
-                      as.character(lambda), 
-                      as.character(k),
-                      as.character(p),
-                      as.character(N)),title = "Evolution de l'EQM")
-    result[[j]]<-essai
+    xlab("Taille echantillon") + ylab("EQM")
+    
+    gg2<-ggplot(data=data,aes(x=n,y=eqm_guerison,col="guerison"))+
+      geom_line()+
+      geom_line(data=data,aes(x=n,y=eqm_survie,col="survie"))+
+      ggtitle(paste("Evolution de l'EQM, dose",as.character(j)))+
+      scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+      ylim(minimum,maximum)+
+      xlab("Taille echantillon") + ylab("EQM")+
+      labs(caption = sprintf("lambda = %s, alpha = %s, p=%s,N=%s" , 
+                             as.character(lambda), 
+                             as.character(k),
+                             as.character(p),
+                             as.character(N)))
+    gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
+    result[[j]]<-gg
   }
   return(result)
 }
-print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup,nombre_doses)
+print_mean_mult_doses<-function(N,liste_parameter,limit_inf,limit_sup)
 {
   require(gridExtra)
-  vector_size<-sample(c(limit_inf:limit_sup),N,replace=TRUE)
+  require(ggplot2)
+  vector_size<-seq.int(limit_inf,limit_sup,10)
   vector_size<-vector_size[order(vector_size)]
-  MEAN<-fonction_simul_doses_mean(vector_size=vector_size,nombre_doses=nombre_doses,
+  nombre_doses<- length(liste_parameter)
+  MEAN<-fonction_simul_doses_mean(vector_size=vector_size,
                                 vecteur_parametres=liste_parameter,K=N)
   vecteur_gg<-rep(NA,nombre_doses)
   result<-list(rep(NA,nombre_doses))
   for (j in c(1:nombre_doses)){
     data<-MEAN[[j]]
-    minimum<-min(data)
-    maximum<-max(data)
+    data <- as.data.frame(lapply(data, unlist))
+    minimum<-min(min(data$mean_guerison),min(data$mean_Bernoulli),min(data$mean_survie))
+    maximum<-max(max(data$mean_guerison),max(data$mean_Bernoulli),max(data$mean_survie))
     k<-liste_parameter[[j]][["k"]]
     lambda<-liste_parameter[[j]][["lambda"]]
     p<-liste_parameter[[j]][["p"]]
-    essai<-ggplot(data=data,aes(x=vector_size,y=Modele_guerison,col="Cure"))+
+    gg1<-ggplot(data=data,aes(x=n,y=mean_guerison,col="guerison"))+
       geom_line()+
-      geom_line(data=data,aes(x=vector_size,y=Modele_bernoulli,col="Bernoulli"))+
-      geom_line(data=data,aes(x=vector_size,y=Modele_survie,col="Survival"))+
+      ggtitle(paste("Evolution du biais moyen en \n fonction de n, dose",as.character(j)))+
+      geom_line(data=data,aes(x=n,y=mean_Bernoulli,col="Bernoulli"))+
+      scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "Bernoulli" = "blue")) +
+      ylim(minimum,maximum)+
+      xlab("Taille echantillon") + ylab("Moyenne du biais")
+    
+    gg2<-ggplot(data=data,aes(x=n,y=mean_guerison,col="guerison"))+
+      geom_line()+
+      ggtitle(paste("Evolution du biais moyen en \n fonction de n, dose",as.character(j)))+
+      geom_line(data=data,aes(x=n,y=mean_survie,col="survie"))+
+      scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
       ylim(minimum,maximum)+
       xlab("Taille echantillon") + ylab("Moyenne du biais")+
       labs(caption = sprintf("lambda = %s, alpha= %s, p=%s,N=%s" , 
                              as.character(lambda), 
                              as.character(k),
                              as.character(p),
-                             as.character(N)),title = paste("Evolution de la moyenne, dose",as.character(j)))
-    result[[j]]<-essai
+                             as.character(N)))
+    gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
+    result[[j]]<-gg
   }
   return(result)
 }
@@ -206,11 +231,16 @@ liste_2<-list(lb_test2,t_star2,p2,k2)
 names(liste_2)<-c("lambda","t_star","p","k")
 vecteur_param<-list(liste_parameter,liste_2)
 nb_doses<-2
-lmoins<-1
-l_plus<-100
-test_print_mult_doses<-print_eqm_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+lmoins<-20
+l_plus<-120
+set.seed(133)
+test_print_mult_doses<-print_eqm_mult_doses(N=11,liste_parameter=vecteur_param,
+                                            limit_inf =lmoins,limit_sup =l_plus,
+                                            nombre_doses = nb_doses)
 test_print_mult_doses[[1]]
 test_print_mult_doses[[2]]
-test_mean_doses<-print_mean_mult_doses(N=N,liste_parameter=vecteur_param,limit_inf =lmoins,limit_sup =l_plus,nombre_doses = nb_doses)
+set.seed(133)
+test_mean_doses<-print_mean_mult_doses(N=11,liste_parameter=vecteur_param,
+                                       limit_inf =lmoins,limit_sup =l_plus)
 test_mean_doses[[1]]
 test_mean_doses[[2]]
