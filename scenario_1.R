@@ -135,7 +135,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     geom_smooth(aes(y = modele_guerison, col = "gu?rison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Mod?les", values = c("gu?rison" = "red1", "survie" = "darkgreen")) +
-    ggtitle("Evolution du biais moyen en \nfonction de n") +
+    ggtitle("Evolution du biais moyen en \n fonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
