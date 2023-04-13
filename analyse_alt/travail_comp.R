@@ -209,7 +209,6 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
 
 
 
-
 fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1,type2,graine=133) {
   library(gridExtra)
   library(ggplot2)
@@ -395,3 +394,4 @@ test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
 
+?option()
