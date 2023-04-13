@@ -69,6 +69,7 @@ noms_fonction_surv.R <-c("simul_exp", #surv.R
                          ,"biais.selon.lambda_alt" #Simuler_estim_mult_times
                          ,"Simuler_estim_mult_times" #fonction_estim_comp_once
                          ,"fonction_estim_comp_once" #generation_comp
+                         ,"fnct_compar_plt_biais.selon.k1" #biais.selon.k
                          
                          )
 fonctions <-as.data.frame(noms_fonction_surv.R)
@@ -307,19 +308,27 @@ edges
 
 
 visNetwork(nodes, edges, height = "500px", width = "100%",
-           main = "Réseau des fonctions utilisées", 
+           main = "R?seau des fonctions utilis?es", 
            submain = list(text = "",
                           style = "font-family:Comic Sans MS;color:#ff0000;font-size:15px;text-align:center;"), 
-           footer = "Fig. réseau des fonctions") %>%
+           footer = "Fig. r?seau des fonctions") %>%
   visEdges(arrows = "to") %>% 
   # visHierarchicalLayout(direction = "LR") #%>%
   visEvents(click = "function(nodes){ Shiny.onInputChange('click', nodes.nodes[0]); if(nodes.nodes[0]){ no_of_edges = this.getConnectedEdges(nodes.nodes[0]); alert('No. of Edges connected to the selected node are :  ' + no_of_edges); } Shiny.onInputChange('edge_connections', no_of_edges); ;}", selectEdge = "function(edges) { Shiny.onInputChange('edge_data', this.body.data.edges._data[edges.edges[0]]); ;}", selectNode = "function(nodes) { no_of_nodes = this.getConnectedNodes(nodes.nodes[0]); no_of_edges_2 = this.getConnectedEdges(no_of_nodes); Shiny.onInputChange('node_data', no_of_edges_2); ;}" ) #%>%
   # visLegend()
 
 
-######### Influence des paramètres de la loi de Weibull  #####
+######### Influence des param?tres de la loi de Weibull  #####
 # fnct_compar_plt_biais
+# install.packages("NCmisc")
+# library(NCmisc)
+# rfile <- file.choose("selon.k.R") # choose an R script file with functions
+# list.functions.in.file(rfile)
 
-
-
+fnct_compar_plt_biais.selon.k1(N=1, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+fonctions_fnct_compar_plt_biais<-c(
+  "fnct_compar_plt_biais.selon.k1" #biais.selon.k
+  ,"biais.selon.k" #Simuler_biais_taillen
+  ,"Simuler_biais_taillen"
+)
 

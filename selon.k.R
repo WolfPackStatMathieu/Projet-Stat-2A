@@ -60,7 +60,7 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   borne_max.b <- max(max(RES0.5.3$mean.bernoulli),max(RES0.1.3$mean.bernoulli),max(RES0.5.3$mean.bernoulli))
   
   par(mfrow=c(2,2))
-  plot(RES0.2.3$k,RES0.2.3$mean.surv,main="Modèle de survie",
+  plot(RES0.2.3$k,RES0.2.3$mean.surv,main="ModÃ¨le de survie",
             ylim=c(-0.1+borne_min,borne_max+0.1),
             type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.surv,type="b",col="blue")
@@ -68,14 +68,14 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   abline(h=0)
   
 
-  plot(RES0.2.3$k,RES0.2.3$mean.cure, main = "Modèle de guérison",
+  plot(RES0.2.3$k,RES0.2.3$mean.cure, main = "Mod?le de gu?rison",
             ylim=c(-0.1+borne_min.c,borne_max.c+0.1),
             type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.cure,type="b",col="blue")
   lines(RES0.1.3$k,RES0.1.3$mean.cure,type="b",col="red")
   abline(h=0)
 
-  plot(RES0.2.3$k,RES0.2.3$mean.bernoulli,main="Modèle de Bernoulli",
+  plot(RES0.2.3$k,RES0.2.3$mean.bernoulli,main="Mod?le de Bernoulli",
             ylim=c(-0.1+borne_min.b,borne_max.b+0.1),
             type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.bernoulli,type="b",col="blue")
@@ -96,7 +96,7 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 }
 
-### C'est la fonction à utiliser pour le plot
+### C'est la fonction ? utiliser pour le plot
 
 fnct_compar_plt_biais.selon.k1 <- function(N, n, window_lambda, t_star, p) {
   library(gridExtra)
@@ -163,7 +163,7 @@ gg1 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
     scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
-      title = "Modèle de Bernoulli",
+      title = "Mod?le de Bernoulli",
       x = expression(alpha),
       y = "biais moyen",
       color = expression(alpha))+
@@ -175,7 +175,7 @@ gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
     scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
     ylim(borne_min -0.1, borne_max+0.1)+
     labs(
-      title = "Modèle de Survie",
+      title = "Mod?le de Survie",
       x = expression(alpha),
       y = "biais moyen",
       color = expression(alpha))+
@@ -188,7 +188,7 @@ gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
   scale_color_manual(name = expression(lambda), values = c("red", "black", "blue")) +
   ylim(borne_min.c -0.1, borne_max.c+0.1)+
   labs(
-    title = "Modèle de Guérison",
+    title = "Mod?le de Gu?rison",
     x = expression(alpha),
     y = "biais moyen",
     color = expression(alpha))+
@@ -246,7 +246,7 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   borne_max.b <- max(max(RES0.5.3$mean.bernoulli),max(RES0.1.3$mean.bernoulli),max(RES0.5.3$mean.bernoulli))
   
   par(mfrow=c(2,2))
-  plot(RES0.2.3$k,RES0.2.3$mean.surv,main="Modèle de survie",
+  plot(RES0.2.3$k,RES0.2.3$mean.surv,main="Mod?le de survie",
        ylim=c(-0.1+borne_min,borne_max+0.1),
        type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.surv,type="b",col="blue")
@@ -254,14 +254,14 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
   abline(h=0)
   
   
-  plot(RES0.2.3$k,RES0.2.3$mean.cure, main = "Modèle de guérison",
+  plot(RES0.2.3$k,RES0.2.3$mean.cure, main = "Mod?le de gu?rison",
        ylim=c(-0.1+borne_min.c,borne_max.c+0.1),
        type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.cure,type="b",col="blue")
   lines(RES0.1.3$k,RES0.1.3$mean.cure,type="b",col="red")
   abline(h=0)
   
-  plot(RES0.2.3$k,RES0.2.3$mean.bernoulli,main="Modèle de Bernoulli",
+  plot(RES0.2.3$k,RES0.2.3$mean.bernoulli,main="Mod?le de Bernoulli",
        ylim=c(-0.1+borne_min.b,borne_max.b+0.1),
        type='b',xlab=expression(alpha),ylab="biais moyen")
   lines(RES0.5.3$k,RES0.5.3$mean.bernoulli,type="b",col="blue")
