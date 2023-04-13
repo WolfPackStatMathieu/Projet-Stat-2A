@@ -123,13 +123,51 @@ fonction_miss<-function(data,nb_doses){
   return(vecteur_doses_NA)
 }
 test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
+test_estim1<-fonction_estim_hht(modele="increasing",t_star=6,target=0.33)
+test_estim2<-fonction_estim_hht(modele="decreasing",t_star=6,target=0.33)
 
 require(ggplot2)
 ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_guerison,col="Guérison"))+
-  geom_point()+
-  geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
+  geom_line()+
+  geom_line(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
   labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
 ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Survie"))+
   geom_point()+
   geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
   labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
+
+
+
+# color palette
+library(RColorBrewer)
+palette <- brewer.pal(8, "Set1")
+
+p <- 0.33
+borne_min <- min(test_estim)
+borne_max <- max(test_estim)
+# plot
+plot(x = c(1:nrow(test_estim)), y = c(0.05,0.1,0.15,0.33,0.5), 
+     xlab = "Indice de dose",
+     ylab = "Probabilité",
+     main = "Valeur des probabilités de toxicité",
+     type = "b",
+     col = "blue",
+     pch = 19, # Use a solid circle as point marker
+     lwd = 2,
+     ylim=c(borne_min,borne_max)) # Increase line width
+lines(x = c(1:nrow(test_estim)), y = test_estim$estimateur_survie, col = "black")
+lines(x = c(1:nrow(test_estim)), y = test_estim$estimateur_guerison, col = "purple")
+
+
+# Add horizontal line
+abline(h = p, col = "red", lwd = 2)
+
+# Add legend
+legend("topleft", # Position of the legend
+       c("Probabilité a priori", "Survie", "Guérison", "Cible"), # Labels
+       col = c("blue", "black", "purple", "red"), # Colors
+       pch = c(19, NA), # Point markers (NA means no marker)
+       lty = c(1, 1), # Line styles (1 means solid)
+       lwd = c(2, 2),
+       bty ="n",
+       cex = 0.6) # Line widths
