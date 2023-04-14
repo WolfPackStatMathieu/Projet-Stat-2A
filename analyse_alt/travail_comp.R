@@ -323,7 +323,6 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
     ,min(RES0.7$mean.bernoulli)
     ,min(RES0.8$mean.bernoulli)
   )
-  
   # Plot the data
   # le modèle de survie
   gg1 <-  ggplot(RES0.3.3, aes(n, mean.surv)) +
@@ -392,6 +391,6 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="decreasing",type2="decreasing", graine=139)
 
-test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
+fonction_compar_plotsn_lambda_alt_8p(N=10, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
 
-?option()
+
