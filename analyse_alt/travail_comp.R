@@ -84,7 +84,7 @@ biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
     biais_surv<-vec.biais[[1]]-p_cause1
     biais.bern<-vec.biais[[2]]-p_cause1
     biais.cure<-vec.biais[[3]]-p_cause1
-    results<-rbind(results,c(n,biais_surv,biais.cure,biais.bern))
+    results<-rbind(results,c(n,biais_surv,biais.bern,biais.cure))
     n <- n+20
   }
   return(results)
@@ -114,13 +114,13 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
   # Generate the data
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[1]],K=N, t_star=t_star, type1,type2,graine=graine)
   RES0.3.3 <- data.frame(RES)
-  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star, type1,type2,graine=graine)
   RES0.5.3 <- data.frame(RES)
-  colnames(RES0.5.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.5.3) <- cc("n", "mean.surv", "mean.bernoulli", "mean.cure")
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7.3 <- data.frame(RES)
-  colnames(RES0.7.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.7.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   # Get the min and max bounds of each variable to be used in the plots
   borne_min <- min(
     min(RES0.3.3$mean.surv),
@@ -215,44 +215,46 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   library(ggplot2)
   library(scales)
   # Generate the data
+
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[1]],K=N, t_star=t_star,type1,type2,graine=graine)
   RES0.3.3 <- data.frame(RES)
-  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
+  
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star,type1,type2,graine=graine)
   RES0.5.3 <- data.frame(RES)
-  colnames(RES0.5.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
+  colnames(RES0.5.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
+
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7.3 <- data.frame(RES)
-  colnames(RES0.7.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
+  colnames(RES0.7.3) <-c("n", "mean.surv", "mean.bernoulli", "mean.cure")
+
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[4]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.4 <- data.frame(RES)
-  colnames(RES0.4) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.4) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[5]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.5 <- data.frame(RES)
-  colnames(RES0.5) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.5) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[6]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.6 <- data.frame(RES)
-  colnames(RES0.6) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.6) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[7]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7 <- data.frame(RES)
-  colnames(RES0.7) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.7) <-c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[8]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.8 <- data.frame(RES)
-  colnames(RES0.8) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  colnames(RES0.8) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   
   # Get the min and max bounds of each variable to be used in the plots
   # les bornes min et max du modele de survie
@@ -397,4 +399,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="decreasing",type2="decreasing", graine=139)
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
+
+
+fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, type1="constant", type2="constant")
 
