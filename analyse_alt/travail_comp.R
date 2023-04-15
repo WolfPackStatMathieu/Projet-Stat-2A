@@ -78,14 +78,14 @@ Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
 #test<-Simuler_estim_mult_times(K=10,p_cause1=p_cause1,p_cause2=p_cause2,n=n,type1=type1,type2=type2,t_star=6)
 biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
-  n <- 20
+  n <- 10
   while(n<200){
     vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star,graine=graine)
     biais_surv<-vec.biais[[1]]-p_cause1
     biais.bern<-vec.biais[[2]]-p_cause1
     biais.cure<-vec.biais[[3]]-p_cause1
     results<-rbind(results,c(n,biais_surv,biais.cure,biais.bern))
-    n <- n+20
+    n <- n+5
   }
   return(results)
 }
@@ -391,6 +391,52 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 test_alt<-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="decreasing",type2="decreasing", graine=139)
 
-fonction_compar_plotsn_lambda_alt_8p(N=10, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=139)
-
-
+fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
+  library(gridExtra)
+  library(ggplot2)
+  library(scales)
+  # Generate the data
+  set.seed(12345)
+  RES <- biais.selon.lambda_alt(p_cause1=p,K=N, t_star=t_star,type1,type2,graine=graine)
+  RES0.3.3 <- data.frame(RES)
+  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  borne_min <- min(RES0.3.3$mean.surv, RES0.3.3$mean.cure,RES0.3.3$mean.bernoulli)
+  borne_max <- max(RES0.3.3$mean.surv, RES0.3.3$mean.cure,RES0.3.3$mean.bernoulli)
+  palette <- c("#0072B2", "#D55E00", "#E69F00")
+  
+  gg1 <- ggplot(data =RES0.3.3, aes(x = n)) +
+    geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
+    geom_smooth(aes(y = mean.surv, col = "modele survie"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modeles", values = palette) +
+    ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
+    xlab("Taille echantillon") + ylab("Biais moyen") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)
+  
+  gg2 <- ggplot(data = RES0.3.3, aes(x = n)) +
+    geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
+    geom_smooth(aes(y = mean.bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modeles", values = palette) +
+    ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
+    xlab("Taille echantillon") + ylab("Biais moyen") +
+    theme_classic() +
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=10),
+          axis.title=element_text(family = "Helvetica", size=12),
+          plot.title = element_text(family = "Helvetica", size = 10)) +
+    ylim(borne_min, borne_max)+
+  labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s" ,
+                         as.character(N),
+                         as.character(10),
+                         as.character(200),
+                         as.character(5),
+                         as.character(type1),
+                         as.character(type2)))
+  
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
+}
+fonction_ggplot_evol_biais_alt(N=1900,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
