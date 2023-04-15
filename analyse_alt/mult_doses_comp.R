@@ -165,11 +165,11 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K,type1,type2){
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   palette <- c("#0072B2", "#D55E00", "#E69F00")
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
-      geom_smooth(aes(y = modele_guerison, col = "modèle guerison"), size = 1, alpha = 0.5) +
-      geom_smooth(aes(y = modele_survie, col = "modèle survie"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Mod?les", values = palette) +
-      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'échantillon") +
-      xlab("Taille echantillon") + ylab("Biais moyen") +
+      geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modeles", values = palette) +
+      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
+      xlab("Taille echantillon") + ylab("") +
       theme_classic() +
       theme(legend.title=element_blank(),
             axis.text=element_text(family = "Helvetica", size=10),
@@ -181,11 +181,11 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K,type1,type2){
                              as.character(K)
                              ,type1,type2))}
   gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
-      geom_smooth(aes(y = modele_guerison-p, col = "modèle guerison"), size = 1, alpha = 0.5) +
-      geom_smooth(aes(y = modele_bernoulli, col = "modèle bernoulli"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Modèles", values = palette) +
-      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'échantillon") +
-      xlab("Taille echantillon") + ylab("Biais moyen") +
+      geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modeles", values = palette) +
+      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
+      xlab("Taille echantillon") + ylab("") +
       theme_classic() +
       theme(legend.title=element_blank(),
             axis.text=element_text(family = "Helvetica", size=10),
