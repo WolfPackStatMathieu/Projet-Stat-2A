@@ -223,13 +223,22 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
   return(matrice)
 }
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=prob_prior1,t_star=6,type1="decreasing",type2="decreasing",graine_depart=145)
+test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+
+test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+prob_prior1<-c(0.3,0.5)
+test<-evol_eqm_comp(K=10,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="constant",graine_depart=145)
+test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.3, 0.5),t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+                    type1="constant",type2="constant",graine_depart=145)
 
 
-
-
-test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="constant",graine_depart=145)
+# test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)
+# test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="constant",graine_depart=145)
 
 # test<-evol_eqm_comp(K=6,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
 
