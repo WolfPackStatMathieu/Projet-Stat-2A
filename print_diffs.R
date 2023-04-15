@@ -217,7 +217,7 @@ test_compar_lambda<-fonction_compar_plotsn_lambda(N,window_lambda,t_star,p=p,k=k
 
 ##### test, print avec plusieurs doses. #####
 N<-20
-p<-0.33
+p<-0.5
 lambda_test<-0.33
 t_star<-6
 k1<-1
@@ -225,16 +225,16 @@ liste_parameter<-list(lambda_test,t_star,p,k1)
 names(liste_parameter)<-c("lambda","t_star","p","k")
 lb_test2<-0.2
 t_star2<-7
-p2<-0.5
+p2<-0.7
 k2<-1
 liste_2<-list(lb_test2,t_star2,p2,k2)
 names(liste_2)<-c("lambda","t_star","p","k")
 vecteur_param<-list(liste_parameter,liste_2)
 nb_doses<-2
-lmoins<-20
+lmoins<-30
 l_plus<-120
 set.seed(133)
-test_print_mult_doses<-print_eqm_mult_doses(N=11,liste_parameter=vecteur_param,
+test_print_mult_doses<-print_eqm_mult_doses(N=50,liste_parameter=vecteur_param,
                                             limit_inf =lmoins,limit_sup =l_plus,
                                             nombre_doses = nb_doses)
 test_print_mult_doses[[1]]
