@@ -17,7 +17,11 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   res <- res - p
   
   # on renomme les colonnes
+<<<<<<< HEAD
   colnames(res) <- c("Bernoulli", "Survie", "Guérison")
+=======
+  colnames(res) <- c("Bernoulli", "Survie", "Guerison")
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
   
   # bornes
   borne_min <- min(res)
@@ -34,30 +38,37 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
     geom_violin(alpha = 0.8) +
     scale_fill_manual(values = c("#0072B2", "#E69F00","purple")) +
     # theme_classic()+
-    ylim(borne_min, borne_max)
+    ylim(-0.2, 0.15)
   
   # Add labels and title
   boxplot + 
+<<<<<<< HEAD
     labs(x = "Modèles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",
          caption = sprintf("N = %s, lambda = %s, k = %s, n = %s" , 
+=======
+    labs(x = "Modeles", y = "Biais moyen", 
+         title = "Comparaison du biais moyen pour K n-echantillons",
+         caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
                            as.character(K), 
                             as.character(lambda), 
                            as.character(k), 
-                           as.character(n))) +
+                           as.character(n),
+                           as.character(p))) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
   
 }
 
-plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
+plots_scenario_1_alt <- function(K, n, p,type1, type2, t_star,graine=133){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
   # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
-  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
+  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
   res$Bernoulli<-as.numeric(res$Bernoulli)
   res$Guerison<-as.numeric(res$Guerison)
@@ -78,13 +89,18 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
     geom_violin(alpha = 0.8) +
     scale_fill_manual(values = c("#0072B2", "#E69F00","purple")) +
     # theme_classic()+
-    ylim(borne_min, borne_max)
+    ylim(-0.2, 0.15)
   
   # Add labels and title
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
+<<<<<<< HEAD
          title = "Comparaison du biais moyen pour K n-échantillons",
          caption = sprintf("N= %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
+=======
+         title = "Comparaison du biais moyen pour K n-echantillons",subtitle = "Deuxieme methode",
+         caption = sprintf("N= %s, p=%s,n=%s, type = %s",as.character(K),as.character(p),as.character(n), as.character(type1))) +
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
@@ -118,9 +134,15 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   borne_max <- max(result_final$modele_bernoulli, result_final$modele_guerison, result_final$modele_survie)
 
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+<<<<<<< HEAD
     geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guérison" = "red1", "bernoulli" = "blue")) +
+=======
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "bernoulli" = "blue")) +
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
     ggtitle("Evolution du biais moyen en \nfonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -131,9 +153,15 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     ylim(borne_min, borne_max)
 
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+<<<<<<< HEAD
     geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guérison" = "red1", "survie" = "darkgreen")) +
+=======
+    geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
+    geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
+    scale_color_manual(name = "Mod?les", values = c("guerison" = "red1", "survie" = "darkgreen")) +
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
     ggtitle("Evolution du biais moyen en \n fonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -201,6 +229,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 
 
+<<<<<<< HEAD
 
 plots_scenario_1(K=1900, n=20, lambda=0.5, t_star=6, p=0.3, k=1)
 
@@ -209,6 +238,19 @@ plots_scenario_1_alt(K=1000,n=20,p=0.3,type="constant",t_star=6)
 
 biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 biais.selon.taille_echantillon(K = 20, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+=======
+set.seed(133)
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
+plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
+
+set.seed(133)
+biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 1, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+>>>>>>> ce39176670e76cc90ab81e059b417c92f09e28d2
 eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
