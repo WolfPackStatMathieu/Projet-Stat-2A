@@ -97,8 +97,8 @@ fonction_estim_hht<-function(modele,t_star,target){
   estimation_surv<-rep(NA,nb_doses)
   rang_dose<-1
   for (j in c(1:nb_doses)){
-    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-0
-                                estimation_surv[j]<-0}
+    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-NA
+                                estimation_surv[j]<-NA}
     else{
     indice<-which(Predicted_survival_prob$categorie==dose_scaled[j])
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
@@ -141,12 +141,12 @@ ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Surv
 # color palette
 library(RColorBrewer)
 palette <- brewer.pal(8, "Set1")
-
+test_estim[1,c(1:3)]<-rep(0,3)
 p <- 0.33
-borne_min <- min(test_estim)
-borne_max <- max(test_estim)
+borne_min <- min(test_estim,na.rm=TRUE)
+borne_max <- max(test_estim,na.rm=TRUE)
 # plot
-plot(x = c(1:nrow(test_estim)), y = c(0.05,0.1,0.15,0.33,0.5), 
+plot(x = c(1:3), y = c(0.05,0.15,0.33), 
      xlab = "Indice de dose",
      ylab = "Probabilité",
      main = "Valeur des probabilités de toxicité",
@@ -155,19 +155,20 @@ plot(x = c(1:nrow(test_estim)), y = c(0.05,0.1,0.15,0.33,0.5),
      pch = 19, # Use a solid circle as point marker
      lwd = 2,
      ylim=c(borne_min,borne_max)) # Increase line width
-lines(x = c(1:nrow(test_estim)), y = test_estim$estimateur_survie, col = "black")
-lines(x = c(1:nrow(test_estim)), y = test_estim$estimateur_guerison, col = "purple")
+lines(x = c(1:3), y = test_estim$estimateur_survie[c(1,3,4)], col = "black")
+lines(x = c(1:3), y = test_estim$estimateur_guerison[c(1,3,4)], col = "purple")
 
 
 # Add horizontal line
-abline(h = p, col = "red", lwd = 2)
+#abline(h = p, col = "red", lwd = 2)
 
 # Add legend
 legend("topleft", # Position of the legend
-       c("Probabilité a priori", "Survie", "Guérison", "Cible"), # Labels
-       col = c("blue", "black", "purple", "red"), # Colors
+       c("Probabilité a priori", "Survie", "Guérison"), # Labels
+       col = c("blue", "black", "purple"), # Colors
        pch = c(19, NA), # Point markers (NA means no marker)
        lty = c(1, 1), # Line styles (1 means solid)
        lwd = c(2, 2),
        bty ="n",
        cex = 0.6) # Line widths
+
