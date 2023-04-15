@@ -205,15 +205,15 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 plots_scenario_1(K=1900, n=20, lambda=0.5, t_star=6, p=0.3, k=1)
 
-set.seed(133)
-plots_scenario_1_alt(K=1900,n=20,p=0.3,type="constant",t_star=6)
-
+set.seed(130)
+plots_scenario_1_alt(K=410,n=25,p=0.3,type1="constant",type2="constant",t_star=6,graine=130)
+plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",type2="constant",t_star=6,graine=133)
 
 biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 biais.selon.taille_echantillon(K = 20, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 set.seed(133)
-plots_scenario_1(K=1900, n=20, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")

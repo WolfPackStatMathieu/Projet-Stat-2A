@@ -59,7 +59,7 @@ set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
   graine_sup <- graine + K
-  ensemble_graine<-c(graine_inf, graine_sup)
+  ensemble_graine<-c(graine_inf:graine_sup)
   result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
   result<-as.data.frame(t(result))
   colnames(result)<-c("Survie","Bernoulli","Guerison")
@@ -78,7 +78,7 @@ Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
 #test<-Simuler_estim_mult_times(K=10,p_cause1=p_cause1,p_cause2=p_cause2,n=n,type1=type1,type2=type2,t_star=6)
 biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
-  n <- 10
+  n <- 25
   while(n<200){
     vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star,graine=graine)
     biais_surv<-vec.biais[[1]]-p_cause1
@@ -91,7 +91,7 @@ biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
 }
 eqm.selon.alpha<-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
-  n <- 20
+  n <- 18
   graine_inf <- graine
   graine_sup <- graine + K
   ensemble_graine<-c(graine_inf:graine_sup)
@@ -431,7 +431,7 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
     ylim(borne_min, borne_max)+
   labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s" ,
                          as.character(N),
-                         as.character(10),
+                         as.character(20),
                          as.character(200),
                          as.character(5),
                          as.character(type1),
@@ -439,4 +439,4 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=1900,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=200,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
