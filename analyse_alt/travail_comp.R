@@ -60,6 +60,7 @@ Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
   graine_sup <- graine + K
   ensemble_graine<-c(graine_inf:graine_sup)
+  print(ensemble_graine)
   result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
   result<-as.data.frame(t(result))
   colnames(result)<-c("Survie","Bernoulli","Guerison")
@@ -392,7 +393,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 }
 
 
-fonction_compar_plotsn_lambda_alt_8p(N=1000, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=8, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
