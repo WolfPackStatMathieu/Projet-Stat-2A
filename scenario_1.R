@@ -165,14 +165,10 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 set.seed(133)
 plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
-<<<<<<< HEAD
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-=======
-plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")
 
->>>>>>> 5facb85c6c3986d7bf1416015dcdd7ba752f8888
 
 
 set.seed(133)
