@@ -143,7 +143,7 @@ test_evol_biais<-evol_biais_comp(K=1900,probabilite_a_priori=prob_priori,t_star=
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
-  debut <- 20
+  debut <- 25
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
@@ -237,17 +237,22 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 prob_prior1<-c(0.5,0.7)
 test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=10,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
+
 test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
 
 #graphiques pour 0.3 et 0.5 de type decreasing et constant
 prob_prior1<-c(0.3,0.5)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.3, 0.5),t_star=6,
+test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.3, 0.5),t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
+
 test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
+test_decreasing<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+
 
 
 # test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)
