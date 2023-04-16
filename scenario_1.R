@@ -216,7 +216,7 @@ set.seed(133)
 plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
