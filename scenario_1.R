@@ -40,30 +40,30 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   # Add labels and title
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour N simulations et n fixé",
-         caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
+         title = "Comparaison du biais moyen pour N simulations et n fixé"
+         , subtitle = "Premiere methode"
+         ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
                            as.character(K), 
                             as.character(lambda), 
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 20),
-          axis.text = element_text(size = 18),
-          axis.title = element_text(size = 18)
-          ,legend.text = element_text(size = 16)
-          , legend.title = element_text(size = 16)
-          , plot.caption = element_text(size = 16)
+    theme(plot.title = element_text(hjust = 0.5, size = 28)
+          ,plot.subtitle = element_text(hjust = 0, size = 25)
+          ,axis.text = element_text(size = 24)
+          ,axis.title = element_text(size = 24)
+          ,legend.text = element_text(size = 24)
+          , legend.title = element_text(size = 24)
+          , plot.caption = element_text(size = 24)
           # ,text = element_text(size=rel(8))
     )
   
 }
 
 set.seed(133)
-plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
-plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
 
 
 
@@ -239,6 +239,8 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
           axis.title = element_text(size = 12))
   
 }
+plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
+
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   require(ggplot2)
