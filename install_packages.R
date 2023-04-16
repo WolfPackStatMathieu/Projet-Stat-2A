@@ -4,7 +4,7 @@ pkgLoad <- function( packages = "favourites" ) {
     packages <- c( "gridExtra", "ggplot2", "survival", "survminer", "dplyr", 
                    "dfcrm", "visreg", "purrr", "plotly", "flexsurvcure",
                    "Rlab", "gridExtra", "cmprsk", "visNetwork", "tidyr",
-                   "parallel", "cmprsk", "scales"
+                   "parallel", "cmprsk", "scales", "grid"
     )
   }
   
