@@ -58,7 +58,7 @@ test_estim_comp<-fonction_estim_comp_once(p_cause1,n=n,type1,type2,t_star=t_star
 set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
-  graine_sup <- graine + K
+  graine_sup <- graine + K-1
   ensemble_graine<-c(graine_inf:graine_sup)
   result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
   result<-as.data.frame(t(result))
@@ -386,14 +386,19 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
     theme_bw()
   # on remet tout dans un seul graphique
   g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
-                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N), widths = c(7,7,7))
+                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N),nrow=2)
   return(g)
   
 }
 
 
+<<<<<<< HEAD
 
 fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+=======
+fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
+>>>>>>> ed0d1a4a4bbd3c0e1e43f38d7341c1fbc1f92a8c
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
@@ -406,12 +411,11 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   borne_min <- min(RES0.3.3$mean.surv, RES0.3.3$mean.cure,RES0.3.3$mean.bernoulli)
   borne_max <- max(RES0.3.3$mean.surv, RES0.3.3$mean.cure,RES0.3.3$mean.bernoulli)
-  palette <- c("#0072B2", "#D55E00", "#E69F00")
   
   gg1 <- ggplot(data =RES0.3.3, aes(x = n)) +
     geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = mean.surv, col = "modele survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modeles", values = palette) +
+    geom_smooth(aes(y = mean.bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modeles", values=c("modele guerison"="red1","modele bernoulli"="blue1")) +
     ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -423,8 +427,8 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   
   gg2 <- ggplot(data = RES0.3.3, aes(x = n)) +
     geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = mean.bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modeles", values = palette) +
+    geom_smooth(aes(y = mean.surv, col = "modele survie"), size = 1, alpha = 0.5) +
+    scale_color_manual(name = "Modeles", values=c("modele guerison"="red1","modele survie"="darkgreen")) +
     ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
@@ -433,14 +437,16 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
           axis.title=element_text(family = "Helvetica", size=12),
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max)+
-  labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s" ,
+  labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s, p=%s" ,
                          as.character(N),
                          as.character(20),
                          as.character(200),
                          as.character(5),
                          as.character(type1),
-                         as.character(type2)))
+                         as.character(type2),
+                         as.character(p)))
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=200,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=300,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+
