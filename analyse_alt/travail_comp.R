@@ -58,9 +58,8 @@ test_estim_comp<-fonction_estim_comp_once(p_cause1,n=n,type1,type2,t_star=t_star
 set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
-  graine_sup <- graine + K
+  graine_sup <- graine + K-1
   ensemble_graine<-c(graine_inf:graine_sup)
-  print(ensemble_graine)
   result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
   result<-as.data.frame(t(result))
   colnames(result)<-c("Survie","Bernoulli","Guerison")
@@ -387,13 +386,14 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
     theme_bw()
   # on remet tout dans un seul graphique
   g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
-                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N), widths = c(7,7,7))
+                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N),nrow=2)
   return(g)
   
 }
 
 
-fonction_compar_plotsn_lambda_alt_8p(N=8, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
