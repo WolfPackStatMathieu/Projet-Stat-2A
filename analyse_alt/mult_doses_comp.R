@@ -163,45 +163,55 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K,type1,type2){
   result_final$modele_survie<-result_final$modele_survie
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
-  palette <- c("#0072B2", "#D55E00", "#E69F00")
+  
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
       geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
       geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Modeles", values = palette) +
-      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
-      xlab("Taille echantillon") + ylab("") +
+      scale_color_manual(name = "Modeles", values =  c("modele guerison"="red", "modele survie"="darkgreen" )) +
+      # ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
+      xlab("Taille echantillon") + ylab("EQM") +
       theme_classic() +
-      theme(legend.title=element_blank(),
-            axis.text=element_text(family = "Helvetica", size=10),
-            axis.title=element_text(family = "Helvetica", size=12),
-            plot.title = element_text(family = "Helvetica", size = 10)) +
+      
       ylim(borne_min, borne_max) +
-      labs(caption = sprintf("p=%s, N=%s, type1= %s,type2=%s",
+      labs(caption = sprintf("p=%s, N=%s, type1=%s, type2=%s",
                              as.character(result_final$p),
-                             as.character(K)
-                             ,type1,type2))}
-  gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
-      geom_smooth(aes(y = modele_guerison-p, col = "modele guerison"), size = 1, alpha = 0.5) +
-      geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
-      scale_color_manual(name = "Modeles", values = palette) +
-      ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
-      xlab("Taille echantillon") + ylab("") +
-      theme_classic() +
-      theme(legend.title=element_blank(),
-            axis.text=element_text(family = "Helvetica", size=10),
-            axis.title=element_text(family = "Helvetica", size=12),
-            plot.title = element_text(family = "Helvetica", size = 10)) +
-      ylim(borne_min, borne_max)+
-      labs(caption = sprintf("p=%s,N=%s,type1=%s,type2=%s",
-                             as.character(result_final$p),
-                             as.character(K),as.character(type1),as.character(type2)))}
+                             as.character(K),as.character(type1),as.character(type2))
+           )
+    }+
+    theme(legend.title=element_blank(),
+          axis.text = element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(20))
+          )
   
-  gg <- {grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))}
+  gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
+      geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modeles", values = c("modele guerison"="red", "modele bernoulli"="blue" )) +
+      # ggtitle("Evolution de l'EQM en fonction de la \ntaille d'echantillon") +
+      xlab("Taille echantillon") + ylab("EQM") +
+      theme_classic() +
+      ylim(borne_min, borne_max)+
+      labs(caption = "")}+
+    theme(legend.title=element_blank(),
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(20))
+    )
+  
+  gg <- {grid.arrange(gg2, gg1, ncol = 2, widths = c(8,8)
+                      ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon",gp=gpar(fontsize=24,font=3)) 
+                      )}
   return(gg)
 }
 generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depart,type2){
   require(ggplot2)
   require(gridExtra)
+  require(grid)
   graine_ensemble<-graine_depart+c(1:K)
   result<-lapply(graine_ensemble,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,type2=type2)
   nb_doses<-length(prob_priori)
@@ -222,14 +232,26 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
   }
   return(matrice)
 }
+
+#graphiques pour 0.5 et 0.7 de type decreasing et constant
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=prob_prior1,t_star=6,type1="decreasing",type2="decreasing",graine_depart=145)
+test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="constant",type2="constant",graine_depart=145)
+test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+
+#graphiques pour 0.3 et 0.5 de type decreasing et constant
+prob_prior1<-c(0.3,0.5)
+test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.3, 0.5),t_star=6,
+                    type1="decreasing",type2="decreasing",graine_depart=145)
+test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+                    type1="constant",type2="constant",graine_depart=145)
 
 
-
-
-test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="constant",graine_depart=145)
+# test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)
+# test<-evol_eqm_comp(K=10,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="constant",graine_depart=145)
 
 # test<-evol_eqm_comp(K=6,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133)
 
