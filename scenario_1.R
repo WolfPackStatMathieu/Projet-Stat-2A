@@ -47,11 +47,24 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12),
-          axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12))
+    theme(plot.title = element_text(hjust = 0.5, size = 20),
+          axis.text = element_text(size = 18),
+          axis.title = element_text(size = 18)
+          ,legend.text = element_text(size = 16)
+          , legend.title = element_text(size = 16)
+          , plot.caption = element_text(size = 16)
+          # ,text = element_text(size=rel(8))
+    )
   
 }
+
+set.seed(133)
+plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
+
+plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
 
 
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
@@ -138,9 +151,11 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(50))) +
     ylim(borne_min, borne_max)
 
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
@@ -149,30 +164,30 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
-    theme_classic() +
+    # theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 44)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(50))) +
     ylim(borne_min, borne_max)
 
-  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
+                     ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=54,font=3))
+                     )
 }
 
 
 
 
 set.seed(133)
-plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=19, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
-<<<<<<< HEAD
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-=======
-plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")
 
->>>>>>> 5facb85c6c3986d7bf1416015dcdd7ba752f8888
 
 
 set.seed(133)
