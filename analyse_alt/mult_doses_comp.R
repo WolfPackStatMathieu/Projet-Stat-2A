@@ -131,7 +131,7 @@ evol_n_par_dose<-function(results,n,i,K=K,type1,type2){
   return(gg)
 }
 evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depart){
-  debut <- 15
+  debut <- 20
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
@@ -143,7 +143,7 @@ test_evol_biais<-evol_biais_comp(K=1900,probabilite_a_priori=prob_priori,t_star=
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
-  debut <- 25
+  debut <- 20
   fin <- 100
   pas <- 5
   n <- seq(debut,fin , pas)
