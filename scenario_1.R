@@ -199,7 +199,7 @@ eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 ####################### ALT ##################
-plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
+plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
@@ -233,13 +233,13 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",
-         caption = sprintf("N = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
+         caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
   
 }
-plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1_alt(K=100,n=25,p=0.33,graine=133,type1="decreasing",t_star=6, type2 = "decreasing")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
