@@ -49,12 +49,13 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #return(sous_liste)
 #}
 
-p_cause1<-0.35
-n<-10
-type1<-"decreasing"
-type2<-"decreasing"
+p_cause1<-0.33
+n<-100
+type1<-"constant"
+type2<-"constant"
 t_star<-6
-test_estim_comp<-fonction_estim_comp_once(p_cause1,n=n,type1,type2,t_star=t_star,graine=145)
+test_estim_comp<-fonction_estim_comp_once(p_cause1=p_cause1,n=n,type1,type2,t_star=t_star,graine=136)
+print(test_estim_comp)
 set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
