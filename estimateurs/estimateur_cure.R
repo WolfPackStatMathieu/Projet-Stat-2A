@@ -6,13 +6,12 @@ library(npcure)
 
 ####### Fonction ######
 fonction_cure<-function(df,t_star){
+  require(npcure)
   # retourne la probabilite de ne pas avoir fait de DLT a T_star
   indice_observed<-which(df$is_observed==1)
   indice_censored<-which(df$is_observed==0)
-  if(length(indice_observed)>0){
   df$covar<-rep(1,nrow(df))
-  prob_gueri<-probcure(x=covar,t=tox_time,dataset = df,d=is_observed,x0=1,h=c(1,1.5,2),local=FALSE,
-                       bootpars = controlpars(B = 1999))
+  prob_gueri<-probcure(x=covar,t=tox_time,dataset = df,d=is_observed,x0=1,h=c(1,1.5,2),local=FALSE)
   estimateur_tox<-1-prob_gueri[["q"]]$h1
   #result<-flexsurvcure(Surv(tox_time,event=is_observed)~1,data=df,
 #link="logistic", dist="weibullPH", mixture=T)
@@ -21,8 +20,7 @@ fonction_cure<-function(df,t_star){
   ## plogis of the second one to get the real value back. 
   #Prob_cure<-plogis(coef(result)[1])
   #estimateur_tox<-1-Prob_cure
-  }
-  else{estimateur_tox<-0}
+  print(estimateur_tox)
   return(estimateur_tox)
 }
 
