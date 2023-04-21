@@ -185,13 +185,13 @@ set.seed(133)
 plots_scenario_1(K=19, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-plots_scenario_1_alt(K=1900,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1_alt(K=10,n=100,p=0.7,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
 
 set.seed(133)
-biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 100, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
@@ -205,7 +205,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   require(tidyr)
   # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
-  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
+  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
   res$Bernoulli<-as.numeric(res$Bernoulli)
   res$Guerison<-as.numeric(res$Guerison)
@@ -216,7 +216,6 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   # bornes
   borne_min <- min(res)
   borne_max <- max(res) 
-  print(typeof(res))
   # On tranforme les colonnes d?j? pr?sentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
   # distinguer les 2 mod?les
@@ -239,7 +238,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
           axis.title = element_text(size = 12))
   
 }
-plots_scenario_1_alt(K=100,n=25,p=0.33,graine=133,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1_alt(K=10,n=100,p=0.5,graine=133,type1="decreasing",t_star=6, type2 = "decreasing")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){

@@ -2,24 +2,18 @@
 ######################## IMPORT #####
 library(survival)
 library(flexsurvcure)
-
+library(npcure)
 
 ####### Fonction ######
 fonction_cure<-function(df,t_star){
   # retourne la probabilite de ne pas avoir fait de DLT a T_star
   indice_observed<-which(df$is_observed==1)
   indice_censored<-which(df$is_observed==0)
-  if(length(indice_observed)>0 && length(indice_censored)>0){
-  # on cree un surv_object a partir du dataframe
-  surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
-  # on estime la probabilite d avoir fait une DTL avant t_star avec la fonction flexsurvecure
-  result<-flexsurvcure(surv_object ~1, data = df, link="logistic", dist="weibullPH", mixture=T) 
-  # on recupere l estimation en t_star
-  Predicted_survival_prob<- summary(result, t=t_star, type="survival", tidy=T)$est
-  }
-  else{Predicted_survival_prob<-0}
-  # on retourne le complementaire pour obtenir ce qu on veut
-  return(1-Predicted_survival_prob)
+  df$covar<-rep(1,nrow(df))
+  prob_gueri<-probcure(x=covar,t=tox_time,dataset = df,d=is_observed,x0=1,h=c(1,1.5,2),local=FALSE,
+                       bootpars = controlpars(B = 1999))
+  estimateur_tox<-1-prob_gueri[["q"]]$h1
+  return(estimateur_tox)
 }
 
 estimateur_cure_mult<-function(df,t_star,nb_doses){
