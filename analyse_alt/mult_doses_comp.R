@@ -36,7 +36,8 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     df$factdose<-as.factor(dose_recalibree[df$dose])
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
-    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
+    df2<-df[,c("factdose","is_observed","tox_time")]
+    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
     # print("passé par là 5")
     # print("passé par là 4")
     print(Prob_whole_cure)

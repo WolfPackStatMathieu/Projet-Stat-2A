@@ -1,5 +1,4 @@
 ################## IMPORT #######
-rm(list=ls())
 source("generation_echantillon/generation_ech_comp.R")
 source("estimateurs/mod_bernoulli.R")
 source("estimateurs/estimateur_cure.R")
