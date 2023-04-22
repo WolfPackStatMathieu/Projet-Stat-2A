@@ -73,6 +73,5 @@ summary(colonDC)
 colonDC$bhaz <- general.haz(time = "FU", rmap = list(age = "agedays", sex = "sex", year= "dx"),
                             data = colonDC, ratetable = survexp.dk)
 fit <- fit.cure.model(Surv(FUyear, status) ~ 1, data = colonDC,type="mixture",link="logit")
-table(colonDC$status)
-fit$lm.objects
-predict(fit)
+plot(fit, type = "probcure")
+summary(fit)

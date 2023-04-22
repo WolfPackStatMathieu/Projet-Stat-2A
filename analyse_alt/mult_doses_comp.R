@@ -5,6 +5,8 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   nb_doses<-length(probabilite_a_priori)
   require(dfcrm)
   require(flexsurvcure)
+  require(cuRe)
+  require(npcure)
   df<-matrix(NA,n,4)
   df<-as.data.frame(df)
   data_returns<-as.data.frame(matrix(NA,nb_doses,4))
@@ -27,25 +29,29 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
     estimateur_surv<-rep(1,nb_doses)
-    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
-    estimateur_cure<-1-Prob_whole_cure[,2]
+    #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
+    #estimateur_cure<-1-Prob_whole_cure[,2]
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df2,dist="weibull",link="logit")
+    estimateur_cure<-1-Prob_whole_cure
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
     # print("passé par là 2")
     df$factdose<-as.factor(dose_recalibree[df$dose])
+    print(df)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
     df2<-df[,c("factdose","is_observed","tox_time")]
-    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
+   # Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df2,dist="weibull",link="logit")
     # print("passé par là 5")
     # print("passé par là 4")
-    print(Prob_whole_cure)
-    estimation_cure<-rep(NA,nb_doses)
+    coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
+    estimation_cure<-1-plogis(coeffs)
+    print(estimation_cure)
     estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
       estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]
-      estimation_cure[j]<-1-Prob_whole_cure[["q"]]$h1[[j]]
       }
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
@@ -55,11 +61,12 @@ p<-0.3
 p2<-0.50
 
 prob_priori<-c(p,p2)
+set.seed(145)
 test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
 
 p3<-0.7
 prob_priori<-c(p,p2,p3)
-test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
+test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
 
 
 #############MEAN####
