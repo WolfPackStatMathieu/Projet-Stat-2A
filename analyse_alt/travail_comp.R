@@ -117,7 +117,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
   colnames(RES0.3.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star, type1,type2,graine=graine)
   RES0.5.3 <- data.frame(RES)
-  colnames(RES0.5.3) <- cc("n", "mean.surv", "mean.bernoulli", "mean.cure")
+  colnames(RES0.5.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7.3 <- data.frame(RES)
   colnames(RES0.7.3) <- c("n", "mean.surv", "mean.bernoulli", "mean.cure")
@@ -202,7 +202,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
   return(g)
   
 }
-# test_alt<-fonction_compar_plotsn_lambda_alt(N=500, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="decreasing",type2="decreasing",graine=133)
+test_alt<-fonction_compar_plotsn_lambda_alt(N=5, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="decreasing",type2="decreasing",graine=133)
 # test_alt2<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="increasing",type2="increasing",graine=133)
 # test_alt3<-fonction_compar_plotsn_lambda_alt(N=10, t_star=6, vect_cause1=c(0.33,0.5,0.7),type1="constant",type2="constant",graine=133)
 

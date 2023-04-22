@@ -56,9 +56,42 @@ library(nltm)
 data(melanoma, package="nltm")
 fit <- nltm(Surv(time,status) ~ size + age, data=melanoma, nlt.model="PH")
 data("e1684")
-prin
 pd <- smcure(Surv(FAILTIME,FAILCENS)~TRT+SEX+AGE,
              cureform=~TRT+SEX+AGE,data=e1684,model="ph",
              Var = FALSE)
 library(smcure)
+
+
+
+# Alternative
+
+fonction_cure1<-function(df,t_star){
+  require(flexsurv)
+  require(survival)
+  # retourne la probabilite de ne pas avoir fait de DLT a T_star
+  
+# 
+#   indice_observed<-which(df$is_observed==1)   # observed
+#   obs_tps <- df[indice_observed, "tox_time"]  # observed times
+#   censure_ind <- df$sensible                  # uncensoring indicator
+#   
+#   obs_tps <- df$tox_time
+#   censure_ind <- df$sensible
+#   
+#   df_cure <- data.frame(obs_tps, censure_ind)
+  
+  # fit
+  f <- flexsurvcure(Surv(tox_time, is_observed)~1, data = df, dist = "weibull")
+  # esimator
+  est_p <- 1 - exp(f$coefficients[1])/(1 + exp(f$coefficients[1]))
+  
+  return(est_p)
+  
+}
+
+
+#test
+set.seed(123)
+df<-Generation_un_ech(n=10,lambda=0.5,p=0.33,k=1,t_star=6)
+fonction_cure1(df, 6)
 
