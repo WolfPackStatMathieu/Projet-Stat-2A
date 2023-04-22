@@ -20,7 +20,10 @@ print(infos)
 teta<-infos$estimate
 plot(x=valeur_dose,y=valeur_dose^(teta))
 
-?crm()
+
+
+vecteur_p<-infos$
+
 
 # modèle puissance
 mod_puissance <- crm(prior=prior_probabilities,target=p,vecteur_reponse,vecteur_dose,18,model="empiric")
@@ -35,7 +38,12 @@ library(RColorBrewer)
 palette <- brewer.pal(8, "Set2")
 
 # plot
-plot(x = nom_dose, y = vecteur_p, 
+p<-0.33
+a<-3
+vecteur_dose_scaled<-infos$dosescaled
+beta<-infos$estimate
+vecteur_p<-(1+exp(-a-exp(beta)*vecteur_dose_scaled))^(-1)
+plot(x = nom_dose[c(1,3,4)], y = vecteur_p[c(1,3,4)], 
      xlab = "Niveau de dose",
      ylab = "Probabilité de toxicité",
      main = "Valeur de la toxicité",
@@ -59,11 +67,7 @@ legend("topleft", # Position of the legend
 
 
 ##estimate to get beta ####
-p<-0.33
-a<-3
-vecteur_dose_scaled<-infos$dosescaled
-beta<-infos$estimate
-vecteur_p<-(1+exp(-a-exp(beta)*vecteur_dose_scaled))^(-1)
+
 plot(x=c(1:5),y=vecteur_p,xlab="Niveau de la dose",ylab="Probabilite de toxicité",
      main="Valeur de la toxicité",type="b")
 abline(h=p,col="blue")

@@ -97,8 +97,8 @@ fonction_estim_hht<-function(modele,t_star,target){
   estimation_surv<-rep(NA,nb_doses)
   rang_dose<-1
   for (j in c(1:nb_doses)){
-    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-0
-                                estimation_surv[j]<-0}
+    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-NA
+                                estimation_surv[j]<-NA}
     else{
     indice<-which(Predicted_survival_prob$categorie==dose_scaled[j])
     estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
@@ -111,25 +111,65 @@ fonction_estim_hht<-function(modele,t_star,target){
   return(data_returns)
 }
 
-test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
 fonction_miss<-function(data,nb_doses){
   vecteur_doses_NA<-c()
   for (j in c(1:nb_doses)){
     nb_num_doses<-which(data$Dose==j)
     nb_num_miss_dose<-which(data$Dose==j & data$observe==0)
     if(length(nb_num_doses)==length(nb_num_miss_dose) && length(nb_num_miss_dose)!=0){
-      if (nb_num_doses==nb_num_miss_dose){vecteur_doses_NA<-append(vecteur_doses_NA,j)}
+      if (length(nb_num_doses)==length(nb_num_miss_dose)){vecteur_doses_NA<-append(vecteur_doses_NA,j)}
       }
     }
   return(vecteur_doses_NA)
 }
+test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
+test_estim1<-fonction_estim_hht(modele="increasing",t_star=6,target=0.33)
+test_estim2<-fonction_estim_hht(modele="decreasing",t_star=6,target=0.33)
+
 require(ggplot2)
 ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_guerison,col="Guérison"))+
-  geom_point()+
-  geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
+  geom_line()+
+  geom_line(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
   labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
 ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Survie"))+
   geom_point()+
   geom_point(data=test_estim,aes(y=c(0.05,0.1,0.15,0.33,0.5),col="Probabilites a priori"))+
   labs(x="Indice de la dose",y="Valeur de la probabilité",title="Valeur des probabilités de toxicité")
+
+
+
+
+# color palette
+library(RColorBrewer)
+palette <- brewer.pal(8, "Set1")
+test_estim[1,c(1:3)]<-rep(0,3)
+p <- 0.33
+borne_min <- min(test_estim,na.rm=TRUE)
+borne_max <- max(test_estim,na.rm=TRUE)
+# plot
+plot(x = c(1:3), y = c(0.05,0.15,0.33), 
+     xlab = "Indice de dose",
+     ylab = "Probabilité",
+     main = "Valeur des probabilités de toxicité",
+     type = "b",
+     col = "blue",
+     pch = 19, # Use a solid circle as point marker
+     lwd = 2,
+     ylim=c(borne_min,borne_max)) # Increase line width
+lines(x = c(1:3), y = test_estim$estimateur_survie[c(1,3,4)], col = "black")
+lines(x = c(1:3), y = test_estim$estimateur_guerison[c(1,3,4)], col = "purple")
+
+
+# Add horizontal line
+#abline(h = p, col = "red", lwd = 2)
+
+# Add legend
+legend("topleft", # Position of the legend
+       c("Probabilité a priori", "Survie", "Guérison"), # Labels
+       col = c("blue", "black", "purple"), # Colors
+       pch = c(19, NA), # Point markers (NA means no marker)
+       lty = c(1, 1), # Line styles (1 means solid)
+       lwd = c(2, 2),
+       bty ="n",
+       cex = 0.6) # Line widths
 
