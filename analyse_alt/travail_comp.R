@@ -1,5 +1,4 @@
 ################## IMPORT #######
-
 source("generation_echantillon/generation_ech_comp.R")
 source("estimateurs/mod_bernoulli.R")
 source("estimateurs/estimateur_cure.R")
@@ -16,7 +15,7 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
     # tous pas observés donc censures
     estimateursurv<-0
     estimateurbern<-0
-    estimateurcure<-0
+    estimateurcure<-fonction_cure(df=data,t_star)
     sous_liste<-list(estimateursurv, estimateurbern, estimateurcure) 
     names(sous_liste)<-c("Survie","Bernoulli","Guerison")
     return(sous_liste)
@@ -49,12 +48,13 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #return(sous_liste)
 #}
 
-p_cause1<-0.35
-n<-10
-type1<-"decreasing"
-type2<-"decreasing"
+p_cause1<-0.33
+n<-100
+type1<-"constant"
+type2<-"constant"
 t_star<-6
-test_estim_comp<-fonction_estim_comp_once(p_cause1,n=n,type1,type2,t_star=t_star,graine=145)
+test_estim_comp<-fonction_estim_comp_once(p_cause1=p_cause1,n=n,type1,type2,t_star=t_star,graine=136)
+print(test_estim_comp)
 set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
@@ -393,18 +393,13 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 
 
-<<<<<<< HEAD
-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
-=======
->>>>>>> 3670d93ca05cc765edad4de676a14e0ec36d05ae
 
-fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+
+
+fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
 
 fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
-<<<<<<< HEAD
-
-=======
->>>>>>> 3670d93ca05cc765edad4de676a14e0ec36d05ae
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
@@ -454,5 +449,5 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=300,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=100,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
