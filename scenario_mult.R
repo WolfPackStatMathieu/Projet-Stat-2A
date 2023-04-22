@@ -60,4 +60,4 @@ k2<-1
 liste_2<-list(lb_test2,t_star2,p2,k2)
 names(liste_2)<-c("lambda","t_star","p","k")
 vecteur_param<-list(liste_parameter,liste_2)
-test<-plots_scenario_mult(K=1900,n=100,liste_params = vecteur_param,t_star=6,nb_doses=2)
+test<-plots_scenario_mult(K=10,n=100,liste_params = vecteur_param,t_star=6,nb_doses=2)

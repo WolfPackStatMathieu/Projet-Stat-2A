@@ -38,7 +38,6 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   else{
     # print("passé par là 2")
     df$factdose<-as.factor(dose_recalibree[df$dose])
-    print(df)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
     df2<-df[,c("factdose","is_observed","tox_time")]

@@ -67,6 +67,7 @@ test<-simul_tps_hht("constant",t_star=6,probabilite_a_priori =c(0.05,0.1,0.15,0.
 library(survival)
 fonction_estim_hht<-function(modele,t_star,target){
   require(dfcrm)
+  require(cuRe)
   probabilite_a_priori<-c(0.05,0.1,0.15,0.33,0.5)
   nb_doses<-length(probabilite_a_priori)
   donnees<-simul_tps_hht(modele,t_star,probabilite_a_priori)
@@ -84,29 +85,47 @@ fonction_estim_hht<-function(modele,t_star,target){
   }
   dose_scaled<-crm(prior =probabilite_a_priori,target = target, tox = donnees$observe, level = donnees$Dose, n =nrow(donnees),model="logistic")$dosescaled
   estimateur_bern<-sapply(vecteur,fonction_MEAN,donnees=donnees)
+  estimateur_bern[c(2,5)]<-rep(NA,2)
   data_returns[,"estimateur_bernoulli"]<-estimateur_bern
   dose_all_missed<-fonction_miss(donnees,nb_doses=length(dose_scaled))
+  #print(dose_all_missed)
   donnees_tronq<-donnees[-which(donnees$Dose %in% dose_all_missed),]
-  donnees_tronq$factdose<-as.factor(dose_scaled[donnees_tronq$Dose])
-  fonction_surv<-Surv(as.numeric(donnees_tronq$temps),event=donnees_tronq$observe)
-  fit_surv <- survfit(fonction_surv ~factdose, data = donnees_tronq)
-  fit_cure<-flexsurvcure(Surv(temps,event=observe)~factdose, data = donnees_tronq, link="logistic", dist="weibullPH", mixture=T)
-  Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
-  colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
+  donnees$factdose<-as.factor(dose_scaled[donnees$Dose])
+  fonction_surv<-Surv(as.numeric(donnees$temps),event=donnees$observe)
+  fit_surv <- survfit(fonction_surv ~factdose, data = donnees)
+  print(summary(fit_surv))
+  Prob_whole_cure<-fit.cure.model(Surv(temps,observe) ~ factdose+0, data =donnees,
+                                  dist="weibull",
+                                  link="logit")
+  coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
+  prob_tox<-1-plogis(coeffs)
+  print(prob_tox)
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
   rang_dose<-1
-  for (j in c(1:nb_doses)){
-    if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) ){estimation_cure[j]<-NA
-                                estimation_surv[j]<-NA}
-    else{
-    indice<-which(Predicted_survival_prob$categorie==dose_scaled[j])
-    estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
-    estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[rang_dose]][1,][["surv"]]
-    rang_dose<-rang_dose+1
-    }
-    data_returns[j,"p"]<-probabilite_a_priori[j]
-  }
+  estimation_cure<-prob_tox[dose_all_missed]
+  data_returns[,"p"]<-probabilite_a_priori
+  estimation_surv[c(2,5)]<-rep(NA,2)
+  estimation_surv[1]<-0
+  estimation_surv[3]<-1-tp.surv(fit_surv,t_star)[[2]][1,][["surv"]]
+  estimation_surv[4]<-1-tp.surv(fit_surv,t_star)[[3]][1,][["surv"]]
+  estimation_cure[1]<-prob_tox[1]
+  estimation_cure[c(2,5)]<-rep(NA,2)
+  estimation_cure[3]<-prob_tox[2]
+  estimation_cure[4]<-prob_tox[3]
+  #for (j in c(1:nb_doses)){
+   # if (j %in% dose_all_missed || !(j%in%donnees_tronq$Dose) )
+    #  {
+     # estimation_cure[j]<-NA
+      #estimation_surv[j]<-NA}
+  #  else{
+   # print(rang_dose)
+    #estimation_cure[rang_dose+1]<-prob_tox[rang_dose+1]
+  #  estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[rang_dose]][1,][["surv"]]
+   # rang_dose<-rang_dose+1
+  #  }
+   # data_returns[j,"p"]<-probabilite_a_priori[j]
+  #}
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
@@ -122,6 +141,7 @@ fonction_miss<-function(data,nb_doses){
     }
   return(vecteur_doses_NA)
 }
+set.seed(133)
 test_estim<-fonction_estim_hht(modele="constant",t_star=6,target=0.33)
 test_estim1<-fonction_estim_hht(modele="increasing",t_star=6,target=0.33)
 test_estim2<-fonction_estim_hht(modele="decreasing",t_star=6,target=0.33)
@@ -141,10 +161,9 @@ ggplot(data=test_estim,aes(x=c(1:nrow(test_estim)),y=estimateur_survie,col="Surv
 # color palette
 library(RColorBrewer)
 palette <- brewer.pal(8, "Set1")
-test_estim[1,c(1:3)]<-rep(0,3)
 p <- 0.33
-borne_min <- min(test_estim,na.rm=TRUE)
-borne_max <- max(test_estim,na.rm=TRUE)
+borne_min <- min(test_estim[c(1:4),],na.rm=TRUE)
+borne_max <- max(test_estim[c(1:4),],na.rm=TRUE)
 # plot
 plot(x = c(1:3), y = c(0.05,0.15,0.33), 
      xlab = "Indice de dose",
