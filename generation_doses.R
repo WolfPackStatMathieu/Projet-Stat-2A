@@ -24,6 +24,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
+    df$factdose<-as.factor(dose_recalibree[df$dose])
     estimateur_surv<-rep(1,nb_doses)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df,
                                     dist="weibull",link="logit")
@@ -33,6 +34,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   if(length(indice_cens)==nrow(df)){
+    df$factdose<-as.factor(dose_recalibree[df$dose])
     estimateur_cure<-rep(0,nb_doses)
     estimateur_surv<-rep(0,nb_doses)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df,
