@@ -3,7 +3,7 @@
 rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
-source("analyse_alt/mult_doses_comp.R")
+#source("analyse_alt/mult_doses_comp.R")
 source("analyse_alt/travail_comp.R")
 library(ggplot2)
 
@@ -62,7 +62,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
 
 set.seed(134)
 
-plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
 
@@ -185,7 +185,7 @@ set.seed(133)
 plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-plots_scenario_1_alt(K=100,n=100,p=0.2,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1_alt(K=1900,n=100,p=0.2,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
@@ -211,7 +211,6 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   res$Bernoulli<-as.numeric(res$Bernoulli)
   res$Guerison<-as.numeric(res$Guerison)
   res <- res - p
-  print(res)
   # on renomme les colonnes
   
   # bornes
@@ -239,7 +238,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
           axis.title = element_text(size = 12))
   
 }
-plots_scenario_1_alt(K=410,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=10,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
