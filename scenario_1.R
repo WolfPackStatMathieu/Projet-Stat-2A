@@ -40,18 +40,31 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   # Add labels and title
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour N simulations et n fixé",
-         caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
+         title = "Comparaison du biais moyen pour N simulations et n fixé"
+         , subtitle = "Premiere methode"
+         ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
                            as.character(K), 
                             as.character(lambda), 
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12),
-          axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12))
+    theme(plot.title = element_text(hjust = 0.5, size = 28)
+          ,plot.subtitle = element_text(hjust = 0, size = 25)
+          ,axis.text = element_text(size = 24)
+          ,axis.title = element_text(size = 24)
+          ,legend.text = element_text(size = 24)
+          , legend.title = element_text(size = 24)
+          , plot.caption = element_text(size = 24)
+          # ,text = element_text(size=rel(8))
+    )
   
 }
+
+set.seed(134)
+
+plots_scenario_1(K=10, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+
+
 
 
 biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
@@ -138,9 +151,11 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     xlab("Taille echantillon") + ylab("EQM") +
     theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(50))) +
     ylim(borne_min, borne_max)
 
   gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
@@ -149,14 +164,18 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
-    theme_classic() +
+    # theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 44)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(50))) +
     ylim(borne_min, borne_max)
 
-  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
+  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
+                     ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=54,font=3))
+                     )
 }
 
 
@@ -165,12 +184,14 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 set.seed(133)
 plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
-plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1_alt(K=100,n=100,p=0.2,type1="decreasing",t_star=6, type2 = "decreasing")
+plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
 
 set.seed(133)
-biais.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K = 100, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
@@ -178,24 +199,24 @@ eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
 
 
 ####################### ALT ##################
-plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
+plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   require(ggplot2)
   require(dplyr)
   require(tidyr)
   # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
-  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star))))
+  print(p)
+  res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
   res$Bernoulli<-as.numeric(res$Bernoulli)
   res$Guerison<-as.numeric(res$Guerison)
   res <- res - p
-
+  print(res)
   # on renomme les colonnes
   
   # bornes
   borne_min <- min(res)
   borne_max <- max(res) 
-  print(typeof(res))
   # On tranforme les colonnes d?j? pr?sentes en une seule colonne (valeurs)
   # ensuite ajouter une nouvelle colonne modele qui servira a 
   # distinguer les 2 mod?les
@@ -212,12 +233,14 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,graine=133){
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour K n-échantillons",
-         caption = sprintf("N = %s, p=%s,n=%s",as.character(K),as.character(p),as.character(n))) +
+         caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
           axis.title = element_text(size = 12))
   
 }
+plots_scenario_1_alt(K=410,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   require(ggplot2)

@@ -26,8 +26,9 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
-    estimateur_cure<-rep(1,nb_doses)
     estimateur_surv<-rep(1,nb_doses)
+    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
+    estimateur_cure<-1-Prob_whole_cure[,2]
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
@@ -35,18 +36,17 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     df$factdose<-as.factor(dose_recalibree[df$dose])
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
-    
-    fit_cure<-flexsurvcure(Surv(tox_time,event=is_observed)~factdose, data = df, link="logistic", dist="weibullPH", mixture=T)
+    df2<-df[,c("factdose","is_observed","tox_time")]
+    Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
     # print("passé par là 5")
-    Predicted_survival_prob<-summary(fit_cure, t=t_star, type="survival", tidy=T)
     # print("passé par là 4")
-    colnames(Predicted_survival_prob)<-c("time","est","lcl","ucl","categorie")
+    print(Prob_whole_cure)
     estimation_cure<-rep(NA,nb_doses)
     estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
-      indice<-which(Predicted_survival_prob$categorie==dose_recalibree[j])
-      estimation_cure[j]<-1-Predicted_survival_prob[indice,"est"]
-      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
+      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]
+      estimation_cure[j]<-1-Prob_whole_cure[["q"]]$h1[[j]]
+      }
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
@@ -55,11 +55,11 @@ p<-0.3
 p2<-0.50
 
 prob_priori<-c(p,p2)
-test_mult_doses<-function_estim_doses_comp(n=20,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
+test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
 
 p3<-0.7
 prob_priori<-c(p,p2,p3)
-# test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+test_mult_doses<-function_estim_doses_comp(n=10,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
 
 
 #############MEAN####
@@ -96,12 +96,11 @@ evol_n_par_dose<-function(results,n,i,K=K,type1,type2){
   result_final$modele_survie<-result_final$modele_survie-result_final$p
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
-  palette <- c("#0072B2", "#D55E00", "#E69F00")
   gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison, col = "modèle guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = modele_survie, col = "modèle survie"), size = 1, alpha = 0.5) +
-    scale_color_manual(name = "Modèles", values = palette) +
-    ggtitle("Evolution du biais  \n  en fonction de la taille d'échantillon") +
+    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+      geom_smooth(aes(y = modele_bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modeles", values = c("modele guerison"="red","modele bernoulli"="blue"))+
+    ggtitle("Evolution du biais  \n  en fonction de la taille d'echantillon") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
@@ -110,10 +109,9 @@ evol_n_par_dose<-function(results,n,i,K=K,type1,type2){
           plot.title = element_text(family = "Helvetica", size = 10)) +
     ylim(borne_min, borne_max) }
   gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
-    geom_smooth(aes(y = modele_guerison-p, col = "modèle guerison"), size = 1, alpha = 0.5) +
-    geom_smooth(aes(y = modele_bernoulli, col = "modèle bernoulli"), size = 1, alpha = 0.5) +
-
-    scale_color_manual(name = "Modèles", values = palette) +
+    geom_smooth(aes(y = modele_guerison, col = "modele guerison"), size = 1, alpha = 0.5) +
+     geom_smooth(aes(y = modele_survie, col = "modele survie"), size = 1, alpha = 0.5) +
+      scale_color_manual(name = "Modeles", values = c("modele guerison"="red","modele survie"="darkgreen")) +
     ggtitle("Evolution du biais \n en fonction de la taille") +
 
     xlab("Taille echantillon") + ylab("Biais moyen") +
@@ -139,7 +137,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=1900,probabilite_a_priori=prob_priori,t_star=6,type1="constant",graine_depart=133,type2="constant")
+test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
