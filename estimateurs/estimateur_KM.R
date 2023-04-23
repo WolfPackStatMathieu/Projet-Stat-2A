@@ -47,3 +47,4 @@ kaplan_meier_estimate <- function(df, t_star) {
 # Example 
 kaplan_meier_estimate(df, t_star = 6)
 
+
