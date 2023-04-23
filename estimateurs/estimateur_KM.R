@@ -1,4 +1,5 @@
 source("generation_echantillon/generation_echantillon.R")
+source("utils.R")
 fonction_KM<-function(df,t_star){
   df<-df[,c("tox_time","is_observed")]
   surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
@@ -14,7 +15,7 @@ str(df)
 estim_KM<-fonction_KM(df,t_star=6)
 estim_KM
 
-
+print("test")
 # Alternative 
 
 kaplan_meier_estimate <- function(df, t_star) {
