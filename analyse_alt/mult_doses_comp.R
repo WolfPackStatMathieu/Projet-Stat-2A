@@ -89,7 +89,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,type2,grain
   graine_fin<-graine_depart+K
   ensemble_graine<-c(graine_depart,graine_fin)
   result<-lapply(ensemble_graine,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,type2=type2)
-  nb_doses<-length(prob_priori)
+  nb_doses<-length(probabilite_a_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
   colnames(matrice)<-c("numero_dose","modele_bernoulli","modele_survie","modele_guerison","p")
   matrice$numero_dose<-c(1:nb_doses)
@@ -158,7 +158,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
+test_evol_biais<-evol_biais_comp(K=1900,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
@@ -223,7 +223,7 @@ evol_n_par_dose_eqm<-function(results,n,i,K=K,type1,type2){
     )
   
   gg <- {grid.arrange(gg2, gg1, ncol = 2, widths = c(8,8)
-                      ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon",gp=gpar(fontsize=24,font=3)) 
+                      ,top =textGrob(paste("Evolution de l'EQM en fonction de la taille d'echantillon, dose ",i),gp=gpar(fontsize=24,font=3)) 
                       )}
   return(gg)
 }
@@ -233,7 +233,7 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
   require(grid)
   graine_ensemble<-graine_depart+c(1:K)
   result<-lapply(graine_ensemble,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,type2=type2)
-  nb_doses<-length(prob_priori)
+  nb_doses<-length(probabilite_a_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
   # print("chien")
   colnames(matrice)<-c("numero_dose","modele_bernoulli","modele_survie","modele_guerison","p")
@@ -254,9 +254,9 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 
 #graphiques pour 0.5 et 0.7 de type decreasing et constant
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=60,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=10,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
 
 test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
@@ -264,10 +264,10 @@ test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
 
 #graphiques pour 0.3 et 0.5 de type decreasing et constant
 prob_prior1<-c(0.3,0.5)
-test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.3, 0.5),t_star=6,
+test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.3, 0.5),t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
 
-test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.5, 0.7),t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
 test_decreasing<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
