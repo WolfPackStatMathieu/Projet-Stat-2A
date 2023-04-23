@@ -28,9 +28,12 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
   if(length(indice_cens)==0){
+    df$factdose<-as.factor(dose_recalibree[df$dose])
     estimateur_surv<-rep(1,nb_doses)
     #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
     #estimateur_cure<-1-Prob_whole_cure[,2]
+    Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
+                                            anc=list(scale=~factdose+0))
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df2,dist="weibull",link="logit")
     estimateur_cure<-1-Prob_whole_cure
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
@@ -42,12 +45,24 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     # print("passÃ© par lÃ  3")
     df2<-df[,c("factdose","is_observed","tox_time")]
    # Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
+    Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
+                                            anc=list(scale=~factdose+0))
+    #le premier correspond à la première dose. 
+    #le second correspond à la deuxième dose. 
+    prob_selon_flex<-rep(NA,nb_doses)
+    prob_selon_flex[1]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[1]
+    indice_plus<-4+nb_doses-2
+    prob_selon_flex[c(2:nb_doses)]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[c(4:indice_plus)]
+    print("nouvelle estimation")
+    print("-----------")
+    print("selon flex")
+    print(prob_selon_flex)
+    print("selon cuRe")
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose+0, data =df2,dist="weibull",link="logit")
-    # print("passÃ© par lÃ  5")
-    # print("passÃ© par lÃ  4")
     coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
     estimation_cure<-1-plogis(coeffs)
     print(estimation_cure)
+    print("----------")
     estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
       estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]

@@ -75,3 +75,8 @@ colonDC$bhaz <- general.haz(time = "FU", rmap = list(age = "agedays", sex = "sex
 fit <- fit.cure.model(Surv(FUyear, status) ~ 1, data = colonDC,type="mixture",link="logit")
 plot(fit, type = "probcure")
 summary(fit)
+library(flexsurvcure)
+result<-flexsurvcure(Surv(rectime,censrec)~group+0, data=bc, dist="weibullPH",anc=list(scale=~group+0))
+plogis(result$coefficients)
+result$all.formulae$theta
+result$dlist
