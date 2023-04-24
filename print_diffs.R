@@ -234,7 +234,7 @@ nb_doses<-2
 lmoins<-30
 l_plus<-120
 set.seed(133)
-test_print_mult_doses<-print_eqm_mult_doses(N=50,liste_parameter=vecteur_param,
+test_print_mult_doses<-print_eqm_mult_doses(N=20,liste_parameter=vecteur_param,
                                             limit_inf =lmoins,limit_sup =l_plus,
                                             nombre_doses = nb_doses)
 test_print_mult_doses[[1]]
