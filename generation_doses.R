@@ -27,7 +27,6 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     estimateur_surv<-rep(1,nb_doses)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,
                                     dist="weibull",link="logit")
-    estimation_surv<-rep(NA,nb_doses)
     coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
     estimation_cure<-1-plogis(coeffs)
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
@@ -46,6 +45,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   else{
     df$factdose<-as.factor(df$dose)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
+    print(fit_surv)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
     reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2:nb_doses)]
@@ -53,7 +53,15 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     estimation_cure<-1-plogis(coeffs)
     estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
-      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]
+      ## on vérifie pour chaque dose qu'il n'y a pas de valeur manquante. 
+      indice_dose<-which(df$dose==j)
+      indice_dose_man<-which(df$dose==j&& df$is_observed==0)
+      if(length(indice_dose)==length(indice_dose_man)){
+        print("test")
+        estimation_surv[j]<-0
+      }
+      else{
+      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]}
       }
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   }
