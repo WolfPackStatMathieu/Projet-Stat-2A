@@ -225,7 +225,7 @@ liste_parameter<-list(lambda_test,t_star,p,k1)
 names(liste_parameter)<-c("lambda","t_star","p","k")
 lb_test2<-0.2
 t_star2<-7
-p2<-0.7
+p2<-0.33
 k2<-1
 liste_2<-list(lb_test2,t_star2,p2,k2)
 names(liste_2)<-c("lambda","t_star","p","k")
@@ -240,6 +240,8 @@ test_print_mult_doses<-print_eqm_mult_doses(N=50,liste_parameter=vecteur_param,
 test_print_mult_doses[[1]]
 test_print_mult_doses[[2]]
 set.seed(133)
+
+
 test_mean_doses<-print_mean_mult_doses(N=11,liste_parameter=vecteur_param,
                                        limit_inf =lmoins,limit_sup =l_plus)
 test_mean_doses[[1]]
