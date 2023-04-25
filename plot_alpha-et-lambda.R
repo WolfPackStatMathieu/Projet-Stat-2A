@@ -109,12 +109,11 @@ for (i in 2:length(tableau_censures)) {
                      ) 
 }
 p<- p + xlab("lambda") + ylab("proportion de censure chez les sensibles")
-p <- p + labs(color='alpha', caption = sprintf("n = %s", as.character(n))) +
-  ggtitle("Proportion de censurés parmi les sensibles selon lambda et alpha")+
-  theme(legend.title=element_blank(),
-        axis.text=element_text(family = "Helvetica", size=12),
-        axis.title=element_text(family = "Helvetica", size=12),
-        plot.title = element_text(family = "Helvetica", size = 14)) 
+p <- p +   ggtitle("Proportion de censurés parmi les sensibles selon lambda et alpha")+
+  theme(axis.text=element_text(family = "Helvetica", size=14),
+        axis.title=element_text(family = "Helvetica", size=14),
+        plot.title = element_text(family = "Helvetica", size = 18)) +
+  labs(color='alpha', caption = sprintf("n = %s", as.character(n)))
 
 # print the result
 print(p)
