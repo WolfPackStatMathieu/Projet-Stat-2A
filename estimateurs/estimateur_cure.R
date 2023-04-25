@@ -3,11 +3,9 @@
 library(survival)
 library(flexsurvcure)
 library(npcure)
-
+require(cuRe)
 ####### Fonction ######
 fonction_cure<-function(df,t_star){
-  require(npcure)
-  require(smcure)
   # retourne la probabilite de ne pas avoir fait de DLT a T_star
   indice_observed<-which(df$is_observed==1)
   indice_censored<-which(df$is_observed==0)

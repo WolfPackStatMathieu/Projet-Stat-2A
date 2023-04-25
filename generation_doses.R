@@ -234,6 +234,7 @@ t_star<-6
 nb_doses<-2
 p3<-0.7
 k3<-3
+
 lambda3<-0.6
 liste3<-list(lambda3,k3,p3)
 names(liste3)<-c("lambda","k","p")

@@ -119,7 +119,12 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.text=element_text(family = "Helvetica", size=10),
           axis.title=element_text(family = "Helvetica", size=11),
           plot.title = element_text(family = "Helvetica", size = 12)) +
-    ylim(borne_min, borne_max)
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("N = %s, p=%s,lambda=%s,alpha=%s" ,
+                           as.character(K),
+                           as.character(p),
+                           as.character(round(lambda,2)),
+                           as.character(alpha)))
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
 
@@ -176,7 +181,12 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           plot.title = element_text(family = "Helvetica", size = 44)
           , legend.text = element_text(family = "Helvetica", size = 20)
           ,text = element_text(size=rel(50))) +
-    ylim(borne_min, borne_max)
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("N = %s, p=%s,lambda=%s,alpha=%s" ,
+                           as.character(K),
+                           as.character(p),
+                           as.character(round(lambda,2)),
+                           as.character(alpha)))
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
                      ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=54,font=3))
