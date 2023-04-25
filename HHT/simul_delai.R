@@ -16,28 +16,30 @@ simul_tps_hht <- function(modele, t_star,probabilite_a_priori){
   
   for (i in 1:length(vec_res)){
     if (vec_res[i] == 0){
-      probabilite<-probabilite_a_priori[vec_dose[i]]
-      lambda_dosek<-fonction_find_lambda(probabilite_priori=probabilite,t_star,alpha=alpha)
-      tps_simul <- temps_simul1(1/lambda_dosek, alpha)
+      #probabilite<-probabilite_a_priori[vec_dose[i]]
+      #lambda_dosek<-fonction_find_lambda(probabilite_priori=probabilite,t_star,alpha=alpha)
+      #tps_simul <- temps_simul1(1/lambda_dosek, alpha)
       #on a cette fois l'autre paramétrisation. 
       #on doit donc utiliser 1/lambda car dans weibull, la probabilité est selon la première paramétrisation. 
-      nb_simul<-1
-      reponse<-TRUE
-      while(tps_simul<t_star){
-        tps_simul<-temps_simul1(1/lambda_dosek,alpha)
-        nb_simul<-nb_simul+1
-        if (nb_simul>10){
-          reponse<-FALSE
-          break
-        }
-      }
-      if(tps_simul<t_star){tps_simul<-7}
-      vec_tps[i]<-tps_simul
+      #nb_simul<-1
+     # reponse<-TRUE
+     ## while(tps_simul<t_star){
+     #   tps_simul<-temps_simul1(1/lambda_dosek,alpha)
+       # nb_simul<-nb_simul+1
+      #  if (nb_simul>10){
+      #    reponse<-FALSE
+    #      break
+       # }
+     # }
+     # if(tps_simul<t_star){tps_simul<-7}
+     # vec_tps[i]<-tps_simul
+      vec_tps[i]<-t_star+1
     }
     else{
-      tps_simul <-temps_simul2(1/lambda_dosek, alpha,t_star=t_star)
+      lambda<-0.6
+      tps_simul <-rexp(n=1,lambda)
       while(tps_simul>t_star){
-        tps_simul<-temps_simul2(1/lambda_dosek,alpha,t_star=t_star)
+        tps_simul<-rexp(n=1,lambda)
       }
       vec_tps[i]<-tps_simul
     }
@@ -46,9 +48,7 @@ simul_tps_hht <- function(modele, t_star,probabilite_a_priori){
   colnames(data_HHT)<-c("Dose","observe","temps")
   return(data_HHT)
 }
-#> 1-exp(-(1/ 14.98211)*6)
-#1] 0.33
-#
+
 ####??? fonction pour trouver lambda dans la paramétrisation (1/lambda)
 fonction_find_lambda<-function(probabilite_priori,t_star,alpha){
   calcul_intermediaire<-(1/alpha)*log(-t_star^(alpha)/(log(1-probabilite_priori)))
@@ -62,7 +62,9 @@ temps_simul2<-function(lambda,alpha,t_star){
   tps_simul<-simul_weibull(1,lambda,alpha)
   return(ifelse(is.na(tps_simul),t_star+1,tps_simul))
 }
+set.seed(133)
 test<-simul_tps_hht("constant",t_star=6,probabilite_a_priori =c(0.05,0.1,0.15,0.33,0.5))
+print(test)
 ######### calcul des estimateurs.#####
 library(survival)
 fonction_estim_hht<-function(modele,t_star,target){
@@ -83,27 +85,21 @@ fonction_estim_hht<-function(modele,t_star,target){
       return(0)
     }
   }
-  dose_scaled<-crm(prior =probabilite_a_priori,target = target, tox = donnees$observe, level = donnees$Dose, n =nrow(donnees),model="logistic")$dosescaled
   estimateur_bern<-sapply(vecteur,fonction_MEAN,donnees=donnees)
   estimateur_bern[c(2,5)]<-rep(NA,2)
   data_returns[,"estimateur_bernoulli"]<-estimateur_bern
-  dose_all_missed<-fonction_miss(donnees,nb_doses=length(dose_scaled))
-  #print(dose_all_missed)
-  donnees_tronq<-donnees[-which(donnees$Dose %in% dose_all_missed),]
-  donnees$factdose<-as.factor(dose_scaled[donnees$Dose])
+  donnees$factdose<-as.factor(donnees$Dose)
   fonction_surv<-Surv(as.numeric(donnees$temps),event=donnees$observe)
   fit_surv <- survfit(fonction_surv ~factdose, data = donnees)
-  print(summary(fit_surv))
   Prob_whole_cure<-fit.cure.model(Surv(temps,observe) ~ factdose+0, data =donnees,
                                   dist="weibull",
                                   link="logit")
-  coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
+  beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
+  reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2:nb_doses)]
+  coeffs<-beta0+c(0,reste_beta)
   prob_tox<-1-plogis(coeffs)
-  print(prob_tox)
   estimation_cure<-rep(NA,nb_doses)
   estimation_surv<-rep(NA,nb_doses)
-  rang_dose<-1
-  estimation_cure<-prob_tox[dose_all_missed]
   data_returns[,"p"]<-probabilite_a_priori
   estimation_surv[c(2,5)]<-rep(NA,2)
   estimation_surv[1]<-0

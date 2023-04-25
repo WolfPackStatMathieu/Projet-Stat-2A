@@ -21,17 +21,18 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
   }
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
+  df$factdose<-as.factor(df$dose)
   if(length(indice_cens)==0){
-    df$factdose<-as.factor(df$dose)
+    
     estimateur_surv<-rep(1,nb_doses)
-    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,
-                                    dist="weibull",link="logit")
-    coeffs<-as.numeric(Prob_whole_cure$coefs[1]$'1')
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,dist="weibull",link="logit")
+    beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
+    reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2:nb_doses)]
+    coeffs<-beta0+c(0,reste_beta)
     estimation_cure<-1-plogis(coeffs)
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   if(length(indice_cens)==nrow(df)){
-    df$factdose<-as.factor(df$dose)
     estimateur_surv<-rep(0,nb_doses)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
@@ -42,7 +43,6 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimateur_surv,estimateur_cure)
   }
   else{
-    df$factdose<-as.factor(df$dose)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
