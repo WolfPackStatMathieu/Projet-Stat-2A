@@ -31,6 +31,14 @@ Generation_un_ech<-function(n,lambda,t_star,p,k){
 
 
 
-############# TEST #####
-# generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
+############ TEST #####
+generat<-Generation_un_ech(n=100,lambda=0.5,t_star=6,p=0.33,k=1)
+table(se=generat$sensible, obs=generat$is_observed)
+so <- survfit(Surv(tox_time, is_observed)~1, data=generat)
+plot(so)
+tp.surv(so,6)
+f <- flexsurvcure(Surv(tox_time, is_observed)~1, data=generat, dist = "weibull")
 
+est_p = 1 - exp(f$coefficients[1])/(1+exp(f$coefficients[1]))
+
+est_p

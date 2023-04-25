@@ -41,28 +41,27 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour N simulations et n fixé"
-         , subtitle = "Premiere methode"
          ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
                            as.character(K), 
                             as.character(lambda), 
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 28)
-          ,plot.subtitle = element_text(hjust = 0, size = 25)
-          ,axis.text = element_text(size = 24)
-          ,axis.title = element_text(size = 24)
-          ,legend.text = element_text(size = 24)
-          , legend.title = element_text(size = 24)
-          , plot.caption = element_text(size = 24)
+    theme(plot.title = element_text(hjust = 0.5, size = 12)
+          ,plot.subtitle = element_text(hjust = 0, size = 5)
+          ,axis.text = element_text(size = 12)
+          ,axis.title = element_text(size = 12)
+          ,legend.text = element_text(size = 12)
+          , legend.title = element_text(size = 12)
+          , plot.caption = element_text(size = 12)
           # ,text = element_text(size=rel(8))
     )
   
 }
 
-set.seed(134)
+set.seed(133)
 
-plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=10000, lambda=0.5, t_star=6, p=0.3, k=1)
 
 
 
@@ -238,7 +237,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
           axis.title = element_text(size = 12))
   
 }
-plots_scenario_1_alt(K=10,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){

@@ -78,8 +78,8 @@ Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
 #test<-Simuler_estim_mult_times(K=10,p_cause1=p_cause1,p_cause2=p_cause2,n=n,type1=type1,type2=type2,t_star=6)
 biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
-  n <- 25
-  while(n<200){
+  n <- 20
+  while(n<100){
     vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star,graine=graine)
     biais_surv<-vec.biais[[1]]-p_cause1
     biais.bern<-vec.biais[[2]]-p_cause1
@@ -394,7 +394,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 
 
-fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
 
 
 fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
@@ -441,13 +441,13 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s, p=%s" ,
                          as.character(N),
                          as.character(20),
-                         as.character(200),
+                         as.character(100),
                          as.character(5),
                          as.character(type1),
                          as.character(type2),
                          as.character(p)))
-  
+
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=200,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=100,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
