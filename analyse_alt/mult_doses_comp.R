@@ -27,8 +27,9 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
+  df$factdose<-as.factor(df$dose)
   if(length(indice_cens)==0){
-    df$factdose<-as.factor(df$dose)
+    
     estimateur_surv<-rep(1,nb_doses)
     #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
     #estimateur_cure<-1-Prob_whole_cure[,2]
@@ -43,7 +44,6 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   }
   else{
     # print("passé par là 2")
-    df$factdose<-as.factor(df$dose)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
     df2<-df[,c("factdose","is_observed","tox_time")]
