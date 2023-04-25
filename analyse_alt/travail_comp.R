@@ -209,79 +209,70 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
 
 
 
-fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1,type2,graine=133) {
+fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.3, 0.4, 0.5, 0.6, 0.7,0.8),type1,type2,graine=133) {
   library(gridExtra)
   library(ggplot2)
   library(scales)
   # Generate the data
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[1]],K=N, t_star=t_star,type1,type2,graine=graine)
-  RES0.3.3 <- data.frame(RES)
-  colnames(RES0.3.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  RES0.2 <- data.frame(RES)
+  colnames(RES0.2) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[2]],K=N, t_star=t_star,type1,type2,graine=graine)
-  RES0.5.3 <- data.frame(RES)
-  colnames(RES0.5.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
+  RES0.3 <- data.frame(RES)
+  colnames(RES0.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
   RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[3]],K=N,t_star=t_star,type1,type2,graine=graine)
-  RES0.7.3 <- data.frame(RES)
-  colnames(RES0.7.3) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
-  set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[4]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.4 <- data.frame(RES)
   colnames(RES0.4) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[5]],K=N,t_star=t_star,type1,type2,graine=graine)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[4]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.5 <- data.frame(RES)
   colnames(RES0.5) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[6]],K=N,t_star=t_star,type1,type2,graine=graine)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[5]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.6 <- data.frame(RES)
   colnames(RES0.6) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[7]],K=N,t_star=t_star,type1,type2,graine=graine)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[6]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.7 <- data.frame(RES)
   colnames(RES0.7) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
   
   set.seed(12345)
-  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[8]],K=N,t_star=t_star,type1,type2,graine=graine)
+  RES <- biais.selon.lambda_alt(p_cause1=vect_cause1[[7]],K=N,t_star=t_star,type1,type2,graine=graine)
   RES0.8 <- data.frame(RES)
   colnames(RES0.8) <- c("n", "mean.surv", "mean.cure", "mean.bernoulli")
-  
   # Get the min and max bounds of each variable to be used in the plots
   # les bornes min et max du modele de survie
   borne_min <- min(
-    min(RES0.3.3$mean.surv),
-    min(RES0.5.3$mean.surv),
-    min(RES0.7.3$mean.surv)
-    ,min(RES0.4$mean.surv)
-    ,min(RES0.5$mean.surv)
+    min(RES0.2$mean.surv),
+    min(RES0.4$mean.surv),
+    min(RES0.5$mean.surv)
     ,min(RES0.6$mean.surv)
     ,min(RES0.7$mean.surv)
     ,min(RES0.8$mean.surv)
+    ,min(RES0.7$mean.surv)
   )
   
   borne_max <- max(
-    max(RES0.7.3$mean.surv),
-    max(RES0.3.3$mean.surv),
-    max(RES0.5.3$mean.surv)
-    ,max(RES0.4$mean.surv)
-    ,min(RES0.5$mean.surv)
-    ,min(RES0.6$mean.surv)
+    max(RES0.2$mean.surv),
+    max(RES0.3$mean.surv),
+    max(RES0.4$mean.surv)
+    ,max(RES0.5$mean.surv)
+    ,max(RES0.6$mean.surv)
     ,max(RES0.7$mean.surv)
     ,max(RES0.8$mean.surv)
   )
   # les bornes min et max du modele de guerison
   borne_min.c <- min(
-    min(RES0.7.3$mean.cure),
-    min(RES0.3.3$mean.cure),
-    min(RES0.3.3$mean.cure)
-    ,min(RES0.4$mean.cure)
+    min(RES0.2$mean.cure),
+    min(RES0.3$mean.cure),
+    min(RES0.4$mean.cure)
     ,min(RES0.5$mean.cure)
     ,min(RES0.6$mean.cure)
     ,min(RES0.7$mean.cure)
@@ -289,11 +280,9 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   )
   
   borne_max.c <- max(
-    max(RES0.7.3$mean.cure),
-    max(RES0.5.3$mean.cure),
-    max(RES0.3.3$mean.cure)
-    ,max(RES0.4$mean.cure)
-    ,max(RES0.4$mean.cure)
+    max(RES0.2$mean.cure),
+    max(RES0.3$mean.cure),
+    max(RES0.4$mean.cure)
     ,max(RES0.5$mean.cure)
     ,max(RES0.6$mean.cure)
     ,max(RES0.7$mean.cure)
@@ -302,10 +291,9 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   
   # les bornes min et max du modele de Bernoulli
   borne_min.b <- min(
-    min(RES0.5.3$mean.bernoulli),
-    min(RES0.7.3$mean.bernoulli),
-    min(RES0.3.3$mean.bernoulli)
-    ,min(RES0.4$mean.bernoulli)
+    min(RES0.2$mean.bernoulli),
+    min(RES0.3$mean.bernoulli),
+    min(RES0.4$mean.bernoulli)
     ,min(RES0.5$mean.bernoulli)
     ,min(RES0.6$mean.bernoulli)
     ,min(RES0.7$mean.bernoulli)
@@ -313,31 +301,28 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
   )
   
   borne_max.b <- max(
-    max(RES0.7.3$mean.bernoulli),
-    max(RES0.5.3$mean.bernoulli),
-    max(RES0.3.3$mean.bernoulli)
-    ,max(RES0.4$mean.bernoulli)
-    ,min(RES0.4$mean.bernoulli)
-    ,min(RES0.5$mean.bernoulli)
-    ,min(RES0.6$mean.bernoulli)
-    ,min(RES0.7$mean.bernoulli)
-    ,min(RES0.8$mean.bernoulli)
+    max(RES0.2$mean.bernoulli),
+    max(RES0.3$mean.bernoulli),
+    max(RES0.4$mean.bernoulli)
+    ,max(RES0.5$mean.bernoulli)
+    ,max(RES0.6$mean.bernoulli)
+    ,max(RES0.7$mean.bernoulli)
+    ,max(RES0.8$mean.bernoulli)
   )
   # Plot the data
   # le modèle de survie
-  gg1 <-  ggplot(RES0.3.3, aes(n, mean.surv)) +
-    geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.surv, color = "0.1"), size = 1) +
-    geom_line(data = RES0.7.3, aes(n, mean.surv, color = "0.2"), size = 1) +
-    geom_line(data = RES0.4, aes(n, mean.surv, color = "0.3"), size = 1) +
-    geom_line(data = RES0.5, aes(n, mean.surv, color = "0.4"), size = 1) +
-    geom_line(data = RES0.6, aes(n, mean.surv, color = "0.5"), size = 1) +
-    geom_line(data = RES0.7, aes(n, mean.surv, color = "0.6"), size = 1) +
-    geom_line(data = RES0.8, aes(n, mean.surv, color = "0.7"), size = 1) +
+  gg1 <-  ggplot(RES0.2, aes(n, mean.surv)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.3, aes(n, mean.surv, color = "0.3"), size = 0.6) +
+    geom_line(data = RES0.4, aes(n, mean.surv, color = "0.4"), size = 0.6) +
+    geom_line(data = RES0.5, aes(n, mean.surv, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.6, aes(n, mean.surv, color = "0.6"), size = 0.6)+
+    geom_line(data = RES0.7, aes(n, mean.surv, color = "0.7"), size = 0.6) +
+    geom_line(data = RES0.8, aes(n, mean.surv, color = "0.8"), size = 0.6) +
     scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
-                                               "purple", "#D55E00", "blue1", "#000000")) +
+                                               "purple", "#D55E00","blue")) +
     # scale_colour_colorblind() +
-    ylim(borne_min -0.1, borne_max+0.1)+
+    ylim(borne_min -0.04, borne_max+0.04)+
     labs(
       title = "Modèle de survie",
       x = "n",
@@ -345,19 +330,18 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
       color = "n")+
     theme_bw()
   # le modele de guerison
-  gg2 <-  ggplot(RES0.3.3, aes(n, mean.cure)) +
-    geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.cure, color = "0.1"), size = 1) +
-    geom_line(data = RES0.7.3, aes(n, mean.cure, color = "0.2"), size = 1) +
-    geom_line(data = RES0.4, aes(n, mean.cure, color = "0.3"), size = 1) +
-    geom_line(data = RES0.5, aes(n, mean.cure, color = "0.4"), size = 1) +
-    geom_line(data = RES0.6, aes(n, mean.cure, color = "0.5"), size = 1) +
-    geom_line(data = RES0.7, aes(n, mean.cure, color = "0.6"), size = 1) +
-    geom_line(data = RES0.8, aes(n, mean.cure, color = "0.7"), size = 1) +
+  gg2 <-  ggplot(RES0.2, aes(n, mean.cure)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.3, aes(n, mean.cure, color = "0.3"), size = 0.6)+
+    geom_line(data = RES0.4, aes(n, mean.cure, color = "0.4"), size = 0.6) +
+    geom_line(data = RES0.5, aes(n, mean.cure, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.6, aes(n, mean.cure, color = "0.6"), size = 0.6) +
+    geom_line(data = RES0.7, aes(n, mean.cure, color = "0.7"), size = 0.6) +
+    geom_line(data = RES0.8, aes(n, mean.cure, color = "0.8"), size = 0.6) +
     scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
-                                               "purple", "#D55E00", "blue1", "#000000")) +
+                                               "purple", "#D55E00","blue")) +
     # scale_colour_colorblind() +
-    ylim(borne_min.c -0.1, borne_max.c+0.1)+
+    ylim(borne_min.c -0.04, borne_max.c+0.04)+
     labs(
       title = "Modèle de guérison",
       x = "n",
@@ -365,19 +349,18 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
       color = "n")+
     theme_bw()
   #le modele de Bernoulli
-  gg3 <-  ggplot(RES0.3.3, aes(n, mean.bernoulli)) +
-    geom_line(aes(color = "0.03"), size = 0.6) +
-    geom_line(data = RES0.5.3, aes(n, mean.bernoulli, color = "0.1"), size = 1) +
-    geom_line(data = RES0.7.3, aes(n, mean.bernoulli, color = "0.2"), size = 1) +
-    geom_line(data = RES0.4, aes(n, mean.bernoulli, color = "0.3"), size = 1) +
-    geom_line(data = RES0.5, aes(n, mean.bernoulli, color = "0.4"), size = 1) +
-    geom_line(data = RES0.6, aes(n, mean.bernoulli, color = "0.5"), size = 1) +
-    geom_line(data = RES0.7, aes(n, mean.bernoulli, color = "0.6"), size = 1) +
-    geom_line(data = RES0.8, aes(n, mean.bernoulli, color = "0.7"), size = 1) +
+  gg3 <-  ggplot(RES0.2, aes(n, mean.bernoulli)) +
+    geom_line(aes(color = "0.2"), size = 0.6) +
+    geom_line(data = RES0.3, aes(n, mean.bernoulli, color = "0.3"), size = 0.6) +
+    geom_line(data = RES0.4, aes(n, mean.bernoulli, color = "0.4"), size = 0.6) +
+    geom_line(data = RES0.5, aes(n, mean.bernoulli, color = "0.5"), size = 0.6) +
+    geom_line(data = RES0.6, aes(n, mean.bernoulli, color = "0.6"), size = 0.6) +
+    geom_line(data = RES0.7, aes(n, mean.bernoulli, color = "0.7"), size = 0.6) +
+    geom_line(data = RES0.8, aes(n, mean.bernoulli, color = "0.8"), size = 0.6) +
     scale_color_manual(name = "p1", values = c("#0072B2", "red", "#009E73", "#F0E442",
-                                               "purple", "#D55E00", "blue1", "#000000")) +
+                                               "purple", "#D55E00","blue")) +
     # scale_colour_colorblind() +
-    ylim(borne_min.b -0.1, borne_max.b+0.1)+
+    ylim(borne_min.b -0.04, borne_max.b+0.04)+
     labs(
       title = "Modèle de Bernoulli",
       x = "n",
@@ -394,7 +377,11 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.03,0.
 
 
 
+
 fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+
+fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
+
 
 
 fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
@@ -449,5 +436,7 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=100,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+
+fonction_ggplot_evol_biais_alt(N=500,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+
 

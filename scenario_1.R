@@ -59,9 +59,19 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
 }
 
+
 set.seed(133)
 
 plots_scenario_1(K=1900, n=10000, lambda=0.5, t_star=6, p=0.3, k=1)
+
+set.seed(134)
+### use the good alpha.
+alpha<-1
+t_star<-6
+p<-0.33
+valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-p))/alpha)
+1-exp(-(t_star*valeur)^(alpha))
+plots_scenario_1(K=100, n=100, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
 
 
 
@@ -113,7 +123,12 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           axis.text=element_text(family = "Helvetica", size=10),
           axis.title=element_text(family = "Helvetica", size=11),
           plot.title = element_text(family = "Helvetica", size = 12)) +
-    ylim(borne_min, borne_max)
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("N = %s, p=%s,lambda=%s,alpha=%s" ,
+                           as.character(K),
+                           as.character(p),
+                           as.character(round(lambda,2)),
+                           as.character(alpha)))
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
 
@@ -170,29 +185,35 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
           plot.title = element_text(family = "Helvetica", size = 44)
           , legend.text = element_text(family = "Helvetica", size = 20)
           ,text = element_text(size=rel(50))) +
-    ylim(borne_min, borne_max)
+    ylim(borne_min, borne_max)+
+    labs(caption = sprintf("N = %s, p=%s,lambda=%s,alpha=%s" ,
+                           as.character(K),
+                           as.character(p),
+                           as.character(round(lambda,2)),
+                           as.character(alpha)))
 
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
                      ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=54,font=3))
                      )
 }
 
-
-
-
+cible<-0.98
+alpha<-1
+valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-cible))/alpha)
+1-exp(-(t_star*valeur_lambda)^(alpha))
 set.seed(133)
-plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=25, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
 
 plots_scenario_1(K=1, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 plots_scenario_1_alt(K=1900,n=100,p=0.3,type1="decreasing",t_star=6, type2 = "decreasing")
 plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
-
-
-
+1-exp(-(0.5*6)^(1))
+1-exp(-(2*6)^(1))
+lb<-2
 set.seed(133)
-biais.selon.taille_echantillon(K =1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+biais.selon.taille_echantillon(K =1900, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 
-eqm.selon.taille_echantillon(K = 1900, lambda = 0.5, t_star = 6, p = 0.3, k=1)
+eqm.selon.taille_echantillon(K = 1900, lambda = valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 
 
 

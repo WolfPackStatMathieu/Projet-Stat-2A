@@ -3,11 +3,9 @@
 library(survival)
 library(flexsurvcure)
 library(npcure)
-
+require(cuRe)
 ####### Fonction ######
 fonction_cure<-function(df,t_star){
-  require(npcure)
-  require(smcure)
   # retourne la probabilite de ne pas avoir fait de DLT a T_star
   indice_observed<-which(df$is_observed==1)
   indice_censored<-which(df$is_observed==0)
@@ -58,23 +56,23 @@ coeff<-coef(result)
 #mean(df$is_observed)
 
 #surv_object<-Surv(as.numeric(df$tox_time),event=df$is_observed)
-library(nltm)
-data(melanoma, package="nltm")
-fit <- nltm(Surv(time,status) ~ size + age, data=melanoma, nlt.model="PH")
-data("e1684")
-pd <- smcure(Surv(FAILTIME,FAILCENS)~TRT+SEX+AGE,
-             cureform=~TRT+SEX+AGE,data=e1684,model="ph",
-             Var = FALSE)
-library(smcure)
-colonDC <- colonDC[sample(1:nrow(colonDC), 400), ]
-summary(colonDC)
+#library(nltm)
+#data(melanoma, package="nltm")
+#fit <- nltm(Surv(time,status) ~ size + age, data=melanoma, nlt.model="PH")
+#data("e1684")
+#pd <- smcure(Surv(FAILTIME,FAILCENS)~TRT+SEX+AGE,
+ #            cureform=~TRT+SEX+AGE,data=e1684,model="ph",
+           #  Var = FALSE)
+#library(smcure)
+#colonDC <- colonDC[sample(1:nrow(colonDC), 400), ]
+#summary(colonDC)
 
 ##Extract general population hazards
-colonDC$bhaz <- general.haz(time = "FU", rmap = list(age = "agedays", sex = "sex", year= "dx"),
-                            data = colonDC, ratetable = survexp.dk)
-fit <- fit.cure.model(Surv(FUyear, status) ~ 1, data = colonDC,type="mixture",link="logit")
-plot(fit, type = "probcure")
-summary(fit)
+#colonDC$bhaz <- general.haz(time = "FU", rmap = list(age = "agedays", sex = "sex", year= "dx"),
+                          #  data = colonDC, ratetable = survexp.dk)
+#fit <- fit.cure.model(Surv(FUyear, status) ~ 1, data = colonDC,type="mixture",link="logit")
+#plot(fit, type = "probcure")
+#summary(fit)
 library(flexsurvcure)
 result<-flexsurvcure(Surv(rectime,censrec)~group+0, data=bc, dist="weibullPH",anc=list(scale=~group+0))
 plogis(result$coefficients)
