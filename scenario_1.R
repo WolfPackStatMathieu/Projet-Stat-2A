@@ -153,44 +153,42 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   # define color palette
   palette <- c("#0072B2", "#D55E00", "#E69F00")
 
-  gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+  gg1 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "bernoulli" = "blue1")) +
-    ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
-    theme_classic() +
+    #theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(family = "Helvetica", size=20),
           axis.title=element_text(family = "Helvetica", size=20),
           plot.title = element_text(family = "Helvetica", size = 24)
           , legend.text = element_text(family = "Helvetica", size = 20)
-          ,text = element_text(size=rel(50))) +
-    ylim(borne_min, borne_max)
+          ,text = element_text(size=rel(20))) +
+    ylim(borne_min, borne_max)}
 
-  gg2 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
+  gg2 <- {ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guerison" = "red1", "survie" = "darkgreen")) +
-    ggtitle("Evolution de l'eqm en \nfonction de n") +
     xlab("Taille echantillon") + ylab("EQM") +
     # theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(family = "Helvetica", size=20),
           axis.title=element_text(family = "Helvetica", size=20),
-          plot.title = element_text(family = "Helvetica", size = 44)
+          plot.title = element_text(family = "Helvetica", size = 24)
           , legend.text = element_text(family = "Helvetica", size = 20)
-          ,text = element_text(size=rel(50))) +
+          ,text = element_text(size=rel(20))) +
     ylim(borne_min, borne_max)+
     labs(caption = sprintf("N = %s, p=%s,lambda=%s,alpha=%s" ,
                            as.character(K),
                            as.character(p),
                            as.character(round(lambda,2)),
-                           as.character(alpha)))
+                           as.character(alpha)))}
 
-  gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
-                     ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=54,font=3))
-                     )
+  gg <- {grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7)
+                     ,top =textGrob("Evolution de l'EQM en fonction de la taille d'echantillon n",gp=gpar(fontsize=24,font=3)))}
+                     
 }
 
 cible<-0.98
@@ -210,6 +208,17 @@ set.seed(133)
 biais.selon.taille_echantillon(K =1900, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 
 eqm.selon.taille_echantillon(K = 1900, lambda = valeur_lambda, t_star = 6, p = 0.3, k=alpha)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

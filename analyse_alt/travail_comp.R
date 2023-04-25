@@ -432,5 +432,5 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
-fonction_ggplot_evol_biais_alt(N=500,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
