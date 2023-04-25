@@ -85,16 +85,34 @@ proportions_censures<-function(n, lambda_min, lambda_max, pas_lambda, alpha_min,
   }
   return(result)
 }
-tableau_censures <-proportions_censures(n=100, lambda_min=0.1, lambda_max=1, pas_lambda=0.1, alpha_min=0.8, alpha_max = 1.8, pas_alpha = 0.1, t_star=6)
+
+n<-100
+tableau_censures <-proportions_censures(n=n, lambda_min=0.1, lambda_max=2, pas_lambda=0.05, alpha_min=0.5, alpha_max = 2, pas_alpha = 0.1, t_star=6)
 
 ######## Traçage des courbes ##########
 abscisses <- tableau_censures$lambda
 courbe1 <- tableau_censures$`alpha =  0.8`
-plot(x = abscisses, y = courbe1, type = "l", col = "red", xlab="lambda", ylab = "Proportion censure chez sensibles" ,
-     main = "Proportion de censurés parmi les sensibles selon lambda et alpha")
-for (j in 3:ncol(tableau_censures)){
-  lines(abscisses, tableau_censures[,j])
+# p <-plot(x = abscisses, y = courbe1, type = "l", col = "red", xlab="lambda", ylab = "Proportion censure chez sensibles" ,
+#      main = "Proportion de censurés parmi les sensibles selon lambda et alpha",
+#      )
+# for (j in 3:ncol(tableau_censures)){
+#   lines(abscisses, tableau_censures[,j])
+# }
+
+p <- ggplot(data = tableau_censures, aes(x=lambda))
+# loop
+for (i in 2:length(tableau_censures)) {
+  # use aes_string with names of the data.frame
+  p <- p + geom_line(aes_string(y = tableau_censures[,i] 
+                                , col = colnames(tableau_censures)[i]
+                                )
+                     ) 
 }
+p<- p + xlab("lambda") + ylab("proportion de censure chez les sensibles")
+p <- p + labs(color='alpha', caption = sprintf("n = %s", as.character(n))) 
+# print the result
+print(p)
+
 
 
 
