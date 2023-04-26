@@ -29,7 +29,7 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   indice_cens<-which(df$is_observed==0)
   df$factdose<-as.factor(df$dose)
   if(length(indice_cens)==0){
-    df2<-df[,c("factdose","is_observed","tox_time")]
+    df2<-df[,c("dose","factdose","is_observed","tox_time")]
     estimateur_surv<-rep(1,nb_doses)
     #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
     #estimateur_cure<-1-Prob_whole_cure[,2]
@@ -47,7 +47,7 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     # print("passé par là 2")
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passé par là 3")
-    df2<-df[,c("factdose","is_observed","tox_time")]
+    df2<-df[,c("dose","factdose","is_observed","tox_time")]
    # Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
     #Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
                                   #          anc=list(scale=~factdose+0))
@@ -71,9 +71,13 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     #print(estimation_cure)
     #print("----------")
     estimation_surv<-rep(NA,nb_doses)
+    sommaire<-summary(fit_surv,t_star,extend=TRUE)$surv
     for (j in c(1:nb_doses)){
-      estimation_surv[j]<-1-summary(fit_surv,t_star)$surv[j]
-      }
+      indice<-which(((df2$dose==j) & (df2$is_observed==1)))
+      somme<-length(indice)
+      if(somme>0){
+      estimation_surv[j]<-1-sommaire[j]}
+    else{estimation_surv[j]<-0}}
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
@@ -84,7 +88,6 @@ p2<-0.50
 prob_priori<-c(p,p2)
 set.seed(145)
 test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
-
 p3<-0.7
 prob_priori<-c(p,p2,p3)
 test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
@@ -167,7 +170,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=100,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
+test_evol_biais<-evol_biais_comp(K=200,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
@@ -267,7 +270,7 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 prob_prior1<-c(0.5,0.7)
 test<-evol_eqm_comp(K=200,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
 
 test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
