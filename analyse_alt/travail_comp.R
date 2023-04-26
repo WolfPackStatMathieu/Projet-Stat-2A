@@ -378,7 +378,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
 
 
 
-fonction_compar_plotsn_lambda_alt_8p(N=100, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
 
 fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
 
