@@ -265,7 +265,7 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 
 #graphiques pour 0.5 et 0.7 de type decreasing et constant
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=500,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=200,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
 test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
