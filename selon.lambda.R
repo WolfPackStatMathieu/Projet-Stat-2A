@@ -169,6 +169,6 @@ fonction_compar_plotsn_lambda1 <- function(N, window_lambda, t_star, p, k) {
   
 }
 
-fonction_compar_plotsn_lambda1(1, c(0.1, 0.2, 0.5), 6, 0.33, 1)
+fonction_compar_plotsn_lambda1(1900, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
 ?grid.arrange

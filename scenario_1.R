@@ -13,7 +13,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   require(dplyr)
   require(tidyr)
   # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
-  res <- Simuler_biais_taillen(K, n, lambda, t_star, p, k)
+  res <- Simuler_biais_taillen(K, n,lambda, t_star, p, k)
   res <- res - p
   
   # on renomme les colonnes
@@ -41,24 +41,28 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
          title = "Comparaison du biais moyen pour N simulations et n fixé"
-         , subtitle = "Premiere methode"
          ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
                            as.character(K), 
-                            as.character(lambda), 
+                            as.character(round(lambda,2)), 
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 28)
-          ,plot.subtitle = element_text(hjust = 0, size = 25)
-          ,axis.text = element_text(size = 24)
-          ,axis.title = element_text(size = 24)
-          ,legend.text = element_text(size = 24)
-          , legend.title = element_text(size = 24)
-          , plot.caption = element_text(size = 24)
+    theme(plot.title = element_text(hjust = 0.5, size = 12)
+          ,plot.subtitle = element_text(hjust = 0, size = 5)
+          ,axis.text = element_text(size = 12)
+          ,axis.title = element_text(size = 12)
+          ,legend.text = element_text(size = 12)
+          , legend.title = element_text(size = 12)
+          , plot.caption = element_text(size = 12)
           # ,text = element_text(size=rel(8))
     )
   
 }
+
+
+set.seed(133)
+
+plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 set.seed(134)
 ### use the good alpha.
@@ -67,7 +71,7 @@ t_star<-6
 p<-0.33
 valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-p))/alpha)
 1-exp(-(t_star*valeur)^(alpha))
-plots_scenario_1(K=100, n=100, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
+plots_scenario_1(K=1900, n=25, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
 
 
 
@@ -263,7 +267,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
           axis.title = element_text(size = 12))
   
 }
-plots_scenario_1_alt(K=10,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){

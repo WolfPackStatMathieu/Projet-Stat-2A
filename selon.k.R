@@ -168,6 +168,8 @@ gg1 <-  ggplot(RES0.2.3, aes(k, mean.bernoulli)) +
       y = "biais moyen",
       color = expression(alpha))+
     theme_bw()
+
+
 gg2 <-  ggplot(RES0.2.3, aes(k, mean.surv)) +
     geom_line(aes(color = "0.2"), size = 0.6) +
     geom_line(data = RES0.5.3, aes(k, mean.surv, color = "0.5"), size = 0.6) +
@@ -193,14 +195,13 @@ gg3 <-  ggplot(RES0.2.3, aes(k, mean.cure)) +
     y = "biais moyen",
     color = expression(alpha))+
   theme_bw()
-
-      
 g <- grid.arrange(gg1, gg2, gg3, top = paste("influence de", expression(alpha)))
+
 return(g)
 
 }
 
-
+fnct_compar_plt_biais.selon.k1(N=100, 20, c(0.1, 0.2, 0.5), 6, 0.33)
 
 
 fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
@@ -282,7 +283,7 @@ fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){
 
 
 
-fnct_compar_plt_biais.selon.k1(N=1000, 10, c(0.1, 0.2, 0.5), 6, 0.33)
+fnct_compar_plt_biais.selon.k1(N=1, 20, c(0.1, 0.2, 0.5), 6, 0.33)
 fonction_compar_plotsn_lambda1(N=10, c(0.1, 0.2, 0.5), 6, 0.33, 1)
 
 
