@@ -205,7 +205,7 @@ plots_scenario_1(K=1900, n=100, lambda=0.5, t_star=6, p=0.3, k=1)
 1-exp(-(2*6)^(1))
 lb<-2
 set.seed(133)
-biais.selon.taille_echantillon(K =1900, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
+biais.selon.taille_echantillon(K =100, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 
 eqm.selon.taille_echantillon(K = 1900, lambda = valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 

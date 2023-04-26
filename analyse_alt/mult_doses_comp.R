@@ -29,13 +29,14 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   indice_cens<-which(df$is_observed==0)
   df$factdose<-as.factor(df$dose)
   if(length(indice_cens)==0){
-    
+    df2<-df[,c("factdose","is_observed","tox_time")]
     estimateur_surv<-rep(1,nb_doses)
     #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
     #estimateur_cure<-1-Prob_whole_cure[,2]
     #Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
                                           #  anc=list(scale=~factdose+0))
-    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df2,dist="weibull",link="logit")
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose,formula.surv=list(~1,~factdose),
+                                    data =df2,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
     reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2,nb_doses)]
     coeffs<-beta0+c(0,reste_beta)
@@ -61,7 +62,8 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     #print("selon flex")
    # print(prob_selon_flex)
    # print("selon cuRe")
-    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df2,dist="weibull",link="logit")
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, formula.surv=list(~1,~factdose),
+                                    data =df2,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
     reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2:nb_doses)]
     coeffs<-beta0+c(0,reste_beta)
@@ -70,7 +72,7 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
     #print("----------")
     estimation_surv<-rep(NA,nb_doses)
     for (j in c(1:nb_doses)){
-      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]
+      estimation_surv[j]<-1-summary(fit_surv,t_star)$surv[j]
       }
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)

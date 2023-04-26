@@ -91,7 +91,7 @@ fonction_estim_hht<-function(modele,t_star,target){
   donnees$factdose<-as.factor(donnees$Dose)
   fonction_surv<-Surv(as.numeric(donnees$temps),event=donnees$observe)
   fit_surv <- survfit(fonction_surv ~factdose, data = donnees)
-  Prob_whole_cure<-fit.cure.model(Surv(temps,observe) ~ factdose+0, data =donnees,
+  Prob_whole_cure<-fit.cure.model(Surv(temps,observe) ~ factdose, data =donnees,
                                   dist="weibull",
                                   link="logit")
   beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
