@@ -27,14 +27,16 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   
   fonction_surv<-Surv(as.numeric(df$tox_time),event=df$is_observed)
   indice_cens<-which(df$is_observed==0)
+  df$factdose<-as.factor(df$dose)
   if(length(indice_cens)==0){
-    df$factdose<-as.factor(df$dose)
+    df2<-df[,c("dose","factdose","is_observed","tox_time")]
     estimateur_surv<-rep(1,nb_doses)
     #Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df,d=is_observed,x0=dose_recalibree,h=c(1,1.5,2),local=FALSE)
     #estimateur_cure<-1-Prob_whole_cure[,2]
-    Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
-                                            anc=list(scale=~factdose+0))
-    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df2,dist="weibull",link="logit")
+    #Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
+                                          #  anc=list(scale=~factdose+0))
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose,formula.surv=list(~1,~factdose),
+                                    data =df2,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
     reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2,nb_doses)]
     coeffs<-beta0+c(0,reste_beta)
@@ -43,36 +45,39 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   }
   else{
     # print("passÃ© par lÃ  2")
-    df$factdose<-as.factor(df$dose)
     fit_surv <- survfit(fonction_surv ~factdose, data = df)
     # print("passÃ© par lÃ  3")
-    df2<-df[,c("factdose","is_observed","tox_time")]
+    df2<-df[,c("dose","factdose","is_observed","tox_time")]
    # Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
-    Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
-                                            anc=list(scale=~factdose+0))
+    #Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
+                                  #          anc=list(scale=~factdose+0))
     #le premier correspond à la première dose. 
     #le second correspond à la deuxième dose. 
-    prob_selon_flex<-rep(NA,nb_doses)
-    prob_selon_flex[1]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[1]
+   # prob_selon_flex<-rep(NA,nb_doses)
+   # prob_selon_flex[1]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[1]
     indice_plus<-4+nb_doses-2
-    prob_selon_flex[c(2:nb_doses)]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[c(4:indice_plus)]
-    print("nouvelle estimation")
-    print("-----------")
-    print("selon flex")
-    print(prob_selon_flex)
-    print("selon cuRe")
-    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, data =df2,dist="weibull",link="logit")
-    print(Prob_whole_cure$coefs[1]$'1')
+    #prob_selon_flex[c(2:nb_doses)]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[c(4:indice_plus)]
+    #print("nouvelle estimation")
+    #print("-----------")
+    #print("selon flex")
+   # print(prob_selon_flex)
+   # print("selon cuRe")
+    Prob_whole_cure<-fit.cure.model(Surv(tox_time,is_observed) ~ factdose, formula.surv=list(~1,~factdose),
+                                    data =df2,dist="weibull",link="logit")
     beta0<-as.numeric(Prob_whole_cure$coefs[1]$'1')[1]
     reste_beta<-as.numeric(Prob_whole_cure$coefs[1]$'1')[c(2:nb_doses)]
     coeffs<-beta0+c(0,reste_beta)
     estimation_cure<-1-plogis(coeffs)
-    print(estimation_cure)
-    print("----------")
+    #print(estimation_cure)
+    #print("----------")
     estimation_surv<-rep(NA,nb_doses)
+    sommaire<-summary(fit_surv,t_star,extend=TRUE)$surv
     for (j in c(1:nb_doses)){
-      estimation_surv[j]<-1-tp.surv(fit_surv,t_star)[[j]][1,][["surv"]]
-      }
+      indice<-which(((df2$dose==j) & (df2$is_observed==1)))
+      somme<-length(indice)
+      if(somme>0){
+      estimation_surv[j]<-1-sommaire[j]}
+    else{estimation_surv[j]<-0}}
   }
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
@@ -83,7 +88,6 @@ p2<-0.50
 prob_priori<-c(p,p2)
 set.seed(145)
 test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
-
 p3<-0.7
 prob_priori<-c(p,p2,p3)
 test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
@@ -91,9 +95,11 @@ test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_pri
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,type2,graine_depart){
+  require(ggplot2)
+  require(gridExtra)
   graine_debut<-graine_depart+1
   graine_fin<-graine_depart+K
-  ensemble_graine<-c(graine_depart,graine_fin)
+  ensemble_graine<-c(graine_depart:graine_fin)
   result<-lapply(ensemble_graine,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,type2=type2)
   nb_doses<-length(probabilite_a_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
@@ -164,7 +170,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=1900,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
+test_evol_biais<-evol_biais_comp(K=200,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
@@ -177,6 +183,8 @@ evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2)
   return(ensemble_ggplots_par_dose)
 }
 evol_n_par_dose_eqm<-function(results,n,i,K=K,type1,type2){
+  require(ggplot2)
+  require(gridExtra)
   longueur_resultats<-c(1:length(n))
   function_intermed<-function(x,results,i){
     return(unlist(results[[x]][i,]))
@@ -260,9 +268,9 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 
 #graphiques pour 0.5 et 0.7 de type decreasing et constant
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=200,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=20,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
 
 test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
@@ -273,8 +281,8 @@ prob_prior1<-c(0.3,0.5)
 test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.3, 0.5),t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
 
-test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.5, 0.7),t_star=6,
-                    type1="constant",type2="constant",graine_depart=145)
+test<-evol_eqm_comp(K=500,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+                    type1="constant",type2="constant",graine_depart=133)
 test_decreasing<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
 

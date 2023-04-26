@@ -30,7 +30,7 @@ fonction_cure<-function(df,t_star){
   #estimateur_tox<-1-plogis(coef(pd))
   require(cuRe)
   summary(df2)
-  fit.wei <- fit.cure.model(Surv(tox_time,is_observed) ~ 1, data =df2,
+  fit.wei <- fit.cure.model(Surv(tox_time,is_observed) ~ 1, formula.surv=list(~1),data =df2,
                             dist="weibull",link="logit")
   prob_cure<-plogis(as.numeric(fit.wei$coefs[1]))
   estimateur_tox<-1-prob_cure
