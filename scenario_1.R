@@ -264,13 +264,14 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
     labs(x = "Modeles", y = "Biais", 
          title = "Comparaison du biais pour N simulations et n fixé",
          caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12)
-          ,plot.subtitle = element_text(hjust = 0, size = 5)
-          ,axis.text = element_text(size = 12)
-          ,axis.title = element_text(size = 12)
+    theme(plot.title = element_text(hjust = 0.5, size = 20)
+          ,plot.subtitle = element_text(hjust = 0, size = 10)
+          ,axis.text = element_text(size = 15)
+          ,axis.title = element_text(size = 15)
           ,legend.text = element_text(size = 12)
-          , legend.title = element_text(size = 12)
+          , legend.title = element_text(size = 15)
           , plot.caption = element_text(size = 12)
+          # ,text = element_text(size=rel(8))
     )
   
 }
