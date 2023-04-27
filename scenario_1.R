@@ -42,18 +42,18 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   boxplot + 
     labs(x = "Modeles", y = "Biais", 
          title = "Comparaison du biais pour N simulations et n fixé"
-         ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
+         ,caption = sprintf("N = %s, lambda = %s, alpha = %s, n = %s , p = %s" , 
                            as.character(K), 
                             as.character(round(lambda,2)), 
                            as.character(k), 
                            as.character(n),
                            as.character(p))) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12)
-          ,plot.subtitle = element_text(hjust = 0, size = 5)
-          ,axis.text = element_text(size = 12)
-          ,axis.title = element_text(size = 12)
+    theme(plot.title = element_text(hjust = 0.5, size = 20)
+          ,plot.subtitle = element_text(hjust = 0, size = 10)
+          ,axis.text = element_text(size = 15)
+          ,axis.title = element_text(size = 15)
           ,legend.text = element_text(size = 12)
-          , legend.title = element_text(size = 12)
+          , legend.title = element_text(size = 15)
           , plot.caption = element_text(size = 12)
           # ,text = element_text(size=rel(8))
     )
@@ -71,11 +71,11 @@ cible <- 0.98
 alpha<-1
 t_star<-6
 p<-0.33
-
-# Commencer ici pour générer le graph
 valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-cible))/alpha)
 1-exp(-(t_star*valeur_lambda)^(alpha))
 plots_scenario_1(K=1900, n=25, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
+#celui à n=100
+plots_scenario_1(K=1900, n=100, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
 
 
 
