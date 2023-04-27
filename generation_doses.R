@@ -52,7 +52,7 @@ function_estim_doses<-function(n,liste_params,nb_doses,t_star){
     estimation_surv<-rep(NA,nb_doses)
     sommaire<-summary(fit_surv,t_star,extend=TRUE)$surv
     for (j in c(1:nb_doses)){
-      indice<-which(((df2$dose==j) & (df2$is_observed==1)))
+      indice<-which(((df$dose==j) & (df$is_observed==1)))
       somme<-length(indice)
       if(somme>0){
         estimation_surv[j]<-1-sommaire[j]}

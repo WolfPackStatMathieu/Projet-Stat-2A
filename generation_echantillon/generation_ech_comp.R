@@ -34,7 +34,7 @@ generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,graine,type1,type2
   return(data_estim)
 }
 
-generation_comp(p_cause1 = 0.3, p_cause2 = 0.7, t_star = 6, nombre_obs = 10, graine = 133,type1 = 0.3, type2 = 3)
+#generation_comp(p_cause1 = 0.3, p_cause2 = 0.7, t_star = 6, nombre_obs = 10, graine = 133,type1 = 0.3, type2 = 3)
 #get_dataset0_Ntimes<- function(n=60, alpha1, alpha2,  tstar, K=5, graine=1234 , type='exponential',N) {
 #  liste_realisation<-list(c(1:N))
 #  set.seed(graine)

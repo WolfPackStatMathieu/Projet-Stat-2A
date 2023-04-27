@@ -91,7 +91,7 @@ biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
 }
 eqm.selon.alpha<-function(p_cause1,K,t_star,type1,type2,graine){
   results <- NULL
-  n <- 18
+  n <- 20
   graine_inf <- graine
   graine_sup <- graine + K
   ensemble_graine<-c(graine_inf:graine_sup)
@@ -103,7 +103,7 @@ eqm.selon.alpha<-function(p_cause1,K,t_star,type1,type2,graine){
     liste_global$Bernoulli<-as.numeric(liste_global$Bernoulli)
     valeurs<-colMeans((liste_global-p_cause1)^2)
     results<-rbind(results,c(n,valeurs[1],valeurs[3],valeurs[2]))
-    n <- n+20
+    n <- n+10
   }
   return(results)
 }
