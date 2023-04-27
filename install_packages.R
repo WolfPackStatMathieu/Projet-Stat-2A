@@ -5,7 +5,7 @@ pkgLoad <- function( packages = "favourites" ) {
                    "dfcrm", "visreg", "purrr", "plotly", "flexsurvcure",
                    "Rlab", "gridExtra", "cmprsk", "visNetwork", "tidyr",
                    "parallel", "cmprsk", "scales", "grid", "npcure", "smcure"
-                   , "cuRe"
+                   , "cuRe", "tidyr"
     )
   }
   
