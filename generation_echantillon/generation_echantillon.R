@@ -92,19 +92,21 @@ calcule_prop_censure<-function(N, n, lambda, t_star, p, k){
     gather(key="Type_de_censure", value="Val") %>%
     ggplot( aes(x=Type_de_censure, y=Val, fill=Type_de_censure) ) +
     geom_violin() +
-    ggtitle("Distribution des types de censure, modèle de géneration 1")+
+    ggtitle("Distribution des types de censure, modele de generation 1")+
     ylab("Pourcentage de censure") + xlab("Type de censure")+ 
     theme(axis.text=element_text(family = "Helvetica", size=18),
           axis.title=element_text(family = "Helvetica", size=18),
           plot.title = element_text(family = "Helvetica", size = 25)) +
-    labs(caption = sprintf("N = %s, n = %s, lambda= %s,t_star= %s, p= %s, k= %s", as.character(N),as.character(n), as.character(lambda), as.character(t_star),as.character(p), as.character(k)))
+    labs(caption = sprintf("N = %s, n = %s, lambda= %s,t_star= %s, p= %s, alpha= %s", as.character(N),as.character(n), as.character(lambda), as.character(t_star),as.character(p), as.character(k)))
   print(violin_plot)
   return(result_censures)
 }
 
 #### Test ####
 set.seed(133)
-res_censures <- calcule_prop_censure(N= 1900, n=25,lambda=0.5,t_star=6,p=0.33,k=1)
+res_censures <- calcule_prop_censure(N= 1900, n=25,lambda=0.5,t_star=6,p=0.3,k=1)
 res_censures
 summary(res_censures)
+quantile(res_censures$prop_censure_totale, probs = c(0.025, 0.975))
+
 head(res_censures)
