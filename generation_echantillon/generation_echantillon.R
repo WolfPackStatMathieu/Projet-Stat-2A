@@ -90,7 +90,7 @@ calcule_prop_censure<-function(N, n, lambda, t_star, p, k){
     gather(key="Type_de_censure", value="Val") %>%
     ggplot( aes(x=Type_de_censure, y=Val, fill=Type_de_censure) ) +
     geom_violin() +
-    ggtitle("Distribution selon le type de censure, modèle de géneration 1")+
+    ggtitle("Distribution des types de censure, modèle de géneration 1")+
     ylab("Pourcentage de censure") + xlab("Type de censure")+ 
     theme(axis.text=element_text(family = "Helvetica", size=18),
           axis.title=element_text(family = "Helvetica", size=18),
