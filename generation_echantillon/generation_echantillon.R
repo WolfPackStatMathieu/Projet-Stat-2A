@@ -90,12 +90,12 @@ calcule_prop_censure<-function(N, n, lambda, t_star, p, k){
     gather(key="Type_de_censure", value="Val") %>%
     ggplot( aes(x=Type_de_censure, y=Val, fill=Type_de_censure) ) +
     geom_violin() +
-    ggtitle("Distribution des types de censure, modèle de géneration 1")+
+    ggtitle("Distribution des types de censure, modele de generation 1")+
     ylab("Pourcentage de censure") + xlab("Type de censure")+ 
     theme(axis.text=element_text(family = "Helvetica", size=18),
           axis.title=element_text(family = "Helvetica", size=18),
           plot.title = element_text(family = "Helvetica", size = 25)) +
-    labs(caption = sprintf("N = %s, n = %s, lambda= %s,t_star= %s, p= %s, k= %s", as.character(N),as.character(n), as.character(lambda), as.character(t_star),as.character(p), as.character(k)))
+    labs(caption = sprintf("N = %s, n = %s, lambda= %s,t_star= %s, p= %s, alpha= %s", as.character(N),as.character(n), as.character(lambda), as.character(t_star),as.character(p), as.character(k)))
   print(violin_plot)
   return(result_censures)
 }
