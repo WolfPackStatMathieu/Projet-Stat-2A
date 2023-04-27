@@ -66,11 +66,12 @@ plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
 
 set.seed(134)
 ### use the good alpha.
+cible <- 0.98
 alpha<-1
 t_star<-6
 p<-0.33
-valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-p))/alpha)
-1-exp(-(t_star*valeur)^(alpha))
+valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-cible))/alpha)
+1-exp(-(t_star*valeur_lambda)^(alpha))
 plots_scenario_1(K=1900, n=25, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
 
 
@@ -234,7 +235,6 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   require(tidyr)
   # df ? 3 colones (mod?le de gu?rison, mod?le de survie, mod?le de bernouilli)
   graine_liste<-graine+c(1:K)
-  print(p)
   res <-as.data.frame(t(cbind.data.frame(sapply(graine_liste,fonction_estim_comp_once,n=n,p_cause1=p,type1=type1,type2=type2,t_star=t_star))))
   res$Survie<-as.numeric(res$Survie)
   res$Bernoulli<-as.numeric(res$Bernoulli)
@@ -260,7 +260,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   # Add labels and title
   boxplot + 
     labs(x = "Modeles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour K n-échantillons",
+         title = "Comparaison du biais moyen pour N simulations et n fixé",
          caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
     theme(plot.title = element_text(hjust = 0.5, size = 12),
           axis.text = element_text(size = 12),
