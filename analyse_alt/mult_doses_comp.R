@@ -170,7 +170,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=200,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
+test_evol_biais<-evol_biais_comp(K=300,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
@@ -268,9 +268,9 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 
 #graphiques pour 0.5 et 0.7 de type decreasing et constant
 prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=200,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
+test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
                     type1="constant",type2="constant",graine_depart=145)
 
 test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,

@@ -3,6 +3,7 @@
 rm(list = ls())
 source("surv.R")
 source("generation_mean.R")
+source("utils.R")
 #source("analyse_alt/mult_doses_comp.R")
 source("analyse_alt/travail_comp.R")
 library(ggplot2)
@@ -149,7 +150,6 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
   names(liste_parameter)<-c("lambda","t_star","p","k")
   result_final <- fonction_generation_taille_eqm(vector_size = n, liste_parameter = liste_parameter, K=K)
   result_final$n <- n
-  
   colnames(result_final) <- c("modele_bernoulli","modele_survie", "modele_guerison", "taille_echantillon")
   # plot
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
@@ -280,7 +280,7 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   # plot
   borne_min <- min(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
   borne_max <- max(result_final$modele_guerison, result_final$modele_survie,result_final$modele_bernoulli)
-  
+  print(head(result_final))
   
   gg1 <- ggplot(data = result_final, aes(x = taille_echantillon)) +
     geom_smooth(aes(y = modele_guerison, col = "guerison"), size = 1.2, alpha = 0.5) +
@@ -316,6 +316,6 @@ eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
   
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(7,7))
 }
-test_eqm<-eqm.selon.taille_echantillon_alt(K=100, type1="constant", p=0.33,graine=133,t_star=6)
-test_eqm2<-eqm.selon.taille_echantillon_alt(K=100, type1="decreasing", p=0.33,graine=133,t_star=6)
-test_eqm<-eqm.selon.taille_echantillon_alt(K=100, type1="increasing", p=0.33,graine=133,t_star=6)
+test_eqm<-eqm.selon.taille_echantillon_alt(K=300, type1="constant", p=0.33,graine=133,t_star=6)
+test_eqm2<-eqm.selon.taille_echantillon_alt(K=300, type1="decreasing", p=0.33,graine=133,t_star=6)
+test_eqm<-eqm.selon.taille_echantillon_alt(K=300, type1="increasing", p=0.33,graine=133,t_star=6)
