@@ -269,9 +269,6 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
           ,legend.text = element_text(size = 12)
           , legend.title = element_text(size = 12)
           , plot.caption = element_text(size = 12)
-    # theme(plot.title = element_text(hjust = 0.5, size = 12),
-    #       axis.text = element_text(size = 12),
-    #       axis.title = element_text(size = 12))
     )
   
 }
