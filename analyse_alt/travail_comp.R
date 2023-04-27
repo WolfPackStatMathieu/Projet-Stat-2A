@@ -53,8 +53,9 @@ n<-100
 type1<-"constant"
 type2<-"constant"
 t_star<-6
-test_estim_comp<-fonction_estim_comp_once(p_cause1=p_cause1,n=n,type1,type2,t_star=t_star,graine=136)
-print(test_estim_comp)
+test_estim_comp<-fonction_estim_comp_once(p_cause1=0.33,n=50,type1,type2,t_star=t_star,graine=133)
+test2<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="increasing",type2="increasing",t_star=t_star,graine=133)
+test3<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="decreasing",type2="decreasing",t_star=t_star,graine=133)
 set.seed(133)
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
@@ -438,7 +439,8 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
 }
 
 
-fonction_ggplot_evol_biais_alt(N=500,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=300,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+fonction_ggplot_evol_biais_alt(N=10,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
 
 fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
