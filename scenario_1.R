@@ -71,6 +71,8 @@ cible <- 0.98
 alpha<-1
 t_star<-6
 p<-0.33
+
+# Commencer ici pour générer le graph
 valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-cible))/alpha)
 1-exp(-(t_star*valeur_lambda)^(alpha))
 plots_scenario_1(K=1900, n=25, lambda=valeur_lambda, t_star=6, p=0.3, k=alpha)
