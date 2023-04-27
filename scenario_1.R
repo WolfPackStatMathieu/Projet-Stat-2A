@@ -40,8 +40,8 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modeles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour N simulations et n fixé"
+    labs(x = "Modeles", y = "Biais", 
+         title = "Comparaison du biais pour N simulations et n fixé"
          ,caption = sprintf("N = %s, lambda = %s, k = %s, n = %s , p = %s" , 
                            as.character(K), 
                             as.character(round(lambda,2)), 
@@ -105,8 +105,8 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     geom_smooth(aes(y = modele_guerison, col = "guérison"), size = 1.2, alpha = 0.5) +
     geom_smooth(aes(y = modele_bernoulli, col = "bernoulli"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guérison" = "red1", "bernoulli" = "blue")) +
-    ggtitle("Evolution du biais moyen en \nfonction de n") +
-    xlab("Taille echantillon") + ylab("Biais moyen") +
+    ggtitle("Evolution du biais en \nfonction de n") +
+    xlab("Taille echantillon") + ylab("Biais") +
     theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(family = "Helvetica", size=10),
@@ -119,7 +119,7 @@ biais.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
     geom_smooth(aes(y = modele_survie, col = "survie"), size = 1.2, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values = c("guérison" = "red1", "survie" = "darkgreen")) +
     ggtitle("Evolution du biais moyen en \n fonction de n") +
-    xlab("Taille echantillon") + ylab("Biais moyen") +
+    xlab("Taille echantillon") + ylab("Biais") +
     theme_classic() +
     theme(legend.title=element_blank(),
           axis.text=element_text(family = "Helvetica", size=10),
@@ -259,14 +259,23 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   
   # Add labels and title
   boxplot + 
-    labs(x = "Modeles", y = "Biais moyen", 
-         title = "Comparaison du biais moyen pour N simulations et n fixé",
+    labs(x = "Modeles", y = "Biais", 
+         title = "Comparaison du biais pour N simulations et n fixé",
          caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
-    theme(plot.title = element_text(hjust = 0.5, size = 12),
-          axis.text = element_text(size = 12),
-          axis.title = element_text(size = 12))
+    theme(plot.title = element_text(hjust = 0.5, size = 12)
+          ,plot.subtitle = element_text(hjust = 0, size = 5)
+          ,axis.text = element_text(size = 12)
+          ,axis.title = element_text(size = 12)
+          ,legend.text = element_text(size = 12)
+          , legend.title = element_text(size = 12)
+          , plot.caption = element_text(size = 12)
+    # theme(plot.title = element_text(hjust = 0.5, size = 12),
+    #       axis.text = element_text(size = 12),
+    #       axis.title = element_text(size = 12))
+    )
   
 }
+set.seed(133)
 plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
