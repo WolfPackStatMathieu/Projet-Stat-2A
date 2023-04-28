@@ -201,7 +201,7 @@ return(g)
 
 }
 
-fnct_compar_plt_biais.selon.k1(N=100, 20, c(0.1, 0.2, 0.5), 6, 0.33)
+fnct_compar_plt_biais.selon.k1(N=10, 20, c(0.1, 0.2, 0.5), 6, 0.33)
 
 
 fnct_compar_plt_biais.selon.k<-function(N, n, window_lambda,t_star,p){

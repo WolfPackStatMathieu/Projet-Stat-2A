@@ -2,6 +2,7 @@
 # 
 source("analyse_alt/travail_comp.R")
 source("generation_echantillon/generation_ech_comp.R")
+source("http://myweb.uiowa.edu/pbreheny/7210/f19/notes/fun.R")
 
 prop_censure_alt <- function(N,p_cause1,n,type1,type2,t_star,graine=133){
   
@@ -35,6 +36,7 @@ prop_censure_alt <- function(N,p_cause1,n,type1,type2,t_star,graine=133){
   dens_TDL <- density(TDL)
   
   par(mfrow = c(1,2))
+
   plot(x=dens_TDL$x, y=dens_TDL$y, main="TDL", type="l",xlab="TDL", ylab="densité")
   abline(v=p, col="red")
   # Add legend
@@ -47,7 +49,12 @@ prop_censure_alt <- function(N,p_cause1,n,type1,type2,t_star,graine=133){
          bty ="n",
          cex = 0.6) # Line widths
   plot(x=dens_censure$x, y=dens_censure$y, main="Censures", type="l", xlab="censure", ylab="densité")
-
+  # M <- cbind(TDL, censures)
+  # dnplot(M[,1])
+  # dnplot(M[,1], pos=TRUE)
+  # dnplot(M)
+  # dnplot(M, labs=c('TDL', 'Censures'))
+  # dnplot(M, labs=c('TDL', 'Censures'))
   
 }
 
@@ -59,3 +66,4 @@ type2<-"constant"
 t_star<-6
 
 prop_censure_alt(1900,p_cause1=p_cause1, n=n, type1, type2, t_star=t_star, graine=133)
+

@@ -63,7 +63,7 @@ plots_scenario_1 <- function(K, n, lambda, t_star, p, k){
 
 set.seed(133)
 
-plots_scenario_1(K=1900, n=25, lambda=0.5, t_star=6, p=0.3, k=1)
+plots_scenario_1(K=1900, n=100, lambda=valeur_lambda, t_star=6, p=0.3, k=1)
 
 set.seed(134)
 ### use the good alpha.
@@ -275,7 +275,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   
 }
 set.seed(133)
-plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=1900,n=100,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
