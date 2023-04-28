@@ -12,7 +12,7 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   data$is_observed<-ifelse(data$tox_time>t_star,0,1)
   indices_non_obs<-which(data$is_observed==0)
   if(length(indices_non_obs)==n){
-    # tous pas observ?s donc censures
+    # tous pas observes donc censures
     estimateursurv<-0
     estimateurbern<-0
     estimateurcure<-fonction_cure(df=data,t_star)
@@ -32,7 +32,7 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #data$is_observed<-ifelse(data$tox_time>t_star,0,1)
   #indices_non_obs<-which(data$is_observed==0)
   #if(length(indices_non_obs)==n){
-    # tous pas observ?s donc censures
+    # tous pas observes donc censures
    # estimateursurv<-0
     #estimateurbern<-0
     #estimateurcure<-0
@@ -195,7 +195,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
-      title = "Mod?le de Bernoulli",
+      title = "Modele de Bernoulli",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -313,7 +313,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     ,max(RES0.8$mean.bernoulli)
   )
   # Plot the data
-  # le mod?le de survie
+  # le modele de survie
   gg1 <-  ggplot(RES0.2, aes(n, mean.surv)) +
     geom_line(aes(color = "0.2"), size = 0.6) +
     geom_line(data = RES0.3, aes(n, mean.surv, color = "0.3"), size = 0.6) +
@@ -327,7 +327,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min -0.04, borne_max+0.04)+
     labs(
-      title = "Mod?le de survie",
+      title = "Modele de survie",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -346,7 +346,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min.c -0.04, borne_max.c+0.04)+
     labs(
-      title = "Mod?le de gu?rison",
+      title = "Modele de guerison",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -365,14 +365,14 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min.b -0.04, borne_max.b+0.04)+
     labs(
-      title = "Mod?le de Bernoulli",
+      title = "Modele de Bernoulli",
       x = "n",
       y = "biais moyen",
       color = "n")+
     theme_bw()
   # on remet tout dans un seul graphique
   g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
-                    ,bottom = sprintf("g?n?r? avec N = %s pour chaque taille n", N),nrow=2)
+                    ,bottom = sprintf("genere avec N = %s pour chaque taille n", N),nrow=2)
   return(g)
   
 }
@@ -383,7 +383,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
 # 
 # fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
 # fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="decreasing",type2="decreasing", graine=133)
-# 
+fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="increasing",type2="increasing", graine=133)
 # fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
 # 
 # 
