@@ -262,7 +262,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   # Add labels and title
   boxplot + 
     labs(x = "Modeles", y = "Biais", 
-         title = "Comparaison du biais pour N simulations et n fix?",
+         title = "Comparaison du biais pour N simulations et n fixe",
          caption = sprintf("N = %s, p=%s,n=%s,type1=%s,type2=%s",as.character(K),as.character(p),as.character(n),type1,type2)) +
     theme(plot.title = element_text(hjust = 0.5, size = 20)
           ,plot.subtitle = element_text(hjust = 0, size = 10)
@@ -277,6 +277,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
 }
 set.seed(133)
 plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
+plots_scenario_1_alt(K=1900,n=100,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){
