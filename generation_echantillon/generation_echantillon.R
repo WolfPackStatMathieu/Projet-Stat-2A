@@ -103,10 +103,10 @@ calcule_prop_censure<-function(N, n, lambda, t_star, p, k){
 }
 
 #### Test ####
-set.seed(133)
-res_censures <- calcule_prop_censure(N= 1900, n=25,lambda=0.5,t_star=6,p=0.3,k=1)
-res_censures
-summary(res_censures)
-quantile(res_censures$prop_censure_totale, probs = c(0.025, 0.975))
-
-head(res_censures)
+# set.seed(133)
+# res_censures <- calcule_prop_censure(N= 1900, n=25,lambda=0.5,t_star=6,p=0.3,k=1)
+# res_censures
+# summary(res_censures)
+# quantile(res_censures$prop_censure_totale, probs = c(0.025, 0.975))
+# 
+# head(res_censures)

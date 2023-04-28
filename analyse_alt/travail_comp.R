@@ -48,15 +48,17 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #return(sous_liste)
 #}
 
-p_cause1<-0.33
-n<-100
-type1<-"constant"
-type2<-"constant"
-t_star<-6
-test_estim_comp<-fonction_estim_comp_once(p_cause1=0.33,n=50,type1,type2,t_star=t_star,graine=133)
-test2<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="increasing",type2="increasing",t_star=t_star,graine=133)
-test3<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="decreasing",type2="decreasing",t_star=t_star,graine=133)
-set.seed(133)
+# p_cause1<-0.33
+# n<-100
+# type1<-"constant"
+# type2<-"constant"
+# t_star<-6
+# test_estim_comp<-fonction_estim_comp_once(p_cause1=0.33,n=50,type1,type2,t_star=t_star,graine=133)
+# test2<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="increasing",type2="increasing",t_star=t_star,graine=133)
+# test3<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="decreasing",type2="decreasing",t_star=t_star,graine=133)
+# set.seed(133)
+
+
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
   graine_sup <- graine + K-1
@@ -377,18 +379,18 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
 
 
 
-
-
-fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
-fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="decreasing",type2="decreasing", graine=133)
-
-fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
-
-
-
-fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
-
-fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
+# 
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
+# fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="decreasing",type2="decreasing", graine=133)
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
+# 
+# 
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
@@ -439,11 +441,11 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
 
-
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
-
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+# 
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
+# 
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
 
 
