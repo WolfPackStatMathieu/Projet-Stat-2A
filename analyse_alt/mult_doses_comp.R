@@ -51,8 +51,8 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
    # Prob_whole_cure<-probcure(x=factdose,t=tox_time,dataset = df2,d=is_observed,x0=dose_recalibree,local=FALSE,h=c(1,1.5,2))
     #Prob_whole_curefx<-result<-flexsurvcure(Surv(tox_time,is_observed)~factdose+0, data=df, dist="weibullPH",
                                   #          anc=list(scale=~factdose+0))
-    #le premier correspond à la première dose. 
-    #le second correspond à la deuxième dose. 
+    #le premier correspond ? la premi?re dose. 
+    #le second correspond ? la deuxi?me dose. 
    # prob_selon_flex<-rep(NA,nb_doses)
    # prob_selon_flex[1]<-1-plogis(as.numeric(Prob_whole_curefx$coefficients))[1]
     indice_plus<-4+nb_doses-2
@@ -82,16 +82,16 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
-p<-0.3
-p2<-0.50
-
-prob_priori<-c(p,p2)
-set.seed(145)
-test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
-p3<-0.7
-prob_priori<-c(p,p2,p3)
-test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
-
+# p<-0.3
+# p2<-0.50
+# 
+# prob_priori<-c(p,p2)
+# set.seed(145)
+# test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
+# p3<-0.7
+# prob_priori<-c(p,p2,p3)
+# test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145,type2="decreasing")
+# 
 
 #############MEAN####
 generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,type2,graine_depart){
@@ -170,7 +170,7 @@ evol_biais_comp<-function(K,probabilite_a_priori,t_star,type1,type2,graine_depar
   ensemble_ggplots_par_dose<-lapply(c(1:length(probabilite_a_priori)),evol_n_par_dose,results=results,n=n,K=K,type1,type2)
   return(ensemble_ggplots_par_dose)
 }
-test_evol_biais<-evol_biais_comp(K=300,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
+# test_evol_biais<-evol_biais_comp(K=300,probabilite_a_priori=c(0.5,0.7),t_star=6,type1="constant",graine_depart=133,type2="constant")
 
 ################### EQM ##################"
 evol_eqm_comp<-function(K,probabilite_a_priori,t_star,type1,graine_depart,type2){
@@ -267,25 +267,25 @@ generation_comp_eqm<-function(K,n,probabilite_a_priori,t_star,type1,graine_depar
 }
 
 #graphiques pour 0.5 et 0.7 de type decreasing et constant
-prob_prior1<-c(0.5,0.7)
-test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
-                    type1="decreasing",type2="decreasing",graine_depart=145)
-test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
-                    type1="constant",type2="constant",graine_depart=145)
-
-test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
-                    type1="decreasing",type2="decreasing",graine_depart=145)
-
-#graphiques pour 0.3 et 0.5 de type decreasing et constant
-prob_prior1<-c(0.3,0.5)
-test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.3, 0.5),t_star=6,
-                    type1="decreasing",type2="decreasing",graine_depart=145)
-
-test<-evol_eqm_comp(K=500,probabilite_a_priori=c(0.5, 0.7),t_star=6,
-                    type1="constant",type2="constant",graine_depart=133)
-test_decreasing<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
-                    type1="decreasing",type2="decreasing",graine_depart=145)
-
+# prob_prior1<-c(0.5,0.7)
+# test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
+#                     type1="decreasing",type2="decreasing",graine_depart=145)
+# test<-evol_eqm_comp(K=300,probabilite_a_priori=prob_prior1,t_star=6,
+#                     type1="constant",type2="constant",graine_depart=145)
+# 
+# test<-evol_eqm_comp(K=100,probabilite_a_priori=prob_prior1,t_star=6,
+#                     type1="decreasing",type2="decreasing",graine_depart=145)
+# 
+# #graphiques pour 0.3 et 0.5 de type decreasing et constant
+# prob_prior1<-c(0.3,0.5)
+# test<-evol_eqm_comp(K=25,probabilite_a_priori=c(0.3, 0.5),t_star=6,
+#                     type1="decreasing",type2="decreasing",graine_depart=145)
+# 
+# test<-evol_eqm_comp(K=500,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+#                     type1="constant",type2="constant",graine_depart=133)
+# test_decreasing<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,
+#                     type1="decreasing",type2="decreasing",graine_depart=145)
+# 
 
 
 # test<-evol_eqm_comp(K=60,probabilite_a_priori=c(0.5, 0.7),t_star=6,type1="decreasing",graine_depart=145)

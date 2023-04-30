@@ -12,7 +12,7 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   data$is_observed<-ifelse(data$tox_time>t_star,0,1)
   indices_non_obs<-which(data$is_observed==0)
   if(length(indices_non_obs)==n){
-    # tous pas observés donc censures
+    # tous pas observes donc censures
     estimateursurv<-0
     estimateurbern<-0
     estimateurcure<-fonction_cure(df=data,t_star)
@@ -32,7 +32,7 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #data$is_observed<-ifelse(data$tox_time>t_star,0,1)
   #indices_non_obs<-which(data$is_observed==0)
   #if(length(indices_non_obs)==n){
-    # tous pas observés donc censures
+    # tous pas observes donc censures
    # estimateursurv<-0
     #estimateurbern<-0
     #estimateurcure<-0
@@ -48,15 +48,17 @@ fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
   #return(sous_liste)
 #}
 
-p_cause1<-0.33
-n<-100
-type1<-"constant"
-type2<-"constant"
-t_star<-6
-test_estim_comp<-fonction_estim_comp_once(p_cause1=0.33,n=50,type1,type2,t_star=t_star,graine=133)
-test2<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="increasing",type2="increasing",t_star=t_star,graine=133)
-test3<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="decreasing",type2="decreasing",t_star=t_star,graine=133)
-set.seed(133)
+# p_cause1<-0.33
+# n<-100
+# type1<-"constant"
+# type2<-"constant"
+# t_star<-6
+# test_estim_comp<-fonction_estim_comp_once(p_cause1=0.33,n=50,type1,type2,t_star=t_star,graine=133)
+# test2<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="increasing",type2="increasing",t_star=t_star,graine=133)
+# test3<-fonction_estim_comp_once(p_cause1=0.70,n=50,type1="decreasing",type2="decreasing",t_star=t_star,graine=133)
+# set.seed(133)
+
+
 Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
   graine_inf <- graine
   graine_sup <- graine + K-1
@@ -167,7 +169,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min -0.1, borne_max+0.1)+
     labs(
-      title = "Modèle de survie",
+      title = "Modele de survie",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -180,7 +182,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.c -0.1, borne_max.c+0.1)+
     labs(
-      title = "Modèle de guérison",
+      title = "Modele de guerison",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -193,7 +195,7 @@ fonction_compar_plotsn_lambda_alt <- function(N,t_star, vect_cause1,type1,type2,
     scale_color_manual(name = "p1", values = c("red", "black", "blue")) +
     ylim(borne_min.b -0.1, borne_max.b+0.1)+
     labs(
-      title = "Modèle de Bernoulli",
+      title = "Modele de Bernoulli",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -311,7 +313,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     ,max(RES0.8$mean.bernoulli)
   )
   # Plot the data
-  # le modèle de survie
+  # le modele de survie
   gg1 <-  ggplot(RES0.2, aes(n, mean.surv)) +
     geom_line(aes(color = "0.2"), size = 0.6) +
     geom_line(data = RES0.3, aes(n, mean.surv, color = "0.3"), size = 0.6) +
@@ -325,7 +327,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min -0.04, borne_max+0.04)+
     labs(
-      title = "Modèle de survie",
+      title = "Modele de survie",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -344,7 +346,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min.c -0.04, borne_max.c+0.04)+
     labs(
-      title = "Modèle de guérison",
+      title = "Modele de guerison",
       x = "n",
       y = "biais moyen",
       color = "n")+
@@ -363,14 +365,14 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
     # scale_colour_colorblind() +
     ylim(borne_min.b -0.04, borne_max.b+0.04)+
     labs(
-      title = "Modèle de Bernoulli",
+      title = "Modele de Bernoulli",
       x = "n",
       y = "biais moyen",
       color = "n")+
     theme_bw()
   # on remet tout dans un seul graphique
   g <- grid.arrange(gg1, gg2, gg3, top = sprintf("Influence de n et de p1 pour un alpha de type %s", type1)
-                    ,bottom = sprintf("généré avec N = %s pour chaque taille n", N),nrow=2)
+                    ,bottom = sprintf("genere avec N = %s pour chaque taille n", N),nrow=2)
   return(g)
   
 }
@@ -379,8 +381,7 @@ fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.
 
 
 
-fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
-fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="decreasing",type2="decreasing", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="increasing",type2="increasing", graine=133)
 
 fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
 
@@ -389,6 +390,19 @@ fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 
 fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
 
 fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
+
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="constant",type2="constant", graine=133)
+# fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="decreasing",type2="decreasing", graine=133)
+fonction_compar_plotsn_lambda_alt_8p(N=1900, t_star=6,type1="increasing",type2="increasing", graine=133)
+# fonction_compar_plotsn_lambda_alt_8p(N=20, t_star=6, vect_cause1=c(0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8),type1="constant",type2="constant", graine=133)
+# 
+# 
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="constant",type2="constant", graine=145)
+# 
+# fonction_compar_plotsn_lambda_alt_8p(N=2, t_star=6, vect_cause1=c(0.03,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7),type1="increasing",type2="increasing", graine=133)
+
 
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
@@ -439,11 +453,11 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
 
-
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
-
-fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
+# 
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
+# 
+# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
 
 
 
