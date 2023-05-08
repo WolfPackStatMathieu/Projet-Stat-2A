@@ -420,26 +420,30 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
     geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = mean.bernoulli, col = "modele bernoulli"), size = 1, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values=c("modele guerison"="red1","modele bernoulli"="blue1")) +
-    ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
+    ggtitle("Evolution du biais moyen en \n fonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(20))) +
     ylim(borne_min, borne_max)
   
   gg2 <- ggplot(data = RES0.3.3, aes(x = n)) +
     geom_smooth(aes(y = mean.cure, col = "modele guerison"), size = 1, alpha = 0.5) +
     geom_smooth(aes(y = mean.surv, col = "modele survie"), size = 1, alpha = 0.5) +
     scale_color_manual(name = "Modeles", values=c("modele guerison"="red1","modele survie"="darkgreen")) +
-    ggtitle("Evolution du biais moyen en \n fonction de la taille d'echantillon") +
+    ggtitle("Evolution du biais moyen en \n fonction de n") +
     xlab("Taille echantillon") + ylab("Biais moyen") +
     theme_classic() +
     theme(legend.title=element_blank(),
-          axis.text=element_text(family = "Helvetica", size=10),
-          axis.title=element_text(family = "Helvetica", size=12),
-          plot.title = element_text(family = "Helvetica", size = 10)) +
+          axis.text=element_text(family = "Helvetica", size=20),
+          axis.title=element_text(family = "Helvetica", size=20),
+          plot.title = element_text(family = "Helvetica", size = 24)
+          , legend.text = element_text(family = "Helvetica", size = 20)
+          ,text = element_text(size=rel(20))) +
     ylim(borne_min, borne_max)+
   labs(caption = sprintf("N = %s, n variant de %s a %s \n par pas de %s,type1=%s,type2=%s, p=%s" ,
                          as.character(N),
@@ -453,8 +457,8 @@ fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   gg <- grid.arrange(gg1, gg2, ncol = 2, widths = c(8,8))
 }
 
-# 
-# fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
+
+fonction_ggplot_evol_biais_alt(N=1900,t_star=6, p=0.3,type1="decreasing",type2="constant",graine=133)
 # fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="decreasing",type2="decreasing",graine=133)
 # 
 # fonction_ggplot_evol_biais_alt(N=1000,t_star=6, p=0.3,type1="constant",type2="constant",graine=133)
