@@ -650,6 +650,4 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 
 ### Evolution ####
 
-
-
 ######### EQM ###########
