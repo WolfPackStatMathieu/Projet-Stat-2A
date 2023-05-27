@@ -654,7 +654,72 @@ generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,graine,type1,type2
 ######### Estimateurs.#####
 #### Rien#####
 
-######### Biais##########
+fonction_estim_comp_once<-function(p_cause1,n,type1,type2,t_star,graine=133){
+  p_cause2<-(1-p_cause1)
+  data<-generation_comp(p_cause1 = p_cause1,p_cause2=p_cause2,t_star=t_star,nombre_obs = n,type1=type1,type2=type2,graine = graine)
+  data$tox_time<-ifelse(data$status==2,t_star+1,data$tox_time)
+  data$is_observed<-ifelse(data$tox_time>t_star,0,1)
+  indices_non_obs<-which(data$is_observed==0)
+  if(length(indices_non_obs)==n){
+    # tous pas observes donc censures
+    estimateursurv<-0
+    estimateurbern<-0
+    estimateurcure<-fonction_cure(df=data,t_star)
+    sous_liste<-list(estimateursurv, estimateurbern, estimateurcure) 
+    names(sous_liste)<-c("Survie","Bernoulli","Guerison")
+    return(sous_liste)
+  }
+  estimateursurv<-fonction_KM(df=data,t_star)
+  estimateurbern<-fonction_Bern(df=data)
+  estimateurcure<-fonction_cure(df=data,t_star)
+  sous_liste<-list(estimateursurv,estimateurbern,estimateurcure)
+  names(sous_liste)<-c("Survie","Bernoulli","Guerison")
+  return(sous_liste)
+}
+
+Simuler_estim_mult_times<-function(K,p_cause1,n,type1,type2,t_star,graine){
+  graine_inf <- graine
+  graine_sup <- graine + K-1
+  ensemble_graine<-c(graine_inf:graine_sup)
+  result<-cbind(sapply(ensemble_graine,fonction_estim_comp_once,p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))
+  result<-as.data.frame(t(result))
+  colnames(result)<-c("Survie","Bernoulli","Guerison")
+  return(colMeans(sapply(result,as.numeric)))
+}
+
+########### Biais##############
+biais.selon.lambda_alt <-function(p_cause1,K,t_star,type1,type2,graine){
+  results <- NULL
+  n <- 20
+  while(n<100){
+    vec.biais <- Simuler_estim_mult_times(K=K,p_cause1=p_cause1,n=n,type1=type1,type2=type2,t_star=t_star,graine=graine)
+    biais_surv<-vec.biais[[1]]-p_cause1
+    biais.bern<-vec.biais[[2]]-p_cause1
+    biais.cure<-vec.biais[[3]]-p_cause1
+    results<-rbind(results,c(n,biais_surv,biais.cure,biais.bern))
+    n <- n+5
+  }
+  return(results)
+}
+eqm.selon.alpha<-function(p_cause1,K,t_star,type1,type2,graine){
+  results <- NULL
+  n <- 20
+  graine_inf <- graine
+  graine_sup <- graine + K
+  ensemble_graine<-c(graine_inf:graine_sup)
+  while(n<200){
+    liste_global<-as.data.frame(t(cbind.data.frame(sapply(ensemble_graine,fonction_estim_comp_once,
+                                                          p_cause1=p_cause1,type1=type1,type2=type2,t_star=t_star,n=n))))
+    liste_global$Guerison<-as.numeric(liste_global$Guerison)
+    liste_global$Survie<-as.numeric(liste_global$Survie)
+    liste_global$Bernoulli<-as.numeric(liste_global$Bernoulli)
+    valeurs<-colMeans((liste_global-p_cause1)^2)
+    results<-rbind(results,c(n,valeurs[1],valeurs[3],valeurs[2]))
+    n <- n+10
+  }
+  return(results)
+}
+
 fonction_ggplot_evol_biais_alt <- function(N,t_star, p,type1,type2,graine=133) {
   library(gridExtra)
   library(ggplot2)
@@ -753,7 +818,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
   
 }
 
-### Utilisation des paramètres ####
+######## Utilisation des paramètres ###########
 fonction_compar_plotsn_lambda_alt_8p <- function(N,t_star, vect_cause1=c(0.2, 0.3, 0.4, 0.5, 0.6, 0.7,0.8),type1,type2,graine=133) {
   library(gridExtra)
   library(ggplot2)
