@@ -18,6 +18,7 @@ prop_censure_alt <- function(N,p_cause1,n,type1,type2,t_star,graine=133){
     df <- generation_comp(p_cause1=p_cause1, p_cause2=p_cause2, 
                         t_star=t_star,nombre_obs=n,
                         type1=type1,type2=type2,graine=graine+i)
+    print(df)
   
     res[[i]] <- df
     nb_status0 <- length(which(df$status==0))
@@ -65,5 +66,5 @@ type1<-"constant"
 type2<-"constant"
 t_star<-6
 
-prop_censure_alt(1900,p_cause1=p_cause1, n=n, type1, type2, t_star=t_star, graine=133)
+prop_censure_alt(10,p_cause1=p_cause1, n=n, type1, type2, t_star=t_star, graine=133)
 
