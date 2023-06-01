@@ -224,6 +224,7 @@ eqm.selon.taille_echantillon <- function(K, lambda, t_star, p, k){
 }
 # 
 cible<-0.98
+t_star<-6
 alpha<-1
 valeur_lambda<-exp(log(t_star^(-1*alpha)*-log(1-cible))/alpha)
 1-exp(-(t_star*valeur_lambda)^(alpha))
@@ -237,8 +238,8 @@ set.seed(133)
 # 1-exp(-(2*6)^(1))
 # lb<-2
 # set.seed(133)
-biais.selon.taille_echantillon(K =1900, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
-# 
+biais.selon.taille_echantillon(K =10, lambda =valeur_lambda, t_star = 6, p = 0.3, k=alpha)
+#biais.selon.taille_echantillon(K=10,t_star=6,lambda=0.5,p=0.33,k=1)
 # eqm.selon.taille_echantillon(K = 1900, lambda = valeur_lambda, t_star = 6, p = 0.3, k=alpha)
 # 
 
@@ -302,8 +303,7 @@ plots_scenario_1_alt <- function(K, n, p,type1,t_star,type2,graine=133){
 }
 
 set.seed(133)
-plots_scenario_1_alt(K=1900,n=25,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
-
+plots_scenario_1_alt(K=200,n=100,p=0.3,graine=133,type1="constant",t_star=6, type2 = "constant")
 
 
 eqm.selon.taille_echantillon_alt<-function(K, type1, p,graine,t_star){

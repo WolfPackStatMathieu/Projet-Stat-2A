@@ -23,19 +23,6 @@ fonction_generation_taille_mean<-function(vector_size,liste_parameter,K){
   value_means$Modele_guerison<-value_means$Modele_guerison-p
   value_means$Modele_bernoulli<-value_means$Modele_bernoulli-p
   return(value_means)
-  ##if (model=="bernoulli"){
-    ##vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons_bern,N=K,p=liste_parameter[["p"]])
-    ##return(colMeans(vecteur_realisation))
-  ##}
-  ##else{if(model=="surv"){
-  ##  vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_echantillons,N=K,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]])
-  ##  return(colMeans(vecteur_realisation))
-  ##}
-  ##if(model=="weibull"){
-  ##  vecteur_realisation<-sapply(vector_size,Simuler_Nfois_n_weibull,N=K,lambda=liste_parameter[["lambda"]],t_star=liste_parameter[["t_star"]],
-  ##                              k=liste_parameter[["k"]])
-  ##  return(colMeans(vecteur_realisation))
-  ##}}
 }
 fonction_sapply<-function(x){
   return(sapply(x,var))
