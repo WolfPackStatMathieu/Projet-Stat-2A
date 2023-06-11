@@ -96,5 +96,3 @@ generation_comp<-function(p_cause1,p_cause2,t_star,nombre_obs,graine,type1,type2
   #}
   #return(liste_data)
 #}
-
-get_alpha(0.3, 6, typ="weibull", typ_wb = "increasing")

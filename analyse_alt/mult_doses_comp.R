@@ -82,10 +82,10 @@ function_estim_doses_comp<-function(n,probabilite_a_priori,t_star,type1,type2,gr
   data_returns[,c("estimateur_survie","estimateur_guerison")]<-c(estimation_surv,estimation_cure)
   return(data_returns)
 }
-# p<-0.3
-# p2<-0.50
+p<-0.3
+p2<-0.50
 # 
-# prob_priori<-c(p,p2)
+prob_priori<-c(p,p2)
 # set.seed(145)
 # test_mult_doses<-function_estim_doses_comp(n=100,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="decreasing",graine=145)
 # p3<-0.7
@@ -100,6 +100,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,type2,grain
   graine_debut<-graine_depart+1
   graine_fin<-graine_depart+K
   ensemble_graine<-c(graine_depart:graine_fin)
+  nb<-parallel::detectCores()-1
   result<-lapply(ensemble_graine,function_estim_doses_comp,n=n,probabilite_a_priori=probabilite_a_priori,t_star=t_star,type1=type1,type2=type2)
   nb_doses<-length(probabilite_a_priori)
   matrice<-as.data.frame(matrix(NA,nb_doses,5))
@@ -116,7 +117,7 @@ generation_comp_mean<-function(K,n,probabilite_a_priori,t_star,type1,type2,grain
   }
   return(matrice)
 }
-# test<-generation_comp_mean(K=50,n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",graine=145)
+test<-generation_comp_mean(K=10,n=25,probabilite_a_priori = prob_priori,t_star=6,type1 = "decreasing",type2="constant",graine=145)
 evol_n_par_dose<-function(results,n,i,K=K,type1,type2){
   longueur_resultats<-c(1:length(n))
   function_intermed<-function(x,results,i){
